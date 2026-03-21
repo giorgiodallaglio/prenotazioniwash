@@ -617,8 +617,28 @@ body{
       <label>Ora consegna</label>
       <input id="f-consegna-time" type="time" step="60">
     </div>
-    <div class="form-group"><label>Telefono</label><input id="f-telefono"><div id="customerInfo" style="display:none;background:#11161d;border:1px solid #273041;border-radius:14px;padding:12px;margin-top:8px"></div></div>
-    <div class="form-group"><label>Concessionaria</label><select id="f-concessionaria"><option>No</option><option>Si</option></select></div>
+    <div class="form-group">
+      <label>Tipo cliente</label>
+      <select id="f-tipo-cliente" onchange="handleCustomerTypeChange()">
+        <option value="normale">Normale</option>
+        <option value="concessionaria">Concessionaria</option>
+      </select>
+    </div>
+    <div class="form-group" id="group-telefono">
+      <label>Telefono</label>
+      <input id="f-telefono">
+      <div id="customerInfo" style="display:none;background:#11161d;border:1px solid #273041;border-radius:14px;padding:12px;margin-top:8px"></div>
+    </div>
+    <div class="form-group" id="group-concessionaria-nome" style="display:none">
+      <label>Nome concessionaria</label>
+      <select id="f-cliente-concessionaria">
+        <option value="">Seleziona</option>
+        <option value="Autoteam">Autoteam</option>
+        <option value="Gran Prix">Gran Prix</option>
+        <option value="Mario">Mario</option>
+      </select>
+    </div>
+    <div class="form-group"><label>Targa</label><input id="f-targa"></div>
     <div class="form-group"><label>Extra (€)</label><input id="f-extra" type="number" value="0"></div>
     <div class="form-group"><label>Sconto (€)</label><input id="f-sconto" type="number" value="0"></div>
     <div class="form-group full"><label>Servizi</label><div id="servicesGrid" class="services-grid"></div></div>
@@ -752,6 +772,8 @@ function mapRow(r){
     consegna:formatDateTime(r.Consegna),
     servizi:Array.isArray(r.Servizi)?r.Servizi.map(s=>({id:s.id,value:s.value})):[],
     telefono:r.Telefono||"-",
+    targa:r.Targa||"-",
+    clienteConcessionaria:r.Cliente_concessionaria || r["Cliente concessionaria"] || "",
     extra:Number(r.Extra||0),
     sconto:Number(r.Sconto||0),
     concessionaria:r.Concessionaria?.value||"-",
@@ -795,7 +817,7 @@ function applyRoleUI(){
 
 function login(){
   const u=document.getElementById("loginUser").value.trim().toLowerCase();
-  const p=document.getElementById("loginPassword").value;
+  const p=document.getElementById("loginPass").value;
   loadUsers();
   if(!USERS[u] || USERS[u].password !== p){
     document.getElementById("loginHint").textContent="Credenziali non corrette.";
@@ -810,7 +832,7 @@ function login(){
 }
 function logout(){localStorage.removeItem("vh_booking_user");currentUser=null;document.getElementById("loginBackdrop").style.display="flex";applyRoleUI();}
 function togglePassword(){
-  const input=document.getElementById("loginPassword");
+  const input=document.getElementById("loginPass");
   if(!input) return;
   input.type = input.type === "password" ? "text" : "password";
 }
@@ -1233,11 +1255,31 @@ function setPage(page, el){
 function normalizePhone(v){
   return String(v||"").replace(/\D+/g,"");
 }
+function handleCustomerTypeChange(){
+  const tipo = document.getElementById("f-tipo-cliente")?.value || "normale";
+  const isDealer = tipo === "concessionaria";
+  const phoneGroup = document.getElementById("group-telefono");
+  const dealerGroup = document.getElementById("group-concessionaria-nome");
+  if(phoneGroup) phoneGroup.style.display = isDealer ? "none" : "";
+  if(dealerGroup) dealerGroup.style.display = isDealer ? "" : "none";
+  if(!isDealer){
+    const dealerSelect = document.getElementById("f-cliente-concessionaria");
+    if(dealerSelect) dealerSelect.value = "";
+  }
+  checkCustomer();
+}
 function checkCustomer(){
-  const tel = normalizePhone(document.getElementById("f-telefono")?.value || "");
+  const tipo = document.getElementById("f-tipo-cliente")?.value || "normale";
   const box = document.getElementById("customerInfo");
   if(!box) return;
 
+  if(tipo !== "normale"){
+    box.style.display = "none";
+    box.innerHTML = "";
+    return;
+  }
+
+  const tel = normalizePhone(document.getElementById("f-telefono")?.value || "");
   if(!tel || tel.length < 6){
     box.style.display = "none";
     box.innerHTML = "";
@@ -1245,7 +1287,6 @@ function checkCustomer(){
   }
 
   const matches = allItems.filter(i => normalizePhone(i.telefono) === tel);
-
   if(matches.length === 0){
     box.style.display = "none";
     box.innerHTML = "";
@@ -1289,13 +1330,18 @@ function clearForm(){
   editingId=null;
   formDirty=false;
   document.getElementById("formTitle").textContent="Nuova prenotazione";
-  ["f-modello","f-arrivo-date","f-arrivo-time","f-consegna-date","f-consegna-time","f-telefono","f-note"].forEach(id=>document.getElementById(id).value="");
+  ["f-modello","f-arrivo-date","f-arrivo-time","f-consegna-date","f-consegna-time","f-telefono","f-targa","f-note"].forEach(id=>{
+    const el = document.getElementById(id);
+    if(el) el.value="";
+  });
   document.getElementById("f-stato").value="Prenotata";
-  document.getElementById("f-concessionaria").value="No";
+  document.getElementById("f-tipo-cliente").value="normale";
+  document.getElementById("f-cliente-concessionaria").value="";
   document.getElementById("f-extra").value=0;
   document.getElementById("f-sconto").value=0;
   renderServicesGrid([]);
   updateFormSummary();
+  handleCustomerTypeChange();
   checkCustomer();
 }
 function openCreateModal(){
@@ -1326,8 +1372,14 @@ function openEditModal(){
   document.getElementById("f-arrivo-time").value=arrivoParts.time;
   document.getElementById("f-consegna-date").value=consegnaParts.date;
   document.getElementById("f-consegna-time").value=consegnaParts.time;
+
+  const isDealer = String(selected.concessionaria||"").toLowerCase()==="si";
+  document.getElementById("f-tipo-cliente").value=isDealer ? "concessionaria" : "normale";
+  handleCustomerTypeChange();
+
   document.getElementById("f-telefono").value=selected.telefono==="-"?"":selected.telefono;
-  document.getElementById("f-concessionaria").value=(selected.concessionaria==="Sì"?"Si":(selected.concessionaria||"No"));
+  document.getElementById("f-targa").value=selected.targa==="-"?"":selected.targa;
+  document.getElementById("f-cliente-concessionaria").value=selected.clienteConcessionaria||"";
   document.getElementById("f-extra").value=selected.extra||0;
   document.getElementById("f-sconto").value=selected.sconto||0;
   document.getElementById("f-note").value=selected.note||"";
@@ -1358,6 +1410,9 @@ async function setStatus(status){
 async function saveForm(){
   if(!(currentUser&&(currentUser.role==="admin"||currentUser.role==="operatore")))return;
   const isEdit = !!editingId;
+  const tipoCliente = document.getElementById("f-tipo-cliente").value;
+  const isDealer = tipoCliente === "concessionaria";
+
   const payload={
     stato:document.getElementById("f-stato").value,
     modello:document.getElementById("f-modello").value.trim(),
@@ -1366,14 +1421,26 @@ async function saveForm(){
     servizi:selectedServiceIds(),
     extra:Number(document.getElementById("f-extra").value||0),
     sconto:Number(document.getElementById("f-sconto").value||0),
-    concessionaria:document.getElementById("f-concessionaria").value,
-    telefono:document.getElementById("f-telefono").value.trim(),
+    concessionaria:isDealer ? "Si" : "No",
+    cliente_concessionaria:isDealer ? document.getElementById("f-cliente-concessionaria").value : "",
+    telefono:isDealer ? "" : document.getElementById("f-telefono").value.trim(),
+    targa:document.getElementById("f-targa").value.trim(),
     note:document.getElementById("f-note").value.trim(),
     inserito_da:(isEdit && selected ? selected.createdBy : currentUser.label)
   };
-  if(!payload.modello||!payload.arrivo||!payload.servizi.length){alert("Compila almeno modello, arrivo e un servizio.");return;}
+
+  if(!payload.modello || !payload.arrivo || !payload.servizi.length){
+    alert("Compila almeno modello, arrivo e un servizio.");
+    return;
+  }
+  if(isDealer && !payload.cliente_concessionaria){
+    alert("Seleziona la concessionaria.");
+    return;
+  }
+
   const endpoint=isEdit?UPDATE_ENDPOINT:CREATE_ENDPOINT;
   const body=isEdit?{id:editingId,...payload}:payload;
+
   try{
     const r=await fetch(endpoint,{method:"POST",headers:{"Content-Type":"application/json"},body:JSON.stringify(body)});
     if(!r.ok)throw new Error("HTTP "+r.status);
@@ -1381,7 +1448,10 @@ async function saveForm(){
     clearForm();
     await loadBookings();
     showToast(isEdit ? "Prenotazione modificata" : "Prenotazione creata");
-  }catch(e){console.error(e);alert("Errore salvataggio prenotazione.");}
+  }catch(e){
+    console.error(e);
+    alert("Errore salvataggio prenotazione.");
+  }
 }
 
 function clearUserForm(){
@@ -1451,7 +1521,7 @@ async function testNotification(){
 }
 
 ["f-extra","f-sconto"].forEach(id=>{const el=document.getElementById(id); if(el) el.addEventListener("input", ()=>{formDirty=true; updateFormSummary();});});
-["f-modello","f-arrivo-date","f-arrivo-time","f-consegna-date","f-consegna-time","f-telefono","f-note","f-stato","f-concessionaria"].forEach(id=>{const el=document.getElementById(id); if(el) el.addEventListener("input", ()=>{formDirty=true; if(id==="f-telefono") checkCustomer();}); if(el) el.addEventListener("change", ()=>{formDirty=true; if(id==="f-telefono") checkCustomer();});});
+["f-modello","f-arrivo-date","f-arrivo-time","f-consegna-date","f-consegna-time","f-telefono","f-targa","f-note","f-stato","f-tipo-cliente","f-cliente-concessionaria"].forEach(id=>{const el=document.getElementById(id); if(el) el.addEventListener("input", ()=>{formDirty=true; if(id==="f-telefono"||id==="f-tipo-cliente") checkCustomer(); if(id==="f-tipo-cliente") handleCustomerTypeChange();}); if(el) el.addEventListener("change", ()=>{formDirty=true; if(id==="f-telefono"||id==="f-tipo-cliente") checkCustomer(); if(id==="f-tipo-cliente") handleCustomerTypeChange();});});
 document.addEventListener("change", (e)=>{ if(e.target && e.target.closest("#servicesGrid")) formDirty=true; });
 
 loadUsers();
