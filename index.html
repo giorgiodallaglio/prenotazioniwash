@@ -188,139 +188,7 @@
       margin-top:8px;background:#1a2330;color:#dfe6f5;border:1px solid #253245;border-radius:10px;padding:8px 10px;cursor:pointer;font-weight:700
     }
 
-    
-:root{
-  --apple-bg-1:#06080c;
-  --apple-bg-2:#0a1020;
-  --apple-glass:rgba(20,28,42,0.56);
-  --apple-glass-strong:rgba(20,28,42,0.78);
-  --apple-stroke:rgba(255,255,255,0.08);
-  --apple-shadow:0 20px 50px rgba(0,0,0,.28);
-  --apple-text:#eef4ff;
-}
-
-body{
-  background:
-    radial-gradient(circle at 10% 10%, rgba(88,165,255,.14), transparent 28%),
-    radial-gradient(circle at 90% 0%, rgba(70,120,255,.10), transparent 24%),
-    linear-gradient(180deg, var(--apple-bg-1), var(--apple-bg-2));
-  color:var(--apple-text);
-}
-
-.sidebar,.phone-wrap,.detail,.login-card,
-.section,.income-card,.field,.card,.stat-card,.income-item,.note-box,.loading,.empty,.error{
-  backdrop-filter: blur(18px);
-  -webkit-backdrop-filter: blur(18px);
-}
-
-.sidebar,.phone-wrap,.detail,.login-card{
-  background:linear-gradient(180deg, rgba(15,20,30,.72), rgba(10,14,22,.82));
-  border:1px solid rgba(255,255,255,.08);
-  box-shadow:0 20px 50px rgba(0,0,0,.28);
-}
-
-.phone{background:linear-gradient(180deg,#05070b,#09101c)}
-.logo{background:linear-gradient(135deg,#78c3ff,#4f8fff);box-shadow:0 10px 20px rgba(70,140,255,.28)}
-.role-chip,.chip,.nav-item.active,.btn-secondary,.btn-edit{
-  background:rgba(25,35,52,.62);
-  border:1px solid rgba(255,255,255,.08);
-}
-.search,.date-input,.select-input,.form-group input,.form-group select,.form-group textarea{
-  background:rgba(17,23,34,.72);
-  border:1px solid rgba(255,255,255,.07);
-  color:#eef4ff;
-  box-shadow: inset 0 1px 0 rgba(255,255,255,.03);
-}
-.search::placeholder,.form-group input::placeholder,.form-group textarea::placeholder{color:#8c9ab6}
-.btn{
-  background:linear-gradient(180deg, #78c3ff, #4f8fff);
-  box-shadow:0 10px 24px rgba(79,143,255,.30);
-}
-.btn-danger{background:linear-gradient(180deg, rgba(88,40,40,.82), rgba(52,24,24,.82))}
-.card{
-  border:1px solid rgba(255,255,255,.07) !important;
-  box-shadow:inset 0 1px 0 rgba(255,255,255,.03), 0 10px 24px rgba(0,0,0,.18);
-}
-.card.prenotata{
-  background:
-    radial-gradient(circle at top left, rgba(255,197,74,.18), transparent 36%),
-    linear-gradient(180deg, rgba(34,24,12,.82), rgba(18,18,22,.88));
-}
-.card.inlavaggio{
-  background:
-    radial-gradient(circle at top left, rgba(90,170,255,.18), transparent 36%),
-    linear-gradient(180deg, rgba(16,30,52,.82), rgba(18,18,22,.88));
-}
-.card.lavata{
-  background:
-    radial-gradient(circle at top left, rgba(77,215,129,.18), transparent 36%),
-    linear-gradient(180deg, rgba(15,36,24,.82), rgba(18,18,22,.88));
-}
-.card.consegnata{
-  background:
-    radial-gradient(circle at top left, rgba(176,186,203,.14), transparent 36%),
-    linear-gradient(180deg, rgba(28,31,39,.82), rgba(18,18,22,.88));
-}
-.card.noshow{
-  background:
-    radial-gradient(circle at top left, rgba(255,101,101,.18), transparent 36%),
-    linear-gradient(180deg, rgba(46,18,24,.82), rgba(18,18,22,.88));
-}
-.badge{
-  border:1px solid rgba(255,255,255,.10);
-  box-shadow: inset 0 1px 0 rgba(255,255,255,.04);
-}
-.section,.income-card,.field,.stat-card,.income-item{
-  background:linear-gradient(180deg, rgba(18,24,36,.74), rgba(13,18,28,.82));
-  border:1px solid rgba(255,255,255,.07);
-}
-.total{
-  background:linear-gradient(180deg, rgba(20,28,40,.72), rgba(16,20,30,.84));
-  border:1px solid rgba(255,255,255,.07);
-}
-.bottomnav{
-  background:rgba(12,16,24,.84);
-  backdrop-filter: blur(18px);
-  -webkit-backdrop-filter: blur(18px);
-  border-top:1px solid rgba(255,255,255,.08);
-}
-.urgency-tag{
-  background:rgba(255,255,255,.05) !important;
-  border:1px solid rgba(255,255,255,.07) !important;
-}
-#todayStats{
-  display:grid;
-  grid-template-columns:1fr 1fr;
-  gap:12px;
-  margin-bottom:14px;
-}
-#todayStats .stat-card{
-  min-height:92px;
-  display:flex;
-  flex-direction:column;
-  justify-content:center;
-  border-radius:22px;
-}
-#todayStats .muted{font-size:13px}
-#todayStats .value{font-size:34px;font-weight:800;line-height:1.05;margin-top:6px}
-.modal,.sheet{
-  background:linear-gradient(180deg, rgba(18,24,36,.88), rgba(10,14,20,.96));
-  border:1px solid rgba(255,255,255,.08);
-  box-shadow:0 30px 70px rgba(0,0,0,.40);
-}
-.mobile-sheet{
-  background:linear-gradient(180deg, rgba(20,28,42,.92), rgba(10,14,22,.96)) !important;
-  border:1px solid rgba(255,255,255,.08) !important;
-}
-@media (max-width:768px){
-  #todayStats{grid-template-columns:1fr 1fr !important}
-  .stats-grid{grid-template-columns:1fr !important}
-  .screen{padding-left:14px;padding-right:14px}
-  .card{border-radius:24px}
-  .section,.field,.income-card,.income-item,.stat-card{border-radius:20px}
-}
-
-@media (max-width:1280px){.app{grid-template-columns:260px 1fr}.detail{display:none}}
+    @media (max-width:1280px){.app{grid-template-columns:260px 1fr}.detail{display:none}}
     @media (max-width:860px){
       .app{grid-template-columns:1fr;padding:0;gap:0}
       .sidebar,.detail{display:none}
@@ -329,7 +197,6 @@ body{
       .screen{padding:14px 14px 96px}
       .model{font-size:18px}
       .form-grid,.services-grid,.grid,.stats-grid{grid-template-columns:1fr}
-      #todayStats{grid-template-columns:1fr 1fr !important}
       .filter-row{grid-template-columns:1fr !important;gap:10px}
       .modal,.sheet,.login-card{padding:18px;border-radius:22px}
       .service-pill{padding:12px}
@@ -352,7 +219,7 @@ body{
     <div class="form-group"><label>Utente</label><input id="loginUser" placeholder="username"></div>
     <div class="form-group" style="margin-top:12px"><label>Password</label><input id="loginPass" type="password" placeholder="password"></div>
     <label class="remember-row"><input type="checkbox" id="rememberCreds" checked><span>Salva credenziali</span></label>
-    <div class="toolbar" style="margin-top:16px"><button type="button" class="btn" onclick="login()">Entra</button></div>
+    <div class="toolbar" style="margin-top:16px"><button onclick="login()">Entra</button></div>
     <div class="muted" id="loginHint" style="margin-top:14px;font-size:13px">Admin: giorgio / Batman2024! • karen / Chloe2025! — Operatori: michele / michele123 • marco / marco123 • riccardo / riccardo123 • vittorio / vittorio123</div>
   </div>
 </div>
@@ -618,28 +485,8 @@ body{
       <label>Ora consegna</label>
       <input id="f-consegna-time" type="time" step="60">
     </div>
-    <div class="form-group">
-      <label>Tipo cliente</label>
-      <select id="f-tipo-cliente" onchange="handleCustomerTypeChange()">
-        <option value="normale">Normale</option>
-        <option value="concessionaria">Concessionaria</option>
-      </select>
-    </div>
-    <div class="form-group" id="group-telefono">
-      <label>Telefono</label>
-      <input id="f-telefono">
-      <div id="customerInfo" style="display:none;background:#11161d;border:1px solid #273041;border-radius:14px;padding:12px;margin-top:8px"></div>
-    </div>
-    <div class="form-group" id="group-concessionaria-nome" style="display:none">
-      <label>Nome concessionaria</label>
-      <select id="f-cliente-concessionaria">
-        <option value="">Seleziona</option>
-        <option value="Autoteam">Autoteam</option>
-        <option value="Gran Prix">Gran Prix</option>
-        <option value="Mario">Mario</option>
-      </select>
-    </div>
-    <div class="form-group"><label>Targa</label><input id="f-targa"></div>
+    <div class="form-group"><label>Telefono</label><input id="f-telefono"><div id="customerInfo" style="display:none;background:#11161d;border:1px solid #273041;border-radius:14px;padding:12px;margin-top:8px"></div></div>
+    <div class="form-group"><label>Concessionaria</label><select id="f-concessionaria"><option>No</option><option>Si</option></select></div>
     <div class="form-group"><label>Extra (€)</label><input id="f-extra" type="number" value="0"></div>
     <div class="form-group"><label>Sconto (€)</label><input id="f-sconto" type="number" value="0"></div>
     <div class="form-group full"><label>Servizi</label><div id="servicesGrid" class="services-grid"></div></div>
@@ -749,17 +596,13 @@ function dateKeyFromDate(d){return `${String(d.getDate()).padStart(2,"0")}/${Str
 function todayKey(){return dateKeyFromDate(new Date());}
 function parseDisplayDate(display){if(!display||display==='-') return null; const [date,time]=display.split(' '); const [dd,mm,yyyy]=date.split('/').map(Number); const [hh,min]=time.split(':').map(Number); return new Date(yyyy,mm-1,dd,hh,min||0);}
 function toISODateInput(display){const d=parseDisplayDate(display); if(!d) return ''; return `${d.getFullYear()}-${String(d.getMonth()+1).padStart(2,'0')}-${String(d.getDate()).padStart(2,'0')}`;}
-function getUrgencyDate(item){
-  return parseDisplayDate(item.consegna) || parseDisplayDate(item.arrivo) || new Date(8640000000000000);
+function isSameDayDisplay(display, refDate){
+  const d = parseDisplayDate(display);
+  if(!d || !refDate) return false;
+  return d.getDate()===refDate.getDate() && d.getMonth()===refDate.getMonth() && d.getFullYear()===refDate.getFullYear();
 }
-function urgencySort(a,b){
-  const ad = getUrgencyDate(a);
-  const bd = getUrgencyDate(b);
-  if(ad.getTime() !== bd.getTime()) return ad - bd;
-  const aa = parseDisplayDate(a.arrivo) || new Date(8640000000000000);
-  const ba = parseDisplayDate(b.arrivo) || new Date(8640000000000000);
-  if(aa.getTime() !== ba.getTime()) return aa - ba;
-  return String(a.modello||"").localeCompare(String(b.modello||""), "it");
+function bustUrl(url){
+  return url + (url.includes("?") ? "&" : "?") + "_=" + Date.now();
 }
 function mapRow(r){
   const createdBy = r["Inserito da"] || r.Inserito_da || r["Inserito_da"] || r.Operatore || "";
@@ -773,8 +616,6 @@ function mapRow(r){
     consegna:formatDateTime(r.Consegna),
     servizi:Array.isArray(r.Servizi)?r.Servizi.map(s=>({id:s.id,value:s.value})):[],
     telefono:r.Telefono||"-",
-    targa:r.Targa||"-",
-    clienteConcessionaria:r.Cliente_concessionaria || r["Cliente concessionaria"] || "",
     extra:Number(r.Extra||0),
     sconto:Number(r.Sconto||0),
     concessionaria:r.Concessionaria?.value||"-",
@@ -819,29 +660,19 @@ function applyRoleUI(){
 function login(){
   const u=document.getElementById("loginUser").value.trim().toLowerCase();
   const p=document.getElementById("loginPass").value;
-  loadUsers();
-  if(!USERS[u] || USERS[u].password !== p){
-    document.getElementById("loginHint").textContent="Credenziali non corrette.";
-    return;
-  }
+  if(!USERS[u]||USERS[u].password!==p){document.getElementById("loginHint").textContent="Credenziali non corrette.";return;}
   saveRememberedCredentials(u,p);
   currentUser={username:u,role:USERS[u].role,label:USERS[u].label};
   localStorage.setItem("vh_booking_user",JSON.stringify(currentUser));
   document.getElementById("loginBackdrop").style.display="none";
   applyRoleUI();
-  loadAll();
 }
 function logout(){localStorage.removeItem("vh_booking_user");currentUser=null;document.getElementById("loginBackdrop").style.display="flex";applyRoleUI();}
-function togglePassword(){
-  const input=document.getElementById("loginPass");
-  if(!input) return;
-  input.type = input.type === "password" ? "text" : "password";
-}
 function restoreLogin(){restoreRememberedCredentials();const saved=localStorage.getItem("vh_booking_user");if(saved){try{currentUser=JSON.parse(saved);document.getElementById("loginBackdrop").style.display="none";}catch(e){}}applyRoleUI();}
 
-async function loadServices(){const r=await fetch(SERVICES_ENDPOINT);if(!r.ok)throw new Error("HTTP "+r.status);const d=await r.json();services=(d.results||[]).map(mapServiceRow).filter(s=>s.active);renderServicesGrid();}
+async function loadServices(){const r=await fetch(bustUrl(SERVICES_ENDPOINT),{cache:"no-store",headers:{"Cache-Control":"no-cache, no-store, max-age=0","Pragma":"no-cache"}});if(!r.ok)throw new Error("HTTP "+r.status);const d=await r.json();services=(d.results||[]).map(mapServiceRow).filter(s=>s.active);renderServicesGrid();}
 async function loadBookings(){
-  const r=await fetch(READ_ENDPOINT);
+  const r=await fetch(bustUrl(READ_ENDPOINT),{cache:"no-store",headers:{"Cache-Control":"no-cache, no-store, max-age=0","Pragma":"no-cache"}});
   if(!r.ok) throw new Error("HTTP "+r.status);
   const d=await r.json();
   allItems=(d.results||[]).map(mapRow).sort((a,b)=>{
@@ -947,14 +778,26 @@ function render(){
   const statsFrom=document.getElementById("statsFromDate")?.value || "";
   const statsTo=document.getElementById("statsToDate")?.value || "";
 
+  const urgencySort = (x,y) => {
+    const xd = parseDisplayDate(x.consegna) || parseDisplayDate(x.arrivo) || new Date(8640000000000000);
+    const yd = parseDisplayDate(y.consegna) || parseDisplayDate(y.arrivo) || new Date(8640000000000000);
+    if(xd.getTime() !== yd.getTime()) return xd - yd;
+    const xa = parseDisplayDate(x.arrivo) || new Date(8640000000000000);
+    const ya = parseDisplayDate(y.arrivo) || new Date(8640000000000000);
+    return xa - ya;
+  };
+
+  const nowDate = new Date();
+  const startOfToday = new Date(nowDate.getFullYear(), nowDate.getMonth(), nowDate.getDate());
+
   const todayItems=allItems
-    .filter(i=>i.arrivo.startsWith(today))
+    .filter(i=>isSameDayDisplay(i.arrivo, nowDate))
     .filter(i=>todayStatus==="all"?true:i.stato===todayStatus)
     .filter(i=>matchesSearch(i,todaySearch))
     .sort(urgencySort);
 
   const futureItems=allItems
-    .filter(i=>{const d=parseDisplayDate(i.arrivo); const t=parseDisplayDate(today+' 00:00'); return d && d > t && !i.arrivo.startsWith(today);})
+    .filter(i=>{const d=parseDisplayDate(i.arrivo); return d && d > startOfToday && !isSameDayDisplay(i.arrivo, nowDate);})
     .filter(i=>futureDate ? toISODateInput(i.arrivo)===futureDate : true)
     .filter(i=>matchesSearch(i,futureSearch))
     .sort(urgencySort);
@@ -964,19 +807,19 @@ function render(){
     .filter(i=>allStatus==="all"?true:i.stato===allStatus)
     .filter(i=>matchesSearch(i,allSearch))
     .sort(urgencySort);
-
   const incomeItems=allItems
-    .filter(i=>incomeDate ? toISODateInput(i.arrivo)===incomeDate : i.arrivo.startsWith(today))
+    .filter(i=>incomeDate ? toISODateInput(i.arrivo)===incomeDate : isSameDayDisplay(i.arrivo, nowDate))
     .filter(i=>i.stato===incomeStatus)
-    .filter(i=>String(i.concessionaria||"").toLowerCase()!=="si");
-
+    .filter(i=>!(String(i.concessionaria||"").toLowerCase()==="si"));
   const dealerItems=allItems
-    .filter(i=>String(i.concessionaria||"").toLowerCase()==="si")
+    .filter(i=>(String(i.concessionaria||"").toLowerCase()==="si"))
     .filter(i=>dealerDate ? toISODateInput(i.arrivo)===dealerDate : true)
     .filter(i=>dealerStatus==="all"?true:i.stato===dealerStatus)
-    .filter(i=>matchesSearch(i,dealerSearch) || String(i.concessionaria||"").toLowerCase().includes(dealerSearch))
-    .sort(urgencySort);
+    .filter(i=>matchesSearch(i,dealerSearch) || String(i.concessionaria||"").toLowerCase().includes(dealerSearch));
 
+  renderCards("listToday", todayItems);
+  renderCards("listFuture", futureItems);
+  renderCards("listAll", allFiltered);
   const statsItems=allItems.filter(i=>{
     const d = toISODateInput(i.arrivo);
     if(statsFrom && d < statsFrom) return false;
@@ -984,9 +827,6 @@ function render(){
     return true;
   });
 
-  renderCards("listToday", todayItems);
-  renderCards("listFuture", futureItems);
-  renderCards("listAll", allFiltered);
   renderIncome(incomeItems, incomeDate);
   renderDealerGrouped(dealerItems);
   renderTodayStats(todayItems);
@@ -1256,31 +1096,11 @@ function setPage(page, el){
 function normalizePhone(v){
   return String(v||"").replace(/\D+/g,"");
 }
-function handleCustomerTypeChange(){
-  const tipo = document.getElementById("f-tipo-cliente")?.value || "normale";
-  const isDealer = tipo === "concessionaria";
-  const phoneGroup = document.getElementById("group-telefono");
-  const dealerGroup = document.getElementById("group-concessionaria-nome");
-  if(phoneGroup) phoneGroup.style.display = isDealer ? "none" : "";
-  if(dealerGroup) dealerGroup.style.display = isDealer ? "" : "none";
-  if(!isDealer){
-    const dealerSelect = document.getElementById("f-cliente-concessionaria");
-    if(dealerSelect) dealerSelect.value = "";
-  }
-  checkCustomer();
-}
 function checkCustomer(){
-  const tipo = document.getElementById("f-tipo-cliente")?.value || "normale";
+  const tel = normalizePhone(document.getElementById("f-telefono")?.value || "");
   const box = document.getElementById("customerInfo");
   if(!box) return;
 
-  if(tipo !== "normale"){
-    box.style.display = "none";
-    box.innerHTML = "";
-    return;
-  }
-
-  const tel = normalizePhone(document.getElementById("f-telefono")?.value || "");
   if(!tel || tel.length < 6){
     box.style.display = "none";
     box.innerHTML = "";
@@ -1288,6 +1108,7 @@ function checkCustomer(){
   }
 
   const matches = allItems.filter(i => normalizePhone(i.telefono) === tel);
+
   if(matches.length === 0){
     box.style.display = "none";
     box.innerHTML = "";
@@ -1331,18 +1152,13 @@ function clearForm(){
   editingId=null;
   formDirty=false;
   document.getElementById("formTitle").textContent="Nuova prenotazione";
-  ["f-modello","f-arrivo-date","f-arrivo-time","f-consegna-date","f-consegna-time","f-telefono","f-targa","f-note"].forEach(id=>{
-    const el = document.getElementById(id);
-    if(el) el.value="";
-  });
+  ["f-modello","f-arrivo-date","f-arrivo-time","f-consegna-date","f-consegna-time","f-telefono","f-note"].forEach(id=>document.getElementById(id).value="");
   document.getElementById("f-stato").value="Prenotata";
-  document.getElementById("f-tipo-cliente").value="normale";
-  document.getElementById("f-cliente-concessionaria").value="";
+  document.getElementById("f-concessionaria").value="No";
   document.getElementById("f-extra").value=0;
   document.getElementById("f-sconto").value=0;
   renderServicesGrid([]);
   updateFormSummary();
-  handleCustomerTypeChange();
   checkCustomer();
 }
 function openCreateModal(){
@@ -1373,14 +1189,8 @@ function openEditModal(){
   document.getElementById("f-arrivo-time").value=arrivoParts.time;
   document.getElementById("f-consegna-date").value=consegnaParts.date;
   document.getElementById("f-consegna-time").value=consegnaParts.time;
-
-  const isDealer = String(selected.concessionaria||"").toLowerCase()==="si";
-  document.getElementById("f-tipo-cliente").value=isDealer ? "concessionaria" : "normale";
-  handleCustomerTypeChange();
-
   document.getElementById("f-telefono").value=selected.telefono==="-"?"":selected.telefono;
-  document.getElementById("f-targa").value=selected.targa==="-"?"":selected.targa;
-  document.getElementById("f-cliente-concessionaria").value=selected.clienteConcessionaria||"";
+  document.getElementById("f-concessionaria").value=(selected.concessionaria==="Sì"?"Si":(selected.concessionaria||"No"));
   document.getElementById("f-extra").value=selected.extra||0;
   document.getElementById("f-sconto").value=selected.sconto||0;
   document.getElementById("f-note").value=selected.note||"";
@@ -1411,9 +1221,6 @@ async function setStatus(status){
 async function saveForm(){
   if(!(currentUser&&(currentUser.role==="admin"||currentUser.role==="operatore")))return;
   const isEdit = !!editingId;
-  const tipoCliente = document.getElementById("f-tipo-cliente").value;
-  const isDealer = tipoCliente === "concessionaria";
-
   const payload={
     stato:document.getElementById("f-stato").value,
     modello:document.getElementById("f-modello").value.trim(),
@@ -1422,26 +1229,14 @@ async function saveForm(){
     servizi:selectedServiceIds(),
     extra:Number(document.getElementById("f-extra").value||0),
     sconto:Number(document.getElementById("f-sconto").value||0),
-    concessionaria:isDealer ? "Si" : "No",
-    cliente_concessionaria:isDealer ? document.getElementById("f-cliente-concessionaria").value : "",
-    telefono:isDealer ? "" : document.getElementById("f-telefono").value.trim(),
-    targa:document.getElementById("f-targa").value.trim(),
+    concessionaria:document.getElementById("f-concessionaria").value,
+    telefono:document.getElementById("f-telefono").value.trim(),
     note:document.getElementById("f-note").value.trim(),
     inserito_da:(isEdit && selected ? selected.createdBy : currentUser.label)
   };
-
-  if(!payload.modello || !payload.arrivo || !payload.servizi.length){
-    alert("Compila almeno modello, arrivo e un servizio.");
-    return;
-  }
-  if(isDealer && !payload.cliente_concessionaria){
-    alert("Seleziona la concessionaria.");
-    return;
-  }
-
+  if(!payload.modello||!payload.arrivo||!payload.servizi.length){alert("Compila almeno modello, arrivo e un servizio.");return;}
   const endpoint=isEdit?UPDATE_ENDPOINT:CREATE_ENDPOINT;
   const body=isEdit?{id:editingId,...payload}:payload;
-
   try{
     const r=await fetch(endpoint,{method:"POST",headers:{"Content-Type":"application/json"},body:JSON.stringify(body)});
     if(!r.ok)throw new Error("HTTP "+r.status);
@@ -1449,10 +1244,7 @@ async function saveForm(){
     clearForm();
     await loadBookings();
     showToast(isEdit ? "Prenotazione modificata" : "Prenotazione creata");
-  }catch(e){
-    console.error(e);
-    alert("Errore salvataggio prenotazione.");
-  }
+  }catch(e){console.error(e);alert("Errore salvataggio prenotazione.");}
 }
 
 function clearUserForm(){
@@ -1522,12 +1314,13 @@ async function testNotification(){
 }
 
 ["f-extra","f-sconto"].forEach(id=>{const el=document.getElementById(id); if(el) el.addEventListener("input", ()=>{formDirty=true; updateFormSummary();});});
-["f-modello","f-arrivo-date","f-arrivo-time","f-consegna-date","f-consegna-time","f-telefono","f-targa","f-note","f-stato","f-tipo-cliente","f-cliente-concessionaria"].forEach(id=>{const el=document.getElementById(id); if(el) el.addEventListener("input", ()=>{formDirty=true; if(id==="f-telefono"||id==="f-tipo-cliente") checkCustomer(); if(id==="f-tipo-cliente") handleCustomerTypeChange();}); if(el) el.addEventListener("change", ()=>{formDirty=true; if(id==="f-telefono"||id==="f-tipo-cliente") checkCustomer(); if(id==="f-tipo-cliente") handleCustomerTypeChange();});});
+["f-modello","f-arrivo-date","f-arrivo-time","f-consegna-date","f-consegna-time","f-telefono","f-note","f-stato","f-concessionaria"].forEach(id=>{const el=document.getElementById(id); if(el) el.addEventListener("input", ()=>{formDirty=true; if(id==="f-telefono") checkCustomer();}); if(el) el.addEventListener("change", ()=>{formDirty=true; if(id==="f-telefono") checkCustomer();});});
 document.addEventListener("change", (e)=>{ if(e.target && e.target.closest("#servicesGrid")) formDirty=true; });
 
 loadUsers();
 restoreLogin();
 restoreNotifySettings();
+setInterval(()=>{if(currentUser){loadBookings().catch(console.error);}},15000);
 document.getElementById("incomeDateFilter").value = new Date().toISOString().slice(0,10);
 document.getElementById("dealerDateFilter").value = "";
 loadAll();
