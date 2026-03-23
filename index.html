@@ -419,21 +419,20 @@
         </div>
       </div>
 
-
       <div class="section">
         <div style="font-weight:700;margin-bottom:10px">Concessionarie</div>
         <div class="form-grid">
           <div class="form-group"><label>Nome</label><input id="d-name" placeholder="Es. Gran Prix"></div>
           <div class="form-group"><label>Email</label><input id="d-email" placeholder="email@concessionaria.it"></div>
-          <div class="form-group"><label>Telefono</label><input id="d-phone" placeholder="+39..."></div>
-          <div class="form-group"><label>&nbsp;</label><div class="muted" style="padding:12px 0">Gestisci l'anagrafica concessionarie</div></div>
+          <div class="form-group"><label>Telefono</label><input id="d-phone" placeholder="+39 ..."></div>
         </div>
         <div class="toolbar">
           <button onclick="saveDealer()">Salva concessionaria</button>
-          <button class="btn-secondary" onclick="clearDealerForm()">Nuovo</button>
+          <button class="btn-secondary" onclick="clearDealerForm()">Nuova</button>
         </div>
-        <div id="dealerListAdmin" style="margin-top:12px"></div>
+        <div id="dealerListAdmin"></div>
       </div>
+
       <div class="section">
         <div style="font-weight:700;margin-bottom:10px">Utenti configurati</div>
         <div id="usersList"></div>
@@ -501,7 +500,13 @@
       <input id="f-consegna-time" type="time" step="60">
     </div>
     <div class="form-group"><label>Telefono</label><input id="f-telefono"><div id="customerInfo" style="display:none;background:#11161d;border:1px solid #273041;border-radius:14px;padding:12px;margin-top:8px"></div></div>
-    <div class="form-group"><label>Concessionaria</label><select id="f-concessionaria"></select></div>
+    <div class="form-group">
+      <label>Concessionaria</label>
+      <select id="f-concessionaria" onchange="toggleDealerSelect()"><option value="No">No</option><option value="Si">Si</option></select>
+      <div id="dealerSelectWrap" style="display:none;margin-top:8px">
+        <select id="f-dealer-name"></select>
+      </div>
+    </div>
     <div class="form-group"><label>Extra (€)</label><input id="f-extra" type="number" value="0"></div>
     <div class="form-group"><label>Sconto (€)</label><input id="f-sconto" type="number" value="0"></div>
     <div class="form-group full"><label>Servizi</label><div id="servicesGrid" class="services-grid"></div></div>
@@ -563,8 +568,8 @@ const DEFAULT_USERS={
 };
 
 let USERS = {};
-let DEALERS = JSON.parse(localStorage.getItem('vh_dealers') || '[]');
-let editingDealer = null;
+let DEALERS = JSON.parse(localStorage.getItem("vh_dealers") || "[]");
+let editingDealerIndex = null;
 let allItems=[],services=[],selected=null,editingId=null,currentUser=null,currentPage='today',formDirty=false;
 
 function showToast(message){
@@ -579,6 +584,102 @@ function loadUsers(){
   localStorage.setItem("vh_booking_users", JSON.stringify(USERS));
 }
 function saveUsers(){ localStorage.setItem("vh_booking_users", JSON.stringify(USERS)); renderUsersList(); }
+
+function isDealerBookingValue(value){
+  const v = String(value || "").trim().toLowerCase();
+  return !!v && v !== "-" && v !== "no";
+}
+function isDealerBooking(item){
+  return isDealerBookingValue(item?.concessionaria);
+}
+function saveDealers(){
+  localStorage.setItem("vh_dealers", JSON.stringify(DEALERS));
+  renderDealerSelect();
+  renderDealerAdminList();
+}
+function renderDealerSelect(selectedName=""){
+  const select = document.getElementById("f-dealer-name");
+  if(!select) return;
+  select.innerHTML = "";
+  if(!DEALERS.length){
+    const opt = document.createElement("option");
+    opt.value = "";
+    opt.textContent = "Nessuna concessionaria";
+    select.appendChild(opt);
+  } else {
+    DEALERS.forEach((d) => {
+      const opt = document.createElement("option");
+      opt.value = d.name;
+      opt.textContent = d.name;
+      if (selectedName && d.name === selectedName) opt.selected = true;
+      select.appendChild(opt);
+    });
+  }
+}
+function toggleDealerSelect(forceValue=null, selectedDealer=""){
+  const val = forceValue || document.getElementById("f-concessionaria")?.value || "No";
+  const wrap = document.getElementById("dealerSelectWrap");
+  if(!wrap) return;
+  if(val === "Si"){
+    wrap.style.display = "block";
+    renderDealerSelect(selectedDealer);
+  } else {
+    wrap.style.display = "none";
+  }
+}
+function saveDealer(){
+  const name = document.getElementById("d-name").value.trim();
+  const email = document.getElementById("d-email").value.trim();
+  const phone = document.getElementById("d-phone").value.trim();
+  if(!name){
+    showToast("Inserisci nome concessionaria");
+    return;
+  }
+  const dealer = {name, email, phone};
+  if(editingDealerIndex !== null){
+    DEALERS[editingDealerIndex] = dealer;
+  } else {
+    DEALERS.push(dealer);
+  }
+  clearDealerForm();
+  saveDealers();
+  showToast("Concessionaria salvata");
+}
+function editDealer(index){
+  const d = DEALERS[index];
+  if(!d) return;
+  document.getElementById("d-name").value = d.name || "";
+  document.getElementById("d-email").value = d.email || "";
+  document.getElementById("d-phone").value = d.phone || "";
+  editingDealerIndex = index;
+}
+function deleteDealer(index){
+  if(!confirm("Eliminare concessionaria?")) return;
+  DEALERS.splice(index, 1);
+  saveDealers();
+  showToast("Concessionaria eliminata");
+}
+function clearDealerForm(){
+  document.getElementById("d-name").value = "";
+  document.getElementById("d-email").value = "";
+  document.getElementById("d-phone").value = "";
+  editingDealerIndex = null;
+}
+function renderDealerAdminList(){
+  const box = document.getElementById("dealerListAdmin");
+  if(!box) return;
+  box.innerHTML = "";
+  if(!DEALERS.length){
+    box.innerHTML = '<div class="note-box" style="margin-top:12px">Nessuna concessionaria configurata.</div>';
+    return;
+  }
+  DEALERS.forEach((d, index) => {
+    const row = document.createElement("div");
+    row.className = "income-item";
+    row.innerHTML = `<div><div style="font-weight:800">${d.name}</div><div class="muted" style="font-size:13px">${d.email || "-"} • ${d.phone || "-"}</div></div><div style="display:flex;gap:8px"><button class="btn-secondary" onclick="editDealer(${index})">Modifica</button><button class="btn-danger" onclick="deleteDealer(${index})">Elimina</button></div>`;
+    box.appendChild(row);
+  });
+}
 
 function badgeClass(s){if(s==="Prenotata")return"b-prenotata";if(s==="In lavaggio")return"b-lavorazione";if(s==="Lavata")return"b-lavata";if(s==="No-show")return"b-noshow";return"b-consegnata";}
 function formatEuro(v){return "€ "+Number(v||0).toFixed(2).replace(".",",");}
@@ -621,36 +722,21 @@ function isSameDayDisplay(display, refDate){
 function bustUrl(url){
   return url + (url.includes("?") ? "&" : "?") + "_=" + Date.now();
 }
-function getSelectValue(field){
-  if(field == null) return "";
-  if(typeof field === "string") return field;
-  if(typeof field === "object") return field.value || field.name || field.label || "";
-  return "";
-}
-function normalizeDealerValue(value){
-  const v = String(value || "").trim();
-  if(!v || v === "-" || v.toLowerCase() === "no") return "";
-  if(v.toLowerCase() === "si" || v.toLowerCase() === "sì") return "Concessionaria";
-  return v;
-}
-function isDealerBooking(item){
-  return !!String(item?.concessionaria || "").trim();
-}
 function mapRow(r){
   const createdBy = r["Inserito da"] || r.Inserito_da || r["Inserito_da"] || r.Operatore || "";
   return{
     id:r.id,
     modello:r.Modello||"-",
-    stato:getSelectValue(r.Stato)||"-",
+    stato:r.Stato?.value||"-",
     rawArrivo:r.Arrivo || null,
     rawConsegna:r.Consegna || null,
     arrivo:formatDateTime(r.Arrivo),
     consegna:formatDateTime(r.Consegna),
-    servizi:Array.isArray(r.Servizi)?r.Servizi.map(s=>({id:s.id,value:getSelectValue(s)})):[],
+    servizi:Array.isArray(r.Servizi)?r.Servizi.map(s=>({id:s.id,value:s.value})):[],
     telefono:r.Telefono||"-",
     extra:Number(r.Extra||0),
     sconto:Number(r.Sconto||0),
-    concessionaria:normalizeDealerValue(getSelectValue(r.Concessionaria)),
+    concessionaria:r.Concessionaria?.value||"-",
     totale:Number(r.Totale_riga||0),
     note:r.Note||"",
     createdBy:(typeof createdBy === "string" ? createdBy : (createdBy?.value || "")) || "-"
@@ -942,7 +1028,7 @@ function renderDealerGrouped(items){
   // raggruppa per cliente concessionaria
   const groups = {};
   items.forEach(i=>{
-    const key = i.cliente_concessionaria || i.concessionaria || "Altro";
+    const key = i.concessionaria || "Altro";
     if(!groups[key]) groups[key] = [];
     groups[key].push(i);
   });
@@ -1120,7 +1206,7 @@ function setPage(page, el){
   document.querySelectorAll(".bottomnav div[data-bnav]").forEach(x=>x.classList.remove("active"));
   const activeBottom=document.querySelector(`.bottomnav div[data-bnav="${page}"]`);
   if(activeBottom) activeBottom.classList.add("active");
-  if(page==="adminpanel"){ renderUsersList(); renderDealerAdminList(); }
+  if(page==="adminpanel") renderUsersList();
   if(page==="statistiche") render();
 }
 
@@ -1186,8 +1272,8 @@ function clearForm(){
   document.getElementById("formTitle").textContent="Nuova prenotazione";
   ["f-modello","f-arrivo-date","f-arrivo-time","f-consegna-date","f-consegna-time","f-telefono","f-note"].forEach(id=>document.getElementById(id).value="");
   document.getElementById("f-stato").value="Prenotata";
-  renderDealerSelect();
-  document.getElementById("f-concessionaria").value="";
+  document.getElementById("f-concessionaria").value="No";
+  toggleDealerSelect("No");
   document.getElementById("f-extra").value=0;
   document.getElementById("f-sconto").value=0;
   renderServicesGrid([]);
@@ -1223,8 +1309,10 @@ function openEditModal(){
   document.getElementById("f-consegna-date").value=consegnaParts.date;
   document.getElementById("f-consegna-time").value=consegnaParts.time;
   document.getElementById("f-telefono").value=selected.telefono==="-"?"":selected.telefono;
-  renderDealerSelect();
-  document.getElementById("f-concessionaria").value=(selected.concessionaria && selected.concessionaria!=="-" ? selected.concessionaria : "");
+  const dealerValue = selected.concessionaria && selected.concessionaria !== "-" ? selected.concessionaria : "No";
+  const isDealer = isDealerBookingValue(dealerValue);
+  document.getElementById("f-concessionaria").value = isDealer ? "Si" : "No";
+  toggleDealerSelect(isDealer ? "Si" : "No", isDealer ? dealerValue : "");
   document.getElementById("f-extra").value=selected.extra||0;
   document.getElementById("f-sconto").value=selected.sconto||0;
   document.getElementById("f-note").value=selected.note||"";
@@ -1263,11 +1351,15 @@ async function saveForm(){
     servizi:selectedServiceIds(),
     extra:Number(document.getElementById("f-extra").value||0),
     sconto:Number(document.getElementById("f-sconto").value||0),
-    concessionaria:document.getElementById("f-concessionaria").value,
+    concessionaria:document.getElementById("f-concessionaria").value === "Si" ? document.getElementById("f-dealer-name").value : "No",
     telefono:document.getElementById("f-telefono").value.trim(),
     note:document.getElementById("f-note").value.trim(),
     inserito_da:(isEdit && selected ? selected.createdBy : currentUser.label)
   };
+  if(document.getElementById("f-concessionaria").value === "Si" && !document.getElementById("f-dealer-name").value){
+    alert("Seleziona la concessionaria.");
+    return;
+  }
   if(!payload.modello||!payload.arrivo||!payload.servizi.length){alert("Compila almeno modello, arrivo e un servizio.");return;}
   const endpoint=isEdit?UPDATE_ENDPOINT:CREATE_ENDPOINT;
   const body=isEdit?{id:editingId,...payload}:payload;
@@ -1347,78 +1439,8 @@ async function testNotification(){
   showToast("Test notifica inviato");
 }
 
-
-function saveDealers(){
-  localStorage.setItem("vh_dealers", JSON.stringify(DEALERS));
-  renderDealerSelect();
-  renderDealerAdminList();
-}
-function renderDealerSelect(){
-  const select=document.getElementById("f-concessionaria");
-  if(!select) return;
-  const current = select.value;
-  select.innerHTML = '<option value="">Privato</option>';
-  DEALERS.forEach((dealer,index)=>{
-    const option=document.createElement("option");
-    option.value=dealer.name;
-    option.textContent=dealer.name;
-    select.appendChild(option);
-  });
-  if(Array.from(select.options).some(o=>o.value===current)) select.value=current;
-}
-function saveDealer(){
-  const name=document.getElementById("d-name").value.trim();
-  const email=document.getElementById("d-email").value.trim();
-  const phone=document.getElementById("d-phone").value.trim();
-  if(!name){ alert("Inserisci nome concessionaria"); return; }
-  const payload={name,email,phone};
-  if(editingDealer!==null){
-    DEALERS[editingDealer]=payload;
-  } else {
-    DEALERS.push(payload);
-  }
-  clearDealerForm();
-  saveDealers();
-  showToast("Concessionaria salvata");
-}
-function clearDealerForm(){
-  document.getElementById("d-name").value="";
-  document.getElementById("d-email").value="";
-  document.getElementById("d-phone").value="";
-  editingDealer=null;
-}
-function editDealer(index){
-  const dealer=DEALERS[index];
-  if(!dealer) return;
-  editingDealer=index;
-  document.getElementById("d-name").value=dealer.name || "";
-  document.getElementById("d-email").value=dealer.email || "";
-  document.getElementById("d-phone").value=dealer.phone || "";
-}
-function deleteDealer(index){
-  if(!confirm("Eliminare concessionaria?")) return;
-  DEALERS.splice(index,1);
-  saveDealers();
-  showToast("Concessionaria eliminata");
-}
-function renderDealerAdminList(){
-  const box=document.getElementById("dealerListAdmin");
-  if(!box) return;
-  box.innerHTML="";
-  if(!DEALERS.length){
-    box.innerHTML='<div class="muted">Nessuna concessionaria configurata.</div>';
-    return;
-  }
-  DEALERS.forEach((dealer,index)=>{
-    const row=document.createElement("div");
-    row.className="income-item";
-    row.innerHTML=`<div><div style="font-weight:800">${dealer.name}</div><div class="muted" style="font-size:13px">${dealer.email || "-"} • ${dealer.phone || "-"}</div></div><div style="display:flex;gap:8px"><button class="btn-secondary" onclick="editDealer(${index})">Modifica</button><button class="btn-danger" onclick="deleteDealer(${index})">Elimina</button></div>`;
-    box.appendChild(row);
-  });
-}
-
 ["f-extra","f-sconto"].forEach(id=>{const el=document.getElementById(id); if(el) el.addEventListener("input", ()=>{formDirty=true; updateFormSummary();});});
-["f-modello","f-arrivo-date","f-arrivo-time","f-consegna-date","f-consegna-time","f-telefono","f-note","f-stato","f-concessionaria"].forEach(id=>{const el=document.getElementById(id); if(el) el.addEventListener("input", ()=>{formDirty=true; if(id==="f-telefono") checkCustomer();}); if(el) el.addEventListener("change", ()=>{formDirty=true; if(id==="f-telefono") checkCustomer();});});
+["f-modello","f-arrivo-date","f-arrivo-time","f-consegna-date","f-consegna-time","f-telefono","f-note","f-stato","f-concessionaria","f-dealer-name"].forEach(id=>{const el=document.getElementById(id); if(el) el.addEventListener("input", ()=>{formDirty=true; if(id==="f-telefono") checkCustomer();}); if(el) el.addEventListener("change", ()=>{formDirty=true; if(id==="f-telefono") checkCustomer();});});
 document.addEventListener("change", (e)=>{ if(e.target && e.target.closest("#servicesGrid")) formDirty=true; });
 
 loadUsers();
@@ -1426,6 +1448,7 @@ restoreLogin();
 restoreNotifySettings();
 renderDealerSelect();
 renderDealerAdminList();
+toggleDealerSelect("No");
 setInterval(()=>{if(currentUser){loadBookings().catch(console.error);}},15000);
 document.getElementById("incomeDateFilter").value = new Date().toISOString().slice(0,10);
 document.getElementById("dealerDateFilter").value = "";
