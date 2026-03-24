@@ -218,15 +218,15 @@
     .calendar-toolbar{display:flex;align-items:center;justify-content:space-between;gap:10px;flex-wrap:wrap;margin-bottom:10px}
     .calendar-toolbar-left,.calendar-toolbar-right{display:flex;align-items:center;gap:8px;flex-wrap:wrap}
     .calendar-date-title{font-size:18px;font-weight:800}
-    .calendar-board{background:#11161d;border:1px solid #222833;border-radius:20px;overflow:hidden}
+    .calendar-board{background:#11161d;border:1px solid #222833;border-radius:20px;overflow:auto;-webkit-overflow-scrolling:touch}
     .calendar-head{display:grid;grid-template-columns:72px 1fr;align-items:center;border-bottom:1px solid #202733;background:#0f141b}
     .calendar-head-time{padding:14px 12px;color:var(--muted);font-size:12px;text-transform:uppercase;letter-spacing:.08em}
     .calendar-head-day{padding:14px 12px;font-weight:700}
-    .calendar-grid{position:relative;height:1248px;overflow:hidden;background:
+    .calendar-grid{position:relative;height:1248px;overflow:visible;min-width:100%;background:
       linear-gradient(to bottom, transparent 51px, #1f2631 52px),
       linear-gradient(to bottom, transparent 103px, #1a2029 104px);
       background-size:100% 52px}
-    .calendar-hour-labels{position:absolute;inset:0 auto 0 0;width:72px;border-right:1px solid #202733;background:#0f141b}
+    .calendar-hour-labels{position:sticky;left:0;inset:0 auto 0 0;width:72px;border-right:1px solid #202733;background:#0f141b;z-index:4}
     .calendar-hour{height:52px;padding:6px 10px;color:#7f8aa0;font-size:12px}
     .calendar-events{position:absolute;left:72px;right:0;top:0;bottom:0}
     .calendar-now-line{position:absolute;left:0;right:0;height:2px;background:#46b4ff;box-shadow:0 0 0 1px rgba(70,180,255,.15);z-index:3}
@@ -312,6 +312,35 @@
         right:12px !important;
         width:auto !important;
         bottom:12px !important;
+      }
+    }
+
+
+    .calendar-scroll-hint{
+      display:none;
+      font-size:12px;
+      color:var(--muted);
+      margin-top:8px;
+      text-align:right;
+    }
+    @media (max-width:860px){
+      .calendar-event{
+        padding:10px 10px;
+        border-radius:18px;
+      }
+      .calendar-event .event-time{
+        font-size:11px;
+        margin-bottom:4px;
+      }
+      .calendar-event .event-title{
+        font-size:13px;
+      }
+      .calendar-event .event-sub{
+        font-size:11px;
+        margin-top:4px;
+      }
+      .calendar-scroll-hint.show{
+        display:block;
       }
     }
 
@@ -416,6 +445,7 @@
             <div class="calendar-events" id="calendarEvents"></div>
           </div>
         </div>
+        <div class="calendar-scroll-hint" id="calendarScrollHint">Scorri orizzontalmente per vedere tutte le prenotazioni</div>
         <div class="calendar-empty" id="calendarEmpty" style="display:none">Nessuna prenotazione nel giorno selezionato.</div>
       </div>
     </div>
@@ -1639,6 +1669,7 @@ function renderCalendarNowLine(){
   eventsBox.appendChild(line);
 }
 
+
 function renderCalendar(){
   buildCalendarHours();
   const title = document.getElementById("calendarDateTitle");
@@ -1646,7 +1677,10 @@ function renderCalendar(){
   const input = document.getElementById("calendarDateFilter");
   const eventsBox = document.getElementById("calendarEvents");
   const empty = document.getElementById("calendarEmpty");
-  if(!title || !head || !input || !eventsBox || !empty) return;
+  const grid = document.getElementById("calendarGrid");
+  const board = document.querySelector(".calendar-board");
+  const hint = document.getElementById("calendarScrollHint");
+  if(!title || !head || !input || !eventsBox || !empty || !grid || !board) return;
 
   input.value = formatCalendarInputDate(calendarDate);
   const label = calendarDate.toLocaleDateString("it-IT",{weekday:"long", day:"2-digit", month:"long", year:"numeric"});
@@ -1666,8 +1700,8 @@ function renderCalendar(){
 
   empty.style.display = items.length ? "none" : "block";
 
-  // assegna colonna libera più a sinistra per eventi sovrapposti
   const active = [];
+  let globalMaxCol = 0;
   for (const ev of items) {
     for (let i = active.length - 1; i >= 0; i--) {
       if (active[i].endMin <= ev.startMin) active.splice(i, 1);
@@ -1677,9 +1711,9 @@ function renderCalendar(){
     while (usedCols.has(col)) col++;
     ev.col = col;
     active.push(ev);
+    if (col > globalMaxCol) globalMaxCol = col;
   }
 
-  // cluster di sovrapposizione per larghezze coerenti
   const clusters = [];
   let current = null;
   for (const ev of items) {
@@ -1698,13 +1732,22 @@ function renderCalendar(){
   }
   if (current) clusters.push(current);
 
+  const mobile = window.innerWidth <= 860;
+  const minColWidth = mobile ? 140 : 150;
   const sideGap = 10;
   const colGap = 8;
+  const hoursWidth = 72;
+  const visibleEventsWidth = Math.max(board.clientWidth - hoursWidth, mobile ? 300 : 420);
+  const neededEventsWidth = Math.max(visibleEventsWidth, (globalMaxCol + 1) * minColWidth + Math.max(0, globalMaxCol) * colGap + sideGap*2);
+
+  grid.style.minWidth = `${hoursWidth + neededEventsWidth}px`;
+  eventsBox.style.width = `${neededEventsWidth}px`;
+  hint?.classList.toggle("show", mobile && neededEventsWidth > visibleEventsWidth + 20);
 
   clusters.forEach(cluster=>{
     const columns = cluster.maxCol + 1;
-    const totalWidth = eventsBox.clientWidth - sideGap*2;
-    const cardWidth = Math.max((totalWidth - (columns - 1)*colGap) / columns, 88);
+    const clusterWidth = Math.max(visibleEventsWidth, columns * minColWidth + Math.max(0, columns - 1) * colGap + sideGap*2);
+    const cardWidth = Math.max((clusterWidth - sideGap*2 - (columns - 1)*colGap) / columns, minColWidth);
 
     cluster.events.forEach(ev=>{
       const top = (ev.startMin/60)*52;
@@ -1733,6 +1776,7 @@ function renderCalendar(){
 
   renderCalendarNowLine();
 }
+
 
 function shiftCalendarDay(delta){
   calendarDate.setDate(calendarDate.getDate() + delta);
