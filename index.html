@@ -35,7 +35,7 @@
     .phone-wrap{display:grid;place-items:center;padding:18px;min-height:760px}
     .phone{width:100%;max-width:430px;height:820px;background:#090b10;border-radius:42px;border:10px solid #111319;box-shadow:0 30px 70px rgba(0,0,0,.5);overflow:visible;position:relative}
         .statusbar{height:26px}
-    .screen{padding:10px 14px 140px;height:calc(100% - 26px);overflow:auto;position:relative;z-index:1}
+    .screen{padding:10px 14px 140px;height:calc(100% - 26px);overflow:hidden;position:relative;z-index:1}
     .topbar{display:flex;justify-content:space-between;align-items:center;margin-top:8px;margin-bottom:14px;gap:10px}
     .topbar-right{display:flex;gap:8px;align-items:center}
     .title{font-size:18px;font-weight:700}
@@ -197,7 +197,7 @@
       .sidebar,.detail{display:none}
       .phone-wrap{padding:0;background:none;border:none;box-shadow:none;min-height:100vh}
       .phone{height:100vh;border-radius:0;border:none;max-width:none;width:100%}
-      .screen{padding:14px 14px 126px}
+      .screen{padding:14px 14px 126px;overflow:hidden}
       .model{font-size:18px}
       .form-grid,.services-grid,.grid,.stats-grid{grid-template-columns:1fr}
       .filter-row{grid-template-columns:1fr !important;gap:10px}
@@ -214,11 +214,11 @@
 .card.noshow{background:linear-gradient(135deg, rgba(239,68,68,0.15), rgba(127,29,29,0.05))}
 
 
-    .calendar-shell{display:flex;flex-direction:column;gap:12px}
-    .calendar-toolbar{display:flex;align-items:center;justify-content:space-between;gap:10px;flex-wrap:wrap;margin-bottom:10px}
+    .calendar-shell{display:flex;flex-direction:column;gap:12px;height:100%}
+    .calendar-toolbar{display:flex;align-items:center;justify-content:space-between;gap:10px;flex-wrap:wrap;margin-bottom:10px;flex:0 0 auto}
     .calendar-toolbar-left,.calendar-toolbar-right{display:flex;align-items:center;gap:8px;flex-wrap:wrap}
     .calendar-date-title{font-size:18px;font-weight:800}
-    .calendar-board{background:#11161d;border:1px solid #222833;border-radius:20px;overflow:auto;-webkit-overflow-scrolling:touch}
+    .calendar-board{background:#11161d;border:1px solid #222833;border-radius:20px;overflow:auto;-webkit-overflow-scrolling:touch;flex:1;min-height:0;touch-action:pan-x pan-y}
     .calendar-head{display:grid;grid-template-columns:72px 1fr;align-items:center;border-bottom:1px solid #202733;background:#0f141b}
     .calendar-head-time{padding:14px 12px;color:var(--muted);font-size:12px;text-transform:uppercase;letter-spacing:.08em}
     .calendar-head-day{padding:14px 12px;font-weight:700}
@@ -341,6 +341,31 @@
       }
       .calendar-scroll-hint.show{
         display:block;
+      }
+    }
+
+
+    body.calendar-page .screen{
+      overflow:hidden;
+    }
+    body.calendar-page #page-calendar{
+      display:flex;
+      flex-direction:column;
+      height:100%;
+      min-height:0;
+    }
+    body.calendar-page .calendar-shell{
+      flex:1;
+      min-height:0;
+    }
+    body.calendar-page .calendar-board{
+      flex:1;
+      min-height:0;
+      max-height:calc(100vh - 280px);
+    }
+    @media (max-width:860px){
+      body.calendar-page .calendar-board{
+        max-height:calc(100vh - 290px);
       }
     }
 
@@ -1361,6 +1386,7 @@ function setPage(page, el){
   if(page==="all"&&currentUser?.role!=="admin") return;
   if(page==="adminpanel"&&currentUser?.role!=="admin") return;
   currentPage=page;
+  document.body.classList.toggle("calendar-page", page==="calendar");
   const titles={today:"Prenotazioni",future:"Prossime",calendar:"Calendario",incassi:"Incassi",all:"Tutte le prenotazioni",concessionaria:"Concessionaria",statistiche:"Statistiche",adminpanel:"Pannello Admin"};
   document.getElementById("screenTitle").textContent=titles[page]||"Prenotazioni";
   ["today","future","calendar","incassi","all","concessionaria","statistiche","adminpanel"].forEach(p=>document.getElementById("page-"+p).style.display=p===page?"block":"none");
