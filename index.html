@@ -395,6 +395,48 @@
       }
     }
 
+
+    body.calendar-page,
+    body.calendar-page html{
+      overflow:hidden !important;
+      height:100% !important;
+    }
+    body.calendar-page .screen{
+      overflow:hidden !important;
+      overscroll-behavior:none !important;
+      -webkit-overflow-scrolling:auto !important;
+      touch-action:none !important;
+    }
+    body.calendar-page #page-calendar{
+      display:flex !important;
+      flex-direction:column !important;
+      height:calc(100dvh - 210px) !important;
+      min-height:0 !important;
+      overflow:hidden !important;
+    }
+    body.calendar-page .calendar-shell{
+      display:flex !important;
+      flex-direction:column !important;
+      flex:1 1 auto !important;
+      min-height:0 !important;
+      overflow:hidden !important;
+    }
+    body.calendar-page .calendar-board{
+      flex:1 1 auto !important;
+      min-height:0 !important;
+      height:100% !important;
+      max-height:none !important;
+      overflow:auto !important;
+      overscroll-behavior:contain !important;
+      -webkit-overflow-scrolling:touch !important;
+      touch-action:pan-x pan-y !important;
+    }
+    @media (max-width:860px){
+      body.calendar-page #page-calendar{
+        height:calc(100dvh - 250px) !important;
+      }
+    }
+
 </style>
 </head>
 <body>
@@ -1408,14 +1450,38 @@ function setFuturePreset(mode){
 }
 
 
+
+function closestCalendarScrollable(el){
+  return el && el.closest ? el.closest('.calendar-board') : null;
+}
+function applyCalendarPageLock(){
+  document.body.classList.toggle('calendar-page', currentPage === 'calendar');
+}
+document.addEventListener('touchmove', function(e){
+  if(currentPage !== 'calendar') return;
+  if(!closestCalendarScrollable(e.target)){
+    e.preventDefault();
+  }
+}, {passive:false});
+
+document.addEventListener('wheel', function(e){
+  if(currentPage !== 'calendar') return;
+  if(!closestCalendarScrollable(e.target)){
+    e.preventDefault();
+  }
+}, {passive:false});
+
 function applyCalendarScrollMode(){
   const screen = document.querySelector('.screen');
   if(!screen) return;
   if(currentPage === 'calendar'){
     screen.style.overflow = 'hidden';
+    screen.style.touchAction = 'none';
   } else {
     screen.style.overflow = 'auto';
+    screen.style.touchAction = 'auto';
   }
+  applyCalendarPageLock();
 }
 
 function setPage(page, el){
@@ -1423,7 +1489,7 @@ function setPage(page, el){
   if(page==="all"&&currentUser?.role!=="admin") return;
   if(page==="adminpanel"&&currentUser?.role!=="admin") return;
   currentPage=page;
-  document.body.classList.toggle("calendar-page", page==="calendar");
+  
   const titles={today:"Prenotazioni",future:"Prossime",calendar:"Calendario",incassi:"Incassi",all:"Tutte le prenotazioni",concessionaria:"Concessionaria",statistiche:"Statistiche",adminpanel:"Pannello Admin"};
   document.getElementById("screenTitle").textContent=titles[page]||"Prenotazioni";
   ["today","future","calendar","incassi","all","concessionaria","statistiche","adminpanel"].forEach(p=>document.getElementById("page-"+p).style.display=p===page?"block":"none");
