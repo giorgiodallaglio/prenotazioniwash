@@ -2,7 +2,7 @@
 <html lang="it">
 <head>
   <meta charset="UTF-8" />
-  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no" />
   <title>Prenotazioni Lavaggio - VisionHome</title>
   <style>
     :root{
@@ -33,9 +33,9 @@
     .chip{background:#1b2330;border:1px solid #2a364a;color:#b9d7ff}
     .role-chip{margin-top:10px;background:#141c27;border:1px solid #2a364a;color:#d8e8ff}
     .phone-wrap{display:grid;place-items:center;padding:18px;min-height:760px}
-    .phone{width:100%;max-width:430px;height:820px;background:#090b10;border-radius:42px;border:10px solid #111319;box-shadow:0 30px 70px rgba(0,0,0,.5);overflow:hidden;position:relative}
+    .phone{width:100%;max-width:430px;height:820px;background:#090b10;border-radius:42px;border:10px solid #111319;box-shadow:0 30px 70px rgba(0,0,0,.5);overflow:visible;position:relative}
         .statusbar{height:26px}
-    .screen{padding:10px 14px 92px;height:calc(100% - 26px);overflow:auto}
+    .screen{padding:10px 14px 140px;height:calc(100% - 26px);overflow:auto;position:relative;z-index:1}
     .topbar{display:flex;justify-content:space-between;align-items:center;margin-top:8px;margin-bottom:14px;gap:10px}
     .topbar-right{display:flex;gap:8px;align-items:center}
     .title{font-size:18px;font-weight:700}
@@ -73,9 +73,9 @@
     .actions button,.sheet-actions button{border:none;border-radius:14px;padding:12px;font-weight:800;cursor:pointer;color:#fff}
     .a-blue{background:#258cff}.a-green{background:#25c06d}.a-yellow{background:#d79a2e}.a-gray{background:#5e6678}.a-red{background:#d15050}
     .total{display:flex;justify-content:space-between;align-items:center;padding:14px 16px;background:#10141a;border:1px solid #222833;border-radius:16px;margin-top:12px}
-    .bottomnav{position:absolute;left:0;right:0;bottom:0;background:rgba(17,20,25,.96);border-top:1px solid #232833;display:flex;justify-content:space-around;padding:10px 0 18px}
-    .bottomnav div{font-size:12px;color:#8fa7c3;text-align:center;cursor:pointer}
-    .bottomnav .active{color:#4eb2ff}
+    .bottomnav{position:fixed;left:calc(50% - 203px);right:auto;bottom:18px;width:406px;background:rgba(28,34,44,.72);border:1px solid rgba(255,255,255,.10);box-shadow:0 12px 40px rgba(0,0,0,.28), inset 0 1px 0 rgba(255,255,255,.06);backdrop-filter:blur(18px) saturate(140%);-webkit-backdrop-filter:blur(18px) saturate(140%);display:flex;justify-content:space-around;padding:10px 8px 14px;border-radius:24px;z-index:9999}
+    .bottomnav div{font-size:12px;color:#b8c8df;text-align:center;cursor:pointer;min-width:72px;padding:6px 8px;border-radius:16px;transition:background .18s ease,color .18s ease,transform .18s ease}
+    .bottomnav .active{color:#ffffff;background:rgba(255,255,255,.10);box-shadow:inset 0 1px 0 rgba(255,255,255,.06)}
     .income-card{background:linear-gradient(180deg,#10141a,#0e1218);border:1px solid #222833;border-radius:20px;padding:20px}
     .income-big{font-size:42px;font-weight:900;margin:6px 0 4px}
     .income-list{margin-top:14px;display:flex;flex-direction:column;gap:10px}
@@ -122,18 +122,19 @@
       position:absolute;
       left:12px;
       right:12px;
-      bottom:82px;
-      background:rgba(18,22,29,.98);
-      border:1px solid #273041;
+      bottom:88px;
+      background:rgba(28,34,44,.62);
+      border:1px solid rgba(255,255,255,.10);
       border-radius:24px 24px 20px 20px;
       padding:10px 10px 12px;
-      box-shadow:0 20px 50px rgba(0,0,0,.35);
+      box-shadow:0 20px 50px rgba(0,0,0,.35), inset 0 1px 0 rgba(255,255,255,.06);
       z-index:50;
       transform:translateY(18px);
       opacity:0;
       pointer-events:none;
       transition:transform .2s ease, opacity .2s ease;
-      backdrop-filter:blur(10px);
+      backdrop-filter:blur(18px) saturate(140%);
+      -webkit-backdrop-filter:blur(18px) saturate(140%);
     }
     .mobile-sheet.show{
       transform:translateY(0);
@@ -156,14 +157,16 @@
     .mobile-sheet button{
       width:100%;
       text-align:left;
-      background:#151c25;
+      background:rgba(255,255,255,.06);
       color:#eef2fb;
-      border:1px solid #273041;
+      border:1px solid rgba(255,255,255,.08);
       border-radius:14px;
       padding:14px 14px;
       margin-bottom:8px;
       cursor:pointer;
       font-weight:700;
+      backdrop-filter:blur(8px);
+      -webkit-backdrop-filter:blur(8px);
     }
     .mobile-sheet button:last-child{margin-bottom:0}
 
@@ -194,7 +197,7 @@
       .sidebar,.detail{display:none}
       .phone-wrap{padding:0;background:none;border:none;box-shadow:none;min-height:100vh}
       .phone{height:100vh;border-radius:0;border:none;max-width:none;width:100%}
-      .screen{padding:14px 14px 96px}
+      .screen{padding:14px 14px 126px}
       .model{font-size:18px}
       .form-grid,.services-grid,.grid,.stats-grid{grid-template-columns:1fr}
       .filter-row{grid-template-columns:1fr !important;gap:10px}
@@ -209,6 +212,108 @@
 .card.lavata{background:linear-gradient(135deg, rgba(34,197,94,0.15), rgba(22,101,52,0.05))}
 .card.consegnata{background:linear-gradient(135deg, rgba(148,163,184,0.12), rgba(71,85,105,0.05))}
 .card.noshow{background:linear-gradient(135deg, rgba(239,68,68,0.15), rgba(127,29,29,0.05))}
+
+
+    .calendar-shell{display:flex;flex-direction:column;gap:12px}
+    .calendar-toolbar{display:flex;align-items:center;justify-content:space-between;gap:10px;flex-wrap:wrap;margin-bottom:10px}
+    .calendar-toolbar-left,.calendar-toolbar-right{display:flex;align-items:center;gap:8px;flex-wrap:wrap}
+    .calendar-date-title{font-size:18px;font-weight:800}
+    .calendar-board{background:#11161d;border:1px solid #222833;border-radius:20px;overflow:hidden}
+    .calendar-head{display:grid;grid-template-columns:72px 1fr;align-items:center;border-bottom:1px solid #202733;background:#0f141b}
+    .calendar-head-time{padding:14px 12px;color:var(--muted);font-size:12px;text-transform:uppercase;letter-spacing:.08em}
+    .calendar-head-day{padding:14px 12px;font-weight:700}
+    .calendar-grid{position:relative;height:1248px;overflow:hidden;background:
+      linear-gradient(to bottom, transparent 51px, #1f2631 52px),
+      linear-gradient(to bottom, transparent 103px, #1a2029 104px);
+      background-size:100% 52px}
+    .calendar-hour-labels{position:absolute;inset:0 auto 0 0;width:72px;border-right:1px solid #202733;background:#0f141b}
+    .calendar-hour{height:52px;padding:6px 10px;color:#7f8aa0;font-size:12px}
+    .calendar-events{position:absolute;left:72px;right:0;top:0;bottom:0}
+    .calendar-now-line{position:absolute;left:0;right:0;height:2px;background:#46b4ff;box-shadow:0 0 0 1px rgba(70,180,255,.15);z-index:3}
+    .calendar-event{position:absolute;border-radius:20px;padding:12px 14px;border:1px solid rgba(255,255,255,.14);cursor:pointer;overflow:hidden;z-index:2;background:rgba(255,255,255,.07);box-shadow:inset 0 1px 0 rgba(255,255,255,.10), 0 10px 28px rgba(0,0,0,.22);backdrop-filter:blur(14px) saturate(145%);-webkit-backdrop-filter:blur(14px) saturate(145%);transition:transform .18s ease, box-shadow .18s ease, border-color .18s ease}
+    .calendar-event .event-time{font-size:12px;opacity:.9;margin-bottom:4px;font-weight:700}
+    .calendar-event .event-title{font-size:14px;font-weight:800;line-height:1.2}
+    .calendar-event .event-sub{font-size:12px;opacity:.92;margin-top:4px}
+    .calendar-empty{padding:18px;border-radius:18px;background:#11161d;border:1px solid #222833;color:#cfd8ea}
+
+
+    html, body{
+      touch-action: manipulation;
+      -webkit-text-size-adjust: 100%;
+      overscroll-behavior: none;
+    }
+    input, select, textarea, button{
+      font-size:16px;
+    }
+
+
+    .calendar-event:hover{
+      transform:translateY(-1px);
+      box-shadow:inset 0 1px 0 rgba(255,255,255,.12), 0 14px 32px rgba(0,0,0,.26);
+    }
+    .calendar-event .event-time{
+      font-size:12px;
+      opacity:.95;
+      margin-bottom:6px;
+      font-weight:700;
+      letter-spacing:.01em;
+    }
+    .calendar-event .event-title{
+      font-size:15px;
+      font-weight:800;
+      line-height:1.15;
+      text-shadow:0 1px 0 rgba(0,0,0,.16);
+    }
+    .calendar-event .event-sub{
+      font-size:12px;
+      opacity:.95;
+      margin-top:6px;
+      line-height:1.2;
+    }
+    .calendar-event.b-prenotata{
+      background:linear-gradient(180deg, rgba(255,196,74,.18), rgba(255,196,74,.09));
+      border-color:rgba(255,214,124,.26);
+      box-shadow:inset 0 1px 0 rgba(255,235,185,.18), 0 0 0 1px rgba(255,196,74,.05), 0 10px 28px rgba(0,0,0,.20), 0 0 26px rgba(255,196,74,.12);
+    }
+    .calendar-event.b-lavorazione{
+      background:linear-gradient(180deg, rgba(70,180,255,.18), rgba(70,180,255,.08));
+      border-color:rgba(145,203,255,.24);
+      box-shadow:inset 0 1px 0 rgba(210,236,255,.14), 0 0 0 1px rgba(70,180,255,.05), 0 10px 28px rgba(0,0,0,.20), 0 0 28px rgba(70,180,255,.14);
+    }
+    .calendar-event.b-lavata{
+      background:linear-gradient(180deg, rgba(37,192,109,.18), rgba(37,192,109,.08));
+      border-color:rgba(133,240,184,.24);
+      box-shadow:inset 0 1px 0 rgba(212,255,228,.14), 0 0 0 1px rgba(37,192,109,.05), 0 10px 28px rgba(0,0,0,.20), 0 0 28px rgba(37,192,109,.14);
+    }
+    .calendar-event.b-consegnata{
+      background:linear-gradient(180deg, rgba(123,135,158,.18), rgba(123,135,158,.08));
+      border-color:rgba(194,200,213,.20);
+      box-shadow:inset 0 1px 0 rgba(240,243,250,.10), 0 0 0 1px rgba(123,135,158,.05), 0 10px 28px rgba(0,0,0,.20), 0 0 24px rgba(123,135,158,.10);
+    }
+    .calendar-event.b-noshow{
+      background:linear-gradient(180deg, rgba(209,80,80,.18), rgba(209,80,80,.08));
+      border-color:rgba(255,158,158,.22);
+      box-shadow:inset 0 1px 0 rgba(255,227,227,.10), 0 0 0 1px rgba(209,80,80,.05), 0 10px 28px rgba(0,0,0,.20), 0 0 26px rgba(209,80,80,.14);
+    }
+
+
+    .bottomnav::before{
+      content:"";
+      position:absolute;
+      inset:0;
+      border-radius:inherit;
+      background:linear-gradient(to bottom, rgba(255,255,255,.08), rgba(255,255,255,0));
+      pointer-events:none;
+    }
+    .calendar-shell,.calendar-board,.calendar-grid{position:relative;z-index:1}
+    @media (max-width:860px){
+      .bottomnav{
+        left:12px !important;
+        right:12px !important;
+        width:auto !important;
+        bottom:12px !important;
+      }
+    }
 
 </style>
 </head>
@@ -231,6 +336,7 @@
     <div class="side-title">Navigazione</div>
     <div class="nav-item active" data-nav="today" onclick="setPage('today', this)"><span>🚗 Prenotazioni</span><small>oggi</small></div>
     <div class="nav-item" data-nav="future" onclick="setPage('future', this)"><span>🗓️ Prossime</span><small>future</small></div>
+    <div class="nav-item" data-nav="calendar" onclick="setPage('calendar', this)"><span>📅 Calendario</span><small>giorno</small></div>
     <div class="nav-item" data-role-incassi data-nav="incassi" onclick="setPage('incassi', this)"><span>💶 Incassi</span><small>oggi</small></div>
     <div class="nav-item" data-role-allbookings data-nav="all" onclick="setPage('all', this)"><span>📚 Tutte</span><small>filtri</small></div>
     <div class="nav-item" data-role-concessionaria data-nav="concessionaria" onclick="setPage('concessionaria', this)"><span>🏢 Concessionaria</span><small>riepilogo</small></div>
@@ -286,7 +392,35 @@
       <div class="list" id="listFuture"></div>
     </div>
 
-    <div id="page-incassi" style="display:none">
+    
+    <div id="page-calendar" style="display:none">
+      <div class="calendar-shell">
+        <div class="calendar-toolbar">
+          <div class="calendar-toolbar-left">
+            <button class="btn-secondary" onclick="shiftCalendarDay(-1)">←</button>
+            <button class="btn-secondary" onclick="goTodayCalendar()">Oggi</button>
+            <button class="btn-secondary" onclick="shiftCalendarDay(1)">→</button>
+          </div>
+          <div class="calendar-date-title" id="calendarDateTitle">Calendario</div>
+          <div class="calendar-toolbar-right">
+            <input id="calendarDateFilter" class="date-input" type="date" onchange="onCalendarDateChange()">
+          </div>
+        </div>
+        <div class="calendar-board">
+          <div class="calendar-head">
+            <div class="calendar-head-time">Orario</div>
+            <div class="calendar-head-day" id="calendarHeadDay">Giorno</div>
+          </div>
+          <div class="calendar-grid" id="calendarGrid">
+            <div class="calendar-hour-labels" id="calendarHours"></div>
+            <div class="calendar-events" id="calendarEvents"></div>
+          </div>
+        </div>
+        <div class="calendar-empty" id="calendarEmpty" style="display:none">Nessuna prenotazione nel giorno selezionato.</div>
+      </div>
+    </div>
+
+<div id="page-incassi" style="display:none">
       <div class="filter-row">
         <div class="form-group">
           <label>Data incassi</label>
@@ -440,7 +574,7 @@
 
   <div class="bottomnav">
     <div class="active" data-bnav="today" onclick="setPage('today')">🏠<br>Oggi</div>
-    <div data-bnav="future" onclick="setPage('future')">🗓️<br>Prossime</div>
+    <div data-bnav="calendar" onclick="setPage('calendar')">📅<br>Calendario</div>
     <div data-role-incassi data-bnav="incassi" onclick="setPage('incassi')">💶<br>Incassi</div>
     <div data-bnav="more" onclick="toggleMoreMenu(event)">☰<br>Menu</div>
   </div>
@@ -448,6 +582,7 @@
   <div id="mobileMoreMenu" class="mobile-sheet">
     <div class="mobile-sheet-handle"></div>
     <div class="mobile-sheet-title">Altre sezioni</div>
+    <button onclick="openMorePage('future')">🗓️ Prossime</button>
     <button data-role-allbookings onclick="openMorePage('all')">📚 Tutte</button>
     <button data-role-concessionaria onclick="openMorePage('concessionaria')">🏢 Concessionaria</button>
     <button data-role-statistiche onclick="openMorePage('statistiche')">📊 Statistiche</button>
@@ -1196,16 +1331,21 @@ function setPage(page, el){
   if(page==="all"&&currentUser?.role!=="admin") return;
   if(page==="adminpanel"&&currentUser?.role!=="admin") return;
   currentPage=page;
-  const titles={today:"Prenotazioni",future:"Prossime",incassi:"Incassi",all:"Tutte le prenotazioni",concessionaria:"Concessionaria",statistiche:"Statistiche",adminpanel:"Pannello Admin"};
+  const titles={today:"Prenotazioni",future:"Prossime",calendar:"Calendario",incassi:"Incassi",all:"Tutte le prenotazioni",concessionaria:"Concessionaria",statistiche:"Statistiche",adminpanel:"Pannello Admin"};
   document.getElementById("screenTitle").textContent=titles[page]||"Prenotazioni";
-  ["today","future","incassi","all","concessionaria","statistiche","adminpanel"].forEach(p=>document.getElementById("page-"+p).style.display=p===page?"block":"none");
+  ["today","future","calendar","incassi","all","concessionaria","statistiche","adminpanel"].forEach(p=>document.getElementById("page-"+p).style.display=p===page?"block":"none");
   document.querySelectorAll(".sidebar .nav-item[data-nav]").forEach(x=>x.classList.remove("active"));
   if(el) el.classList.add("active");
+  else{
+    const sidebarActive=document.querySelector(`.sidebar .nav-item[data-nav="${page}"]`);
+    if(sidebarActive) sidebarActive.classList.add("active");
+  }
   document.querySelectorAll(".bottomnav div[data-bnav]").forEach(x=>x.classList.remove("active"));
   const activeBottom=document.querySelector(`.bottomnav div[data-bnav="${page}"]`);
   if(activeBottom) activeBottom.classList.add("active");
   if(page==="adminpanel") renderUsersList();
   if(page==="statistiche") render();
+  if(page==="calendar") renderCalendar();
 }
 
 
@@ -1441,6 +1581,176 @@ async function testNotification(){
 ["f-modello","f-arrivo-date","f-arrivo-time","f-consegna-date","f-consegna-time","f-telefono","f-note","f-stato","f-concessionaria","f-dealer-name"].forEach(id=>{const el=document.getElementById(id); if(el) el.addEventListener("input", ()=>{formDirty=true; if(id==="f-telefono") checkCustomer();}); if(el) el.addEventListener("change", ()=>{formDirty=true; if(id==="f-telefono") checkCustomer();});});
 document.addEventListener("change", (e)=>{ if(e.target && e.target.closest("#servicesGrid")) formDirty=true; });
 
+
+let calendarDate = new Date();
+
+function formatCalendarInputDate(date){
+  const y = date.getFullYear();
+  const m = String(date.getMonth()+1).padStart(2,"0");
+  const d = String(date.getDate()).padStart(2,"0");
+  return `${y}-${m}-${d}`;
+}
+function sameDay(a,b){
+  return a.getFullYear()===b.getFullYear() && a.getMonth()===b.getMonth() && a.getDate()===b.getDate();
+}
+function minutesFromDate(date){
+  return date.getHours()*60 + date.getMinutes();
+}
+function calendarStatusClass(status){
+  if(status==="Prenotata") return "b-prenotata";
+  if(status==="In lavaggio") return "b-lavorazione";
+  if(status==="Lavata") return "b-lavata";
+  if(status==="No-show") return "b-noshow";
+  return "b-consegnata";
+}
+function buildCalendarHours(){
+  const box = document.getElementById("calendarHours");
+  if(!box || box.dataset.ready==="1") return;
+  box.innerHTML = "";
+  for(let h=0; h<24; h++){
+    const row = document.createElement("div");
+    row.className = "calendar-hour";
+    row.textContent = `${String(h).padStart(2,"0")}:00`;
+    box.appendChild(row);
+  }
+  box.dataset.ready = "1";
+}
+function getCalendarItems(){
+  return allItems.filter(i=>{
+    const start = parseDisplayDate(i.arrivo);
+    return start && sameDay(start, calendarDate);
+  }).sort((a,b)=>{
+    const sa = parseDisplayDate(a.arrivo) || new Date(8640000000000000);
+    const sb = parseDisplayDate(b.arrivo) || new Date(8640000000000000);
+    return sa - sb;
+  });
+}
+function renderCalendarNowLine(){
+  const eventsBox = document.getElementById("calendarEvents");
+  if(!eventsBox) return;
+  const old = document.getElementById("calendarNowLine");
+  if(old) old.remove();
+  const now = new Date();
+  if(!sameDay(now, calendarDate)) return;
+  const line = document.createElement("div");
+  line.id = "calendarNowLine";
+  line.className = "calendar-now-line";
+  line.style.top = `${(minutesFromDate(now)/60)*52}px`;
+  eventsBox.appendChild(line);
+}
+
+function renderCalendar(){
+  buildCalendarHours();
+  const title = document.getElementById("calendarDateTitle");
+  const head = document.getElementById("calendarHeadDay");
+  const input = document.getElementById("calendarDateFilter");
+  const eventsBox = document.getElementById("calendarEvents");
+  const empty = document.getElementById("calendarEmpty");
+  if(!title || !head || !input || !eventsBox || !empty) return;
+
+  input.value = formatCalendarInputDate(calendarDate);
+  const label = calendarDate.toLocaleDateString("it-IT",{weekday:"long", day:"2-digit", month:"long", year:"numeric"});
+  title.textContent = label.charAt(0).toUpperCase() + label.slice(1);
+  head.textContent = calendarDate.toLocaleDateString("it-IT",{weekday:"long", day:"2-digit", month:"long"});
+  eventsBox.innerHTML = "";
+
+  const items = getCalendarItems().map(i=>{
+    const start = parseDisplayDate(i.arrivo);
+    let end = parseDisplayDate(i.consegna);
+    if(!start) return null;
+    if(!end || end <= start) end = new Date(start.getTime() + 60*60*1000);
+    const startMin = minutesFromDate(start);
+    const endMin = Math.max(startMin + 30, minutesFromDate(end));
+    return { item:i, startMin, endMin };
+  }).filter(Boolean);
+
+  empty.style.display = items.length ? "none" : "block";
+
+  // assegna colonna libera più a sinistra per eventi sovrapposti
+  const active = [];
+  for (const ev of items) {
+    for (let i = active.length - 1; i >= 0; i--) {
+      if (active[i].endMin <= ev.startMin) active.splice(i, 1);
+    }
+    const usedCols = new Set(active.map(a => a.col));
+    let col = 0;
+    while (usedCols.has(col)) col++;
+    ev.col = col;
+    active.push(ev);
+  }
+
+  // cluster di sovrapposizione per larghezze coerenti
+  const clusters = [];
+  let current = null;
+  for (const ev of items) {
+    if (!current) {
+      current = { events:[ev], end:ev.endMin, maxCol:ev.col };
+      continue;
+    }
+    if (ev.startMin < current.end) {
+      current.events.push(ev);
+      current.end = Math.max(current.end, ev.endMin);
+      current.maxCol = Math.max(current.maxCol, ev.col);
+    } else {
+      clusters.push(current);
+      current = { events:[ev], end:ev.endMin, maxCol:ev.col };
+    }
+  }
+  if (current) clusters.push(current);
+
+  const sideGap = 10;
+  const colGap = 8;
+
+  clusters.forEach(cluster=>{
+    const columns = cluster.maxCol + 1;
+    const totalWidth = eventsBox.clientWidth - sideGap*2;
+    const cardWidth = Math.max((totalWidth - (columns - 1)*colGap) / columns, 88);
+
+    cluster.events.forEach(ev=>{
+      const top = (ev.startMin/60)*52;
+      const height = Math.max(((ev.endMin-ev.startMin)/60)*52, 36);
+      const left = sideGap + ev.col * (cardWidth + colGap);
+
+      const card = document.createElement("div");
+      card.className = `calendar-event ${calendarStatusClass(ev.item.stato)}`;
+      card.style.top = `${top}px`;
+      card.style.left = `${left}px`;
+      card.style.width = `${cardWidth}px`;
+      card.style.height = `${height}px`;
+      card.innerHTML = `
+        <div class="event-time">${ev.item.arrivo} → ${ev.item.consegna}</div>
+        <div class="event-title">${ev.item.modello}</div>
+        <div class="event-sub">${ev.item.stato}${ev.item.concessionaria && ev.item.concessionaria !== "-" ? " • " + ev.item.concessionaria : ""}</div>
+      `;
+      card.onclick = ()=>{
+        selected = ev.item;
+        showDetail();
+        if(window.innerWidth<=1280) openDetailModal();
+      };
+      eventsBox.appendChild(card);
+    });
+  });
+
+  renderCalendarNowLine();
+}
+
+function shiftCalendarDay(delta){
+  calendarDate.setDate(calendarDate.getDate() + delta);
+  renderCalendar();
+}
+function goTodayCalendar(){
+  calendarDate = new Date();
+  renderCalendar();
+}
+function onCalendarDateChange(){
+  const v = document.getElementById("calendarDateFilter").value;
+  if(!v) return;
+  const [y,m,d] = v.split("-").map(Number);
+  calendarDate = new Date(y, m-1, d);
+  renderCalendar();
+}
+
+
 loadUsers();
 restoreLogin();
 restoreNotifySettings();
@@ -1451,6 +1761,8 @@ setInterval(()=>{if(currentUser){loadBookings().catch(console.error);}},15000);
 document.getElementById("incomeDateFilter").value = new Date().toISOString().slice(0,10);
 document.getElementById("dealerDateFilter").value = "";
 loadAll();
+renderCalendar();
 </script>
 </body>
 </html>
+<script>window.addEventListener('resize', ()=>{ if (typeof currentPage !== 'undefined' && currentPage==='calendar' && typeof renderCalendar==='function') renderCalendar(); });</script>
