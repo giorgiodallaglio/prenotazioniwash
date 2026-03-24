@@ -347,66 +347,38 @@
 
 
     body.calendar-page .screen{
-      overflow:hidden;
-    }
-    body.calendar-page #page-calendar{
-      display:flex;
-      flex-direction:column;
-      height:100%;
-      min-height:0;
-    }
-    body.calendar-page .calendar-shell{
-      flex:1;
-      min-height:0;
-    }
-    body.calendar-page .calendar-board{
-      flex:1;
-      min-height:0;
-      max-height:calc(100vh - 280px);
-    }
-    @media (max-width:860px){
-      body.calendar-page .calendar-board{
-        max-height:calc(100vh - 290px);
-      }
-    }
-
-
-    body.calendar-page .screen{
-      display:flex;
-      flex-direction:column;
       overflow:hidden !important;
-      height:calc(100% - 26px);
-      min-height:0;
+      display:flex !important;
+      flex-direction:column !important;
+      height:calc(100% - 26px) !important;
+      min-height:0 !important;
     }
     body.calendar-page #page-calendar{
-      display:flex;
-      flex-direction:column;
-      flex:1;
-      min-height:0;
-      overflow:hidden;
+      display:flex !important;
+      flex-direction:column !important;
+      flex:1 1 auto !important;
+      min-height:0 !important;
+      height:100% !important;
+      overflow:hidden !important;
     }
     body.calendar-page .calendar-shell{
-      display:flex;
-      flex-direction:column;
-      flex:1;
-      min-height:0;
-      overflow:hidden;
-    }
-    body.calendar-page .calendar-toolbar,
-    body.calendar-page .calendar-date-title,
-    body.calendar-page .calendar-scroll-hint{
-      flex:0 0 auto;
+      display:flex !important;
+      flex-direction:column !important;
+      flex:1 1 auto !important;
+      min-height:0 !important;
+      height:100% !important;
+      overflow:hidden !important;
     }
     body.calendar-page .calendar-board{
-      flex:1 1 auto;
-      min-height:0;
-      max-height:none !important;
+      flex:1 1 auto !important;
+      min-height:0 !important;
+      height:auto !important;
       overflow:auto !important;
-      overscroll-behavior:contain;
-      -webkit-overflow-scrolling:touch;
+      overscroll-behavior:contain !important;
+      -webkit-overflow-scrolling:touch !important;
     }
     body.calendar-page .calendar-grid{
-      min-height:1248px;
+      min-height:1248px !important;
     }
     @media (max-width:860px){
       .app{padding:0}
@@ -1435,6 +1407,17 @@ function setFuturePreset(mode){
   render();
 }
 
+
+function applyCalendarScrollMode(){
+  const screen = document.querySelector('.screen');
+  if(!screen) return;
+  if(currentPage === 'calendar'){
+    screen.style.overflow = 'hidden';
+  } else {
+    screen.style.overflow = 'auto';
+  }
+}
+
 function setPage(page, el){
   if(page==="incassi"&&currentUser?.role!=="admin") return;
   if(page==="all"&&currentUser?.role!=="admin") return;
@@ -1455,6 +1438,7 @@ function setPage(page, el){
   if(activeBottom) activeBottom.classList.add("active");
   if(page==="adminpanel") renderUsersList();
   if(page==="statistiche") render();
+  applyCalendarScrollMode();
   if(page==="calendar") renderCalendar();
 }
 
@@ -1885,6 +1869,7 @@ setInterval(()=>{if(currentUser){loadBookings().catch(console.error);}},15000);
 document.getElementById("incomeDateFilter").value = new Date().toISOString().slice(0,10);
 document.getElementById("dealerDateFilter").value = "";
 loadAll();
+applyCalendarScrollMode();
 renderCalendar();
 </script>
 </body>
