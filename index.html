@@ -21,7 +21,7 @@
         var(--bg);
       color:var(--text);
     }
-    .app{height:100vh;min-height:100vh;overflow:hidden;display:grid;grid-template-columns:290px minmax(360px,470px) minmax(340px,1fr);gap:24px;padding:24px}
+    .app{min-height:100vh;display:grid;grid-template-columns:290px minmax(360px,470px) minmax(340px,1fr);gap:24px;padding:24px}
     .sidebar,.phone-wrap,.detail,.login-card{background:var(--panel);border:1px solid var(--line);border-radius:28px;box-shadow:var(--shadow);backdrop-filter:blur(8px)}
     .sidebar{padding:20px}
     .brand{display:flex;align-items:center;gap:12px;margin-bottom:16px;font-weight:700;font-size:22px}
@@ -32,10 +32,10 @@
     .chip,.role-chip{display:inline-flex;align-items:center;gap:8px;padding:8px 12px;border-radius:999px;font-size:13px}
     .chip{background:#1b2330;border:1px solid #2a364a;color:#b9d7ff}
     .role-chip{margin-top:10px;background:#141c27;border:1px solid #2a364a;color:#d8e8ff}
-    .phone-wrap{display:grid;place-items:center;padding:18px;min-height:760px;overflow:hidden}
-    .phone{width:100%;max-width:430px;height:820px;background:#090b10;border-radius:42px;border:10px solid #111319;box-shadow:0 30px 70px rgba(0,0,0,.5);overflow:hidden;position:relative}
+    .phone-wrap{display:grid;place-items:center;padding:18px;min-height:760px}
+    .phone{width:100%;max-width:430px;height:820px;background:#090b10;border-radius:42px;border:10px solid #111319;box-shadow:0 30px 70px rgba(0,0,0,.5);overflow:visible;position:relative}
         .statusbar{height:26px}
-    .screen{padding:10px 14px 140px;height:calc(100% - 26px);overflow:hidden;position:relative;z-index:1}
+    .screen{padding:10px 14px 140px;height:calc(100% - 26px);overflow:auto;position:relative;z-index:1}
     .topbar{display:flex;justify-content:space-between;align-items:center;margin-top:8px;margin-bottom:14px;gap:10px}
     .topbar-right{display:flex;gap:8px;align-items:center}
     .title{font-size:18px;font-weight:700}
@@ -197,7 +197,7 @@
       .sidebar,.detail{display:none}
       .phone-wrap{padding:0;background:none;border:none;box-shadow:none;min-height:100vh}
       .phone{height:100vh;border-radius:0;border:none;max-width:none;width:100%}
-      .screen{padding:14px 14px 126px;overflow:hidden}
+      .screen{padding:14px 14px 126px}
       .model{font-size:18px}
       .form-grid,.services-grid,.grid,.stats-grid{grid-template-columns:1fr}
       .filter-row{grid-template-columns:1fr !important;gap:10px}
@@ -239,7 +239,6 @@
 
     html, body{
       height:100%;
-      overflow:hidden;
       touch-action: manipulation;
       -webkit-text-size-adjust: 100%;
       overscroll-behavior: none;
@@ -372,11 +371,6 @@
     }
 
 
-    body.calendar-page .phone,
-    body.calendar-page .phone-wrap,
-    body.calendar-page .app{
-      overflow:hidden !important;
-    }
     body.calendar-page .screen{
       display:flex;
       flex-direction:column;
