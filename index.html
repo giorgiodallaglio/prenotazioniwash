@@ -1049,6 +1049,7 @@ function login(){
   localStorage.setItem("vh_booking_user",JSON.stringify(currentUser));
   document.getElementById("loginBackdrop").style.display="none";
   applyRoleUI();
+  applyCalendarScrollMode();
 }
 function logout(){localStorage.removeItem("vh_booking_user");currentUser=null;document.getElementById("loginBackdrop").style.display="flex";applyRoleUI();}
 function restoreLogin(){restoreRememberedCredentials();const saved=localStorage.getItem("vh_booking_user");if(saved){try{currentUser=JSON.parse(saved);document.getElementById("loginBackdrop").style.display="none";}catch(e){}}applyRoleUI();}
@@ -1518,23 +1519,43 @@ function unlockBodyFromCalendar(){
 }
 
 function applyCalendarScrollMode(){
+  let __calendarLockedScrollY = 0;
+
+function lockBodyForCalendar(){
+  __calendarLockedScrollY = window.scrollY || window.pageYOffset || 0;
+  document.body.classList.add('calendar-page');
+  document.body.style.top = `-${__calendarLockedScrollY}px`;
+  document.body.style.position = 'fixed';
+  document.body.style.width = '100%';
+}
+
+function unlockBodyFromCalendar(){
+  document.body.classList.remove('calendar-page');
+  document.body.style.position = '';
+  document.body.style.top = '';
+  document.body.style.width = '';
+  window.scrollTo(0, __calendarLockedScrollY || 0);
+}
+
+function applyCalendarScrollMode(){
   const screen = document.querySelector('.screen');
   if(!screen) return;
+
+  // 🔴 FIX: non bloccare niente se NON sei loggato
+  if(!currentUser){
+    screen.style.overflow = 'auto';
+    unlockBodyFromCalendar();
+    return;
+  }
+
   if(currentPage === 'calendar'){
     screen.style.overflow = 'hidden';
-    screen.style.touchAction = 'none';
     lockBodyForCalendar();
   } else {
     screen.style.overflow = 'auto';
-    screen.style.touchAction = 'auto';
     unlockBodyFromCalendar();
   }
 }
- else {
-    screen.style.overflow = 'auto';
-    screen.style.touchAction = 'auto';
-  }
-  applyCalendarPageLock();
 }
 
 function setPage(page, el){
