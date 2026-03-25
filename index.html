@@ -382,60 +382,7 @@
     }
     @media (max-width:860px){
       .app{padding:0}
-      body.calendar-page .phone{
-        height:100vh;
-      }
-      body.calendar-page .screen{
-        padding-bottom:116px !important;
-      }
-      .bottomnav{
-        left:12px !important;
-        right:12px !important;
-        bottom:12px !important;
-      }
-    }
-
-
-    body.calendar-page,
-    body.calendar-page html{
-      overflow:hidden !important;
-      height:100% !important;
-    }
-    body.calendar-page .screen{
-      overflow:hidden !important;
-      overscroll-behavior:none !important;
-      -webkit-overflow-scrolling:auto !important;
-      touch-action:none !important;
-    }
-    body.calendar-page #page-calendar{
-      display:flex !important;
-      flex-direction:column !important;
-      height:calc(100dvh - 210px) !important;
-      min-height:0 !important;
-      overflow:hidden !important;
-    }
-    body.calendar-page .calendar-shell{
-      display:flex !important;
-      flex-direction:column !important;
-      flex:1 1 auto !important;
-      min-height:0 !important;
-      overflow:hidden !important;
-    }
-    body.calendar-page .calendar-board{
-      flex:1 1 auto !important;
-      min-height:0 !important;
-      height:100% !important;
-      max-height:none !important;
-      overflow:auto !important;
-      overscroll-behavior:contain !important;
-      -webkit-overflow-scrolling:touch !important;
-      touch-action:pan-x pan-y !important;
-    }
-    @media (max-width:860px){
-      body.calendar-page #page-calendar{
-        height:calc(100dvh - 250px) !important;
-      }
-    }
+      
 
 
     body.calendar-page{
@@ -444,6 +391,52 @@
       left:0 !important;
       right:0 !important;
       overflow:hidden !important;
+    }
+
+
+    body.calendar-page .screen{
+      overflow:hidden !important;
+    }
+    body.calendar-page #page-calendar{
+      position:absolute !important;
+      left:14px;
+      right:14px;
+      top:74px;
+      bottom:110px;
+      display:block !important;
+      overflow:hidden !important;
+      z-index:2;
+    }
+    body.calendar-page .calendar-shell{
+      height:100%;
+      display:flex;
+      flex-direction:column;
+      overflow:hidden;
+      min-height:0;
+    }
+    body.calendar-page .calendar-toolbar{
+      flex:0 0 auto;
+      margin-bottom:10px;
+    }
+    body.calendar-page .calendar-board{
+      flex:1 1 auto;
+      min-height:0;
+      overflow:auto !important;
+      -webkit-overflow-scrolling:touch;
+      overscroll-behavior:contain;
+    }
+    body.calendar-page .calendar-empty,
+    body.calendar-page .calendar-scroll-hint{
+      flex:0 0 auto;
+      margin-top:8px;
+    }
+    @media (max-width:860px){
+      body.calendar-page #page-calendar{
+        left:14px;
+        right:14px;
+        top:78px;
+        bottom:104px;
+      }
     }
 
 </style>
@@ -1051,8 +1044,8 @@ function login(){
   applyRoleUI();
   applyCalendarScrollMode();
 }
-function logout(){localStorage.removeItem("vh_booking_user");currentUser=null;document.getElementById("loginBackdrop").style.display="flex";applyRoleUI();}
-function restoreLogin(){restoreRememberedCredentials();const saved=localStorage.getItem("vh_booking_user");if(saved){try{currentUser=JSON.parse(saved);document.getElementById("loginBackdrop").style.display="none";}catch(e){}}applyRoleUI();}
+function logout(){localStorage.removeItem("vh_booking_user");currentUser=null;document.getElementById("loginBackdrop").style.display="flex";applyRoleUI();applyCalendarScrollMode();}
+function restoreLogin(){restoreRememberedCredentials();const saved=localStorage.getItem("vh_booking_user");if(saved){try{currentUser=JSON.parse(saved);document.getElementById("loginBackdrop").style.display="none";}catch(e){}}applyRoleUI();applyCalendarScrollMode();}
 
 async function loadServices(){const r=await fetch(bustUrl(SERVICES_ENDPOINT),{cache:"no-store",headers:{"Cache-Control":"no-cache, no-store, max-age=0","Pragma":"no-cache"}});if(!r.ok)throw new Error("HTTP "+r.status);const d=await r.json();services=(d.results||[]).map(mapServiceRow).filter(s=>s.active);renderServicesGrid();}
 async function loadBookings(){
@@ -1463,99 +1456,16 @@ function setFuturePreset(mode){
 
 
 let __calendarTouchStartY = 0;
-document.addEventListener('touchstart', function(e){
-  if(currentPage !== 'calendar') return;
-  __calendarTouchStartY = e.touches && e.touches[0] ? e.touches[0].clientY : 0;
-}, {passive:true});
 
-document.addEventListener('touchmove', function(e){
-  if(currentPage !== 'calendar') return;
-  const board = e.target && e.target.closest ? e.target.closest('.calendar-board') : null;
-  if(!board){
-    e.preventDefault();
-    return;
-  }
-}, {passive:false});
-
-function closestCalendarScrollable(el){
-  return el && el.closest ? el.closest('.calendar-board') : null;
-}
-function applyCalendarPageLock(){
-  document.body.classList.toggle('calendar-page', currentPage === 'calendar');
-}
-document.addEventListener('touchmove', function(e){
-  if(currentPage !== 'calendar') return;
-  if(!closestCalendarScrollable(e.target)){
-    e.preventDefault();
-  }
-}, {passive:false});
-
-document.addEventListener('wheel', function(e){
-  if(currentPage !== 'calendar') return;
-  if(!closestCalendarScrollable(e.target)){
-    e.preventDefault();
-  }
-}, {passive:false});
-
-
-let __calendarLockedScrollY = 0;
-
-function lockBodyForCalendar(){
-  __calendarLockedScrollY = window.scrollY || window.pageYOffset || 0;
-  document.body.classList.add('calendar-page');
-  document.body.style.top = `-${__calendarLockedScrollY}px`;
-  document.body.style.position = 'fixed';
-  document.body.style.width = '100%';
-  document.documentElement.style.overflow = 'hidden';
-}
-
-function unlockBodyFromCalendar(){
-  document.body.classList.remove('calendar-page');
-  document.body.style.position = '';
-  document.body.style.top = '';
-  document.body.style.width = '';
-  document.documentElement.style.overflow = '';
-  window.scrollTo(0, __calendarLockedScrollY || 0);
-}
-
-function applyCalendarScrollMode(){
-  let __calendarLockedScrollY = 0;
-
-function lockBodyForCalendar(){
-  __calendarLockedScrollY = window.scrollY || window.pageYOffset || 0;
-  document.body.classList.add('calendar-page');
-  document.body.style.top = `-${__calendarLockedScrollY}px`;
-  document.body.style.position = 'fixed';
-  document.body.style.width = '100%';
-}
-
-function unlockBodyFromCalendar(){
-  document.body.classList.remove('calendar-page');
-  document.body.style.position = '';
-  document.body.style.top = '';
-  document.body.style.width = '';
-  window.scrollTo(0, __calendarLockedScrollY || 0);
-}
 
 function applyCalendarScrollMode(){
   const screen = document.querySelector('.screen');
   if(!screen) return;
-
-  // 🔴 FIX: non bloccare niente se NON sei loggato
-  if(!currentUser){
-    screen.style.overflow = 'auto';
-    unlockBodyFromCalendar();
-    return;
-  }
-
   if(currentPage === 'calendar'){
     screen.style.overflow = 'hidden';
-    lockBodyForCalendar();
   } else {
     screen.style.overflow = 'auto';
-    unlockBodyFromCalendar();
   }
-}
 }
 
 function setPage(page, el){
@@ -1563,7 +1473,7 @@ function setPage(page, el){
   if(page==="all"&&currentUser?.role!=="admin") return;
   if(page==="adminpanel"&&currentUser?.role!=="admin") return;
   currentPage=page;
-  
+  document.body.classList.toggle("calendar-page", page==="calendar");
   const titles={today:"Prenotazioni",future:"Prossime",calendar:"Calendario",incassi:"Incassi",all:"Tutte le prenotazioni",concessionaria:"Concessionaria",statistiche:"Statistiche",adminpanel:"Pannello Admin"};
   document.getElementById("screenTitle").textContent=titles[page]||"Prenotazioni";
   ["today","future","calendar","incassi","all","concessionaria","statistiche","adminpanel"].forEach(p=>document.getElementById("page-"+p).style.display=p===page?"block":"none");
@@ -2001,6 +1911,7 @@ function onCalendarDateChange(){
 
 loadUsers();
 restoreLogin();
+applyCalendarScrollMode();
 restoreNotifySettings();
 renderDealerSelect();
 renderDealerAdminList();
