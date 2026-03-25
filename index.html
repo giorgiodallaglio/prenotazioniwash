@@ -4,6 +4,14 @@
   <meta charset="UTF-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
   <title>Prenotazioni Lavaggio - VisionHome</title>
+
+  <link rel="icon" type="image/x-icon" href="favicon.ico" />
+  <link rel="icon" type="image/png" sizes="32x32" href="favicon-32x32.png" />
+  <link rel="apple-touch-icon" sizes="180x180" href="apple-touch-icon.png" />
+  <meta name="apple-mobile-web-app-capable" content="yes" />
+  <meta name="mobile-web-app-capable" content="yes" />
+  <meta name="apple-mobile-web-app-status-bar-style" content="black-translucent" />
+
   <style>
     :root{
       --bg:#0b0c0f; --panel:rgba(20,22,27,.88); --muted:#8b93a7; --text:#eef2fb; --line:#252a35;
@@ -25,7 +33,8 @@
     .sidebar,.phone-wrap,.detail,.login-card{background:var(--panel);border:1px solid var(--line);border-radius:28px;box-shadow:var(--shadow);backdrop-filter:blur(8px)}
     .sidebar{padding:20px}
     .brand{display:flex;align-items:center;gap:12px;margin-bottom:16px;font-weight:700;font-size:22px}
-    .logo{width:42px;height:42px;border-radius:14px;background:linear-gradient(135deg,#39a0ff,#6bc5ff);display:grid;place-items:center;color:#fff;font-size:20px;font-weight:800}
+    .logo{width:42px;height:42px;border-radius:14px;background:rgba(255,255,255,.03);display:grid;place-items:center;border:1px solid rgba(255,255,255,.08);overflow:hidden;box-shadow:0 6px 18px rgba(0,0,0,.18)}
+    .logo img{width:80%;height:80%;object-fit:contain;display:block}
     .side-title{color:var(--muted);font-size:12px;letter-spacing:.12em;text-transform:uppercase;margin:22px 0 10px}
     .nav-item{display:flex;align-items:center;justify-content:space-between;padding:14px;border-radius:16px;color:#dfe6f5;margin-bottom:8px;border:1px solid transparent;cursor:pointer}
     .nav-item.active{background:#1a2330;border-color:#243447}
@@ -483,7 +492,7 @@
 <body>
 <div class="login-backdrop" id="loginBackdrop">
   <div class="login-card">
-    <div class="brand"><div class="logo">P</div><div>Accesso<div style="font-size:13px;color:var(--muted);font-weight:500">Admin / Operatore</div></div></div>
+    <div class="brand"><div class="logo"><img src="logo-dallaglio.png" alt="Dall'Aglio logo"></div><div>Accesso<div style="font-size:13px;color:var(--muted);font-weight:500">Admin / Operatore</div></div></div>
     <div class="form-group"><label>Utente</label><input id="loginUser" placeholder="username"></div>
     <div class="form-group" style="margin-top:12px"><label>Password</label><input id="loginPass" type="password" placeholder="password"></div>
     <label class="remember-row"><input type="checkbox" id="rememberCreds" checked><span>Salva credenziali</span></label>
@@ -493,7 +502,7 @@
 
 <div class="app">
   <aside class="sidebar">
-    <div class="brand"><div class="logo">P</div><div>Prenotazioni<div style="font-size:13px;color:var(--muted);font-weight:500">Dashboard</div></div></div>
+    <div class="brand"><div class="logo"><img src="logo-dallaglio.png" alt="Dall'Aglio logo"></div><div>Prenotazioni<div style="font-size:13px;color:var(--muted);font-weight:500">Dashboard</div></div></div>
     <div class="role-chip" id="roleBadge">: -</div>
 
     <div class="side-title">Navigazione</div>
