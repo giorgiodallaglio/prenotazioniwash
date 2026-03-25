@@ -521,7 +521,7 @@
       <div class="calendar-shell">
         <div class="calendar-toolbar">
           <div class="calendar-toolbar-left">
-            <button class="btn-secondary" onclick="shiftCalendarDay(-1)">←</button>
+            <button class="btn-secondary" id="calendarPrevBtn" onclick="shiftCalendarDay(-1)">←</button>
             <button class="btn-secondary" onclick="goTodayCalendar()">Oggi</button>
             <button class="btn-secondary" onclick="shiftCalendarDay(1)">→</button>
           </div>
@@ -1784,7 +1784,31 @@ function renderCalendarNowLine(){
 }
 
 
+
+function isAdminUser(){
+  return currentUser?.role === "admin";
+}
+function normalizeDateOnly(d){
+  return new Date(d.getFullYear(), d.getMonth(), d.getDate());
+}
+function canAccessCalendarDate(date){
+  if (isAdminUser()) return true;
+  const today = normalizeDateOnly(new Date());
+  const target = normalizeDateOnly(date);
+  return target >= today;
+}
+function enforceCalendarPermissions(){
+  if (canAccessCalendarDate(calendarDate)) return;
+  calendarDate = new Date();
+  const input = document.getElementById("calendarDateFilter");
+  if (input) input.value = formatCalendarInputDate(calendarDate);
+  if (typeof showToast === "function") {
+    showToast("Gli operatori possono vedere solo oggi e i giorni futuri");
+  }
+}
+
 function renderCalendar(){
+  enforceCalendarPermissions();
   buildCalendarHours();
   const title = document.getElementById("calendarDateTitle");
   const head = document.getElementById("calendarHeadDay");
@@ -1800,6 +1824,13 @@ function renderCalendar(){
   const label = calendarDate.toLocaleDateString("it-IT",{weekday:"long", day:"2-digit", month:"long", year:"numeric"});
   title.textContent = label.charAt(0).toUpperCase() + label.slice(1);
   head.textContent = calendarDate.toLocaleDateString("it-IT",{weekday:"long", day:"2-digit", month:"long"});
+  const prevBtn = document.getElementById("calendarPrevBtn");
+  if (prevBtn) {
+    const yesterday = new Date(calendarDate);
+    yesterday.setDate(yesterday.getDate() - 1);
+    prevBtn.disabled = !canAccessCalendarDate(yesterday);
+    prevBtn.style.opacity = prevBtn.disabled ? "0.45" : "1";
+  }
   eventsBox.innerHTML = "";
 
   const items = getCalendarItems().map(i=>{
@@ -1893,7 +1924,17 @@ function renderCalendar(){
 
 
 function shiftCalendarDay(delta){
-  calendarDate.setDate(calendarDate.getDate() + delta);
+  const newDate = new Date(calendarDate);
+  newDate.setDate(newDate.getDate() + delta);
+
+  if (!canAccessCalendarDate(newDate)) {
+    if (typeof showToast === "function") {
+      showToast("Gli operatori non possono andare indietro nel calendario");
+    }
+    return;
+  }
+
+  calendarDate = newDate;
   renderCalendar();
 }
 function goTodayCalendar(){
@@ -1903,8 +1944,19 @@ function goTodayCalendar(){
 function onCalendarDateChange(){
   const v = document.getElementById("calendarDateFilter").value;
   if(!v) return;
+
   const [y,m,d] = v.split("-").map(Number);
-  calendarDate = new Date(y, m-1, d);
+  const newDate = new Date(y, m-1, d);
+
+  if (!canAccessCalendarDate(newDate)) {
+    if (typeof showToast === "function") {
+      showToast("Gli operatori non possono aprire date passate");
+    }
+    document.getElementById("calendarDateFilter").value = formatCalendarInputDate(calendarDate);
+    return;
+  }
+
+  calendarDate = newDate;
   renderCalendar();
 }
 
