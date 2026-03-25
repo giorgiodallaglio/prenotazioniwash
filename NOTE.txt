@@ -1,0 +1,2 @@
+Apri index_refactor_pro.html tenendo nella stessa cartella anche styles.css e app.js.
+Se vuoi sostituire il file principale, puoi rinominare index_refactor_pro.html in index.html.

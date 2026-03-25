@@ -1,0 +1,384 @@
+<!DOCTYPE html>
+<html lang="it">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
+  <meta name="apple-mobile-web-app-capable" content="yes">
+  <meta name="mobile-web-app-capable" content="yes">
+  <meta name="apple-mobile-web-app-status-bar-style" content="black-translucent">
+  <title>Prenotazioni Lavaggio - VisionHome</title>
+    <link rel="stylesheet" href="styles.css" />
+</head>
+<body>
+<div class="login-backdrop" id="loginBackdrop">
+  <div class="login-card">
+    <div class="brand"><div class="logo">P</div><div>Accesso<div style="font-size:13px;color:var(--muted);font-weight:500">Admin / Operatore</div></div></div>
+    <div class="form-group"><label>Utente</label><input id="loginUser" placeholder="username"></div>
+    <div class="form-group" style="margin-top:12px"><label>Password</label><input id="loginPass" type="password" placeholder="password"></div>
+    <label class="remember-row"><input type="checkbox" id="rememberCreds" checked><span>Salva credenziali</span></label>
+    <div class="toolbar" style="margin-top:16px"><button onclick="login()">Entra</button></div>
+  </div>
+</div>
+
+<div class="app">
+  <aside class="sidebar">
+    <div class="brand"><div class="logo">P</div><div>Prenotazioni<div style="font-size:13px;color:var(--muted);font-weight:500">Dashboard</div></div></div>
+    <div class="role-chip" id="roleBadge">: -</div>
+
+    <div class="side-title">Navigazione</div>
+    <div class="nav-item active" data-nav="today" onclick="setPage('today', this)"><span>🚗 Prenotazioni</span><small>oggi</small></div>
+    <div class="nav-item" data-nav="future" onclick="setPage('future', this)"><span>🗓️ Prossime</span><small>future</small></div>
+    <div class="nav-item" data-nav="calendar" onclick="setPage('calendar', this)"><span>📅 Calendario</span><small>giorno</small></div>
+    <div class="nav-item" data-role-incassi data-nav="incassi" onclick="setPage('incassi', this)"><span>💶 Incassi</span><small>oggi</small></div>
+    <div class="nav-item" data-role-allbookings data-nav="all" onclick="setPage('all', this)"><span>📚 Tutte</span><small>filtri</small></div>
+    <div class="nav-item" data-role-concessionaria data-nav="concessionaria" onclick="setPage('concessionaria', this)"><span>🏢 Concessionaria</span><small>riepilogo</small></div>
+    <div class="nav-item" data-role-statistiche data-nav="statistiche" onclick="setPage('statistiche', this)"><span>📊 Statistiche</span><small>dashboard</small></div>
+    <div class="nav-item" data-role-adminpanel data-nav="adminpanel" onclick="setPage('adminpanel', this)"><span>⚙️ Admin</span><small>utenti</small></div>
+    <div class="nav-item" data-role-create onclick="openCreateModal()"><span>➕ Nuova auto</span><small>live</small></div>
+
+    <div class="side-title">Azioni</div>
+    <div class="toolbar">
+      <button onclick="loadAll()">Aggiorna</button>
+      <button class="btn-danger" onclick="logout()">Esci</button>
+    </div>
+  </aside>
+
+  <main class="phone-wrap"><div class="phone"><div class="statusbar"></div><div class="screen">
+    <div class="topbar">
+      <div class="title" id="screenTitle">Prenotazioni</div>
+      <div class="topbar-right">
+        <button class="btn-secondary" onclick="loadAll()">↻</button>
+        <button class="btn btn-icon" id="topCreateBtn" onclick="openCreateModal()">+</button>
+        <button class="btn-danger" onclick="logout()">⎋</button>
+      </div>
+    </div>
+
+    <div id="page-today">
+      <div class="stats-grid" id="todayStats"></div>
+      <div class="filter-row">
+        <select id="todayStatusFilter" class="select-input" onchange="render()">
+          <option value="all">Tutti gli stati</option>
+          <option>Prenotata</option><option>In lavaggio</option><option>Lavata</option><option>Consegnata</option><option>No-show</option>
+        </select>
+        <input id="searchToday" class="search" style="margin-bottom:0" placeholder="Cerca" oninput="render()">
+      </div>
+      <div class="list" id="listToday"></div>
+    </div>
+
+    <div id="page-future" style="display:none">
+      <div class="quick-actions">
+        <button onclick="setFuturePreset('')">Tutte</button>
+        <button onclick="setFuturePreset('tomorrow')">Domani</button>
+        <button onclick="setFuturePreset('week')">Settimana</button>
+      </div>
+      <div class="filter-row">
+        <div class="form-group">
+          <label>Data / calendario</label>
+          <input id="futureDateFilter" class="date-input" type="date" onchange="render()">
+        </div>
+        <div class="form-group">
+          <label>Cerca</label>
+          <input id="searchFuture" class="search" style="margin-bottom:0" placeholder="Cerca" oninput="render()">
+        </div>
+      </div>
+      <div class="list" id="listFuture"></div>
+    </div>
+
+    
+    <div id="page-calendar" style="display:none">
+      <div class="calendar-shell">
+        <div class="calendar-toolbar">
+          <div class="calendar-toolbar-left">
+            <button class="btn-secondary" id="calendarPrevBtn" onclick="shiftCalendarDay(-1)">←</button>
+            <button class="btn-secondary" onclick="goTodayCalendar()">Oggi</button>
+            <button class="btn-secondary" onclick="shiftCalendarDay(1)">→</button>
+          </div>
+          <div class="calendar-date-title" id="calendarDateTitle">Calendario</div>
+          <div class="calendar-toolbar-right">
+            <input id="calendarDateFilter" class="date-input" type="date" onchange="onCalendarDateChange()">
+          </div>
+        </div>
+        <div class="calendar-board">
+          <div class="calendar-head">
+            <div class="calendar-head-time">Orario</div>
+            <div class="calendar-head-day" id="calendarHeadDay">Giorno</div>
+          </div>
+          <div class="calendar-grid" id="calendarGrid">
+            <div class="calendar-hour-labels" id="calendarHours"></div>
+            <div class="calendar-events" id="calendarEvents"></div>
+          </div>
+        </div>
+        <div class="calendar-scroll-hint" id="calendarScrollHint">Scorri orizzontalmente per vedere tutte le prenotazioni</div>
+        <div class="calendar-empty" id="calendarEmpty" style="display:none">Nessuna prenotazione nel giorno selezionato.</div>
+      </div>
+    </div>
+
+<div id="page-incassi" style="display:none">
+      <div class="filter-row">
+        <div class="form-group">
+          <label>Data incassi</label>
+          <input id="incomeDateFilter" class="date-input" type="date" onchange="render()">
+        </div>
+        <div class="form-group">
+          <label>Stato considerato</label>
+          <select id="incomeStatusFilter" class="select-input" onchange="render()">
+            <option value="Consegnata">Consegnata</option>
+            <option value="Lavata">Lavata</option>
+            <option value="In lavaggio">In lavaggio</option>
+            <option value="Prenotata">Prenotata</option>
+            <option value="No-show">No-show</option>
+          </select>
+        </div>
+      </div>
+      <div class="income-card">
+        <div class="muted" id="incomeTitle">Incasso totale del giorno selezionato</div>
+        <div class="income-big" id="incomeTotal">€ 0,00</div>
+        <div class="muted"><span id="incomeCount">0</span> auto nel riepilogo</div>
+      </div>
+      <div class="income-list" id="incomeList"></div>
+    </div>
+
+    <div id="page-all" style="display:none">
+      <div class="filter-row">
+        <div class="form-group">
+          <label>Data / calendario</label>
+          <input id="allDateFilter" class="date-input" type="date" onchange="render()">
+        </div>
+        <div class="form-group">
+          <label>Stato</label>
+          <select id="allStatusFilter" class="select-input" onchange="render()">
+            <option value="all">Tutti gli stati</option>
+            <option>Prenotata</option><option>In lavaggio</option><option>Lavata</option><option>Consegnata</option><option>No-show</option>
+          </select>
+        </div>
+      </div>
+      <input id="searchAll" class="search" placeholder="Cerca modello, stato o operatore" oninput="render()">
+      <div class="list" id="listAll"></div>
+    </div>
+
+    <div id="page-concessionaria" style="display:none">
+      <div class="filter-row">
+        <div class="form-group">
+          <label>Data / calendario</label>
+          <input id="dealerDateFilter" class="date-input" type="date" onchange="render()">
+        </div>
+        <div class="form-group">
+          <label>Stato</label>
+          <select id="dealerStatusFilter" class="select-input" onchange="render()">
+            <option value="all">Tutti gli stati</option>
+            <option>Prenotata</option><option>In lavaggio</option><option>Lavata</option><option>Consegnata</option><option>No-show</option>
+          </select>
+        </div>
+      </div>
+      <input id="searchDealer" class="search" placeholder="Cerca concessionaria, modello o operatore" oninput="render()">
+      <div class="income-card">
+        <div class="muted" id="dealerTitle">Totale concessionarie</div>
+        <div class="income-big" id="dealerTotal">€ 0,00</div>
+        <div class="muted"><span id="dealerCount">0</span> auto concessionaria</div>
+      </div>
+      <div id="dealerGrouped"></div>
+    </div>
+
+    
+    <div id="page-statistiche" style="display:none">
+      <div class="filter-row">
+        <div class="form-group">
+          <label>Dal</label>
+          <input id="statsFromDate" class="date-input" type="date" onchange="render()">
+        </div>
+        <div class="form-group">
+          <label>Al</label>
+          <input id="statsToDate" class="date-input" type="date" onchange="render()">
+        </div>
+      </div>
+      <div class="quick-actions">
+        <button onclick="setStatsPreset('today')">Oggi</button>
+        <button onclick="setStatsPreset('7')">7 giorni</button>
+        <button onclick="setStatsPreset('30')">30 giorni</button>
+        <button onclick="setStatsPreset('month')">Mese corrente</button>
+      </div>
+
+      <div class="stats-board" id="statsBoard"></div>
+
+      <div class="stats-panel">
+        <div style="font-weight:800;margin-bottom:8px">Stati</div>
+        <div id="statsStatuses"></div>
+      </div>
+
+      <div class="stats-panel">
+        <div style="font-weight:800;margin-bottom:8px">Servizi più richiesti</div>
+        <div id="statsServices"></div>
+      </div>
+
+      <div class="stats-panel">
+        <div style="font-weight:800;margin-bottom:8px">Operatori / Inserimento</div>
+        <div id="statsOperators"></div>
+      </div>
+    </div>
+
+<div id="page-adminpanel" style="display:none">
+      <div class="section" style="margin-top:0">
+        <div class="form-grid">
+          <div class="form-group"><label>Nome visualizzato</label><input id="u-label" placeholder="Es. Andrea"></div>
+          <div class="form-group"><label>Username</label><input id="u-username" placeholder="Es. andrea"></div>
+          <div class="form-group"><label>Password</label><input id="u-password" placeholder="Password"></div>
+          <div class="form-group"><label>Ruolo</label><select id="u-role"><option value="operatore">Operatore</option><option value="admin">Admin</option></select></div>
+        </div>
+        <div class="toolbar">
+          <button onclick="saveUser()">Salva utente</button>
+          <button class="btn-secondary" onclick="clearUserForm()">Nuovo</button>
+        </div>
+      </div>
+
+      <div class="section">
+        <div class="form-group">
+          <label>Webhook notifiche Telegram / WhatsApp</label>
+          <input id="notify-endpoint" placeholder="https://... tuo webhook n8n">
+        </div>
+        <div class="toolbar">
+          <button onclick="saveNotifySettings()">Salva webhook</button>
+          <button class="btn-secondary" onclick="testNotification()">Test notifica</button>
+        </div>
+        <div class="note-box" style="margin-top:12px">
+          Inserisci un webhook n8n che poi inoltra su Telegram o WhatsApp. L'app invia una chiamata quando imposti lo stato su Lavata o Consegnata e quando premi Test.
+        </div>
+      </div>
+
+      <div class="section">
+        <div style="font-weight:700;margin-bottom:10px">Concessionarie</div>
+        <div class="form-grid">
+          <div class="form-group"><label>Nome</label><input id="d-name" placeholder="Es. Gran Prix"></div>
+          <div class="form-group"><label>Email</label><input id="d-email" placeholder="email@concessionaria.it"></div>
+          <div class="form-group"><label>Telefono</label><input id="d-phone" placeholder="+39 ..."></div>
+        </div>
+        <div class="toolbar">
+          <button onclick="saveDealer()">Salva concessionaria</button>
+          <button class="btn-secondary" onclick="clearDealerForm()">Nuova</button>
+        </div>
+        <div id="dealerListAdmin"></div>
+      </div>
+
+      <div class="section">
+        <div style="font-weight:700;margin-bottom:10px">Utenti configurati</div>
+        <div id="usersList"></div>
+      </div>
+    </div>
+  </div>
+
+  <div class="bottomnav">
+    <div class="active" data-bnav="today" onclick="setPage('today')">🏠<br>Oggi</div>
+    <div data-bnav="calendar" onclick="setPage('calendar')">📅<br>Calendario</div>
+    <div data-role-incassi data-bnav="incassi" onclick="setPage('incassi')">💶<br>Incassi</div>
+    <div data-bnav="more" onclick="toggleMoreMenu(event)">☰<br>Menu</div>
+  </div>
+  <div id="mobileMoreBackdrop" class="sheet-menu-backdrop" onclick="closeMoreMenu()"></div>
+  <div id="mobileMoreMenu" class="mobile-sheet">
+    <div class="mobile-sheet-handle"></div>
+    <div class="mobile-sheet-title">Altre sezioni</div>
+    <button onclick="openMorePage('future')">🗓️ Prossime</button>
+    <button data-role-allbookings onclick="openMorePage('all')">📚 Tutte</button>
+    <button data-role-concessionaria onclick="openMorePage('concessionaria')">🏢 Concessionaria</button>
+    <button data-role-statistiche onclick="openMorePage('statistiche')">📊 Statistiche</button>
+    <button data-role-adminpanel onclick="openMorePage('adminpanel')">⚙️ Admin</button>
+  </div></div></main>
+
+  <aside class="detail">
+    <h2 id="d-model">-</h2><div class="muted" id="d-state">-</div>
+    <div class="section"><div class="grid">
+      <div class="field"><label>Arrivo</label><strong id="d-arrivo">-</strong></div><div class="field"><label>Consegna</label><strong id="d-consegna">-</strong></div>
+      <div class="field"><label>Servizi</label><strong id="d-servizi">-</strong></div><div class="field"><label>Telefono</label><strong id="d-telefono">-</strong><div id="d-phone-actions" style="margin-top:10px;display:none;gap:8px;flex-wrap:wrap"></div></div>
+      <div class="field"><label>Extra</label><strong id="d-extra">€ 0,00</strong></div><div class="field"><label>Sconto</label><strong id="d-sconto">€ 0,00</strong></div>
+      <div class="field"><label>Concessionaria</label><strong id="d-concessionaria">-</strong></div><div class="field"><label>Stato</label><strong id="d-stato2">-</strong></div>
+      <div class="field"><label>Inserita da</label><strong id="d-createdby">-</strong></div>
+    </div><div class="total"><span>Totale</span><strong id="d-totale">€ 0,00</strong></div></div>
+    <div class="section"><label style="display:block;font-size:12px;color:var(--muted);margin-bottom:8px">Note</label><div id="d-note" class="muted">-</div>
+      <div class="actions">
+        <button class="a-yellow" data-role-status onclick="setStatus('Prenotata')">Prenotata</button>
+        <button class="a-blue" data-role-status onclick="setStatus('In lavaggio')">In lavaggio</button>
+        <button class="a-green" data-role-status onclick="setStatus('Lavata')">Lavata</button>
+        <button class="a-gray" data-role-status onclick="setStatus('Consegnata')">Consegnata</button>
+        <button class="a-red" data-role-status onclick="setStatus('No-show')">No-show</button>
+        <button type="button" type="button" class="btn-edit" data-role-edit onclick="openEditModal()">✏️ Modifica</button>
+      </div>
+    </div>
+  </aside>
+</div>
+
+<div class="modal-backdrop" id="formBackdrop"><div class="modal" onclick="event.stopPropagation()">
+  <h3 id="formTitle">Nuova prenotazione</h3>
+  <div class="form-grid">
+    <div class="form-group"><label>Modello</label><input id="f-modello"></div>
+    <div class="form-group"><label>Stato</label><select id="f-stato"><option>Prenotata</option><option>In lavaggio</option><option>Lavata</option><option>Consegnata</option><option>No-show</option></select></div>
+    <div class="form-group">
+      <label>Data arrivo</label>
+      <input id="f-arrivo-date" type="date">
+    </div>
+    <div class="form-group">
+      <label>Ora arrivo</label>
+      <input id="f-arrivo-time" type="time" step="60">
+    </div>
+    <div class="form-group">
+      <label>Data consegna</label>
+      <input id="f-consegna-date" type="date">
+    </div>
+    <div class="form-group">
+      <label>Ora consegna</label>
+      <input id="f-consegna-time" type="time" step="60">
+    </div>
+    <div class="form-group"><label>Telefono</label><input id="f-telefono"><div id="customerInfo" style="display:none;background:#11161d;border:1px solid #273041;border-radius:14px;padding:12px;margin-top:8px"></div></div>
+    <div class="form-group">
+      <label>Concessionaria</label>
+      <select id="f-concessionaria" onchange="toggleDealerSelect()"><option value="No">No</option><option value="Si">Si</option></select>
+      <div id="dealerSelectWrap" style="display:none;margin-top:8px">
+        <select id="f-dealer-name"></select>
+      </div>
+    </div>
+    <div class="form-group"><label>Extra (€)</label><input id="f-extra" type="number" value="0"></div>
+    <div class="form-group"><label>Sconto (€)</label><input id="f-sconto" type="number" value="0"></div>
+    <div class="form-group full"><label>Servizi</label><div id="servicesGrid" class="services-grid"></div></div>
+    <div class="form-group full">
+      <div class="section" style="margin-top:0;background:#11161d">
+        <div class="grid">
+          <div class="field"><label>Servizi</label><strong id="sum-services">€ 0,00</strong></div>
+          <div class="field"><label>Extra</label><strong id="sum-extra">€ 0,00</strong></div>
+          <div class="field"><label>Sconto</label><strong id="sum-sconto">€ 0,00</strong></div>
+          <div class="field"><label>Totale</label><strong id="sum-total">€ 0,00</strong></div>
+        </div>
+      </div>
+    </div>
+    <div class="form-group full"><label>Note</label><textarea id="f-note" rows="3"></textarea></div>
+  </div>
+  <div class="modal-actions"><button type="button" class="btn-secondary" onclick="handleCancelEdit()">Annulla</button><button type="button" class="btn" onclick="saveForm()">Salva</button></div>
+</div></div>
+
+<div class="modal-backdrop" id="detailBackdrop" onclick="closeDetailModal()"><div class="sheet" onclick="event.stopPropagation()">
+  <div class="sheet-header" style="align-items:center">
+    <div><h3 style="margin:0;font-size:26px" id="m-model">-</h3><div class="muted" id="m-state">-</div></div>
+    <div style="display:flex;gap:8px"><button type="button" type="button" class="btn-edit" data-role-edit onclick="openEditModal()">✏️</button><button type="button" type="button" class="sheet-close" onclick="closeDetailModal()">✕</button></div>
+  </div>
+  <div class="section" style="margin-top:0"><div class="grid">
+    <div class="field"><label>Arrivo</label><strong id="m-arrivo">-</strong></div><div class="field"><label>Consegna</label><strong id="m-consegna">-</strong></div>
+    <div class="field"><label>Servizi</label><strong id="m-servizi">-</strong></div><div class="field"><label>Telefono</label><strong id="m-telefono">-</strong><div id="m-phone-actions" style="margin-top:10px;display:none;gap:8px;flex-wrap:wrap"></div></div>
+    <div class="field"><label>Extra</label><strong id="m-extra">€ 0,00</strong></div><div class="field"><label>Sconto</label><strong id="m-sconto">€ 0,00</strong></div>
+    <div class="field"><label>Concessionaria</label><strong id="m-concessionaria">-</strong></div><div class="field"><label>Stato</label><strong id="m-stato2">-</strong></div>
+    <div class="field"><label>Inserita da</label><strong id="m-createdby">-</strong></div>
+  </div><div class="total"><span>Totale</span><strong id="m-totale">€ 0,00</strong></div></div>
+  <div class="section"><label style="display:block;font-size:12px;color:var(--muted);margin-bottom:8px">Note</label><div id="m-note" class="muted">-</div>
+    <div class="sheet-actions">
+      <button class="a-yellow" data-role-status onclick="setStatus('Prenotata')">Prenotata</button>
+      <button class="a-blue" data-role-status onclick="setStatus('In lavaggio')">In lavaggio</button>
+      <button class="a-green" data-role-status onclick="setStatus('Lavata')">Lavata</button>
+      <button class="a-gray" data-role-status onclick="setStatus('Consegnata')">Consegnata</button>
+      <button class="a-red" data-role-status onclick="setStatus('No-show')">No-show</button>
+      <button type="button" type="button" class="btn-edit" data-role-edit onclick="openEditModal()">✏️ Modifica</button>
+    </div>
+  </div>
+</div></div>
+
+<div class="toast" id="toast"></div>
+
+  <script src="app.js"></script>
+</body>
+</html>
+<script>// ====== CONFIG / GLOBAL ======
+window.addEventListener('resize', ()=>{ if (typeof currentPage !== 'undefined' && currentPage==='calendar' && typeof renderCalendar==='function') renderCalendar(); });</script>
