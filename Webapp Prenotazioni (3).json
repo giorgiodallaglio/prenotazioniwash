@@ -1,0 +1,560 @@
+{
+  "name": "Webapp Prenotazioni",
+  "nodes": [
+    {
+      "parameters": {
+        "method": "POST",
+        "url": "https://booking.visionhome.me/api/database/rows/table/292/?user_field_names=true",
+        "sendHeaders": true,
+        "headerParameters": {
+          "parameters": [
+            {
+              "name": "Authorization",
+              "value": "Token 6OlIboLYKOaZI7BqOLWmYvH3QSE4uBd6"
+            },
+            {
+              "name": "Content-Type",
+              "value": "application/json"
+            }
+          ]
+        },
+        "sendBody": true,
+        "bodyParameters": {
+          "parameters": [
+            {
+              "name": "=Stato",
+              "value": "={{ $json.body.stato }}"
+            },
+            {
+              "name": "Modello",
+              "value": "={{ $json.body.modello }}"
+            },
+            {
+              "name": "Arrivo",
+              "value": "={{ $json.body.arrivo }}"
+            },
+            {
+              "name": "Consegna",
+              "value": "={{ $json.body.consegna }}"
+            },
+            {
+              "name": "Servizi",
+              "value": "={{ $json.body.servizi }}"
+            },
+            {
+              "name": "Extra",
+              "value": "={{ $json.body.extra }}"
+            },
+            {
+              "name": "Sconto",
+              "value": "={{ $json.body.sconto }}"
+            },
+            {
+              "name": "Note",
+              "value": "={{ $json.body.note }}"
+            },
+            {
+              "name": "Inserito da",
+              "value": "={{$json.body.inserito_da}}"
+            },
+            {
+              "name": "Concessionaria",
+              "value": "={{$json.body.concessionaria}}"
+            },
+            {
+              "name": "Telefono",
+              "value": "={{$json.body.telefono}}"
+            },
+            {
+              "name": "Nome",
+              "value": "={{$json.body.nome}}"
+            },
+            {
+              "name": "Cognome",
+              "value": "={{$json.body.cognome}}"
+            }
+          ]
+        },
+        "options": {}
+      },
+      "type": "n8n-nodes-base.httpRequest",
+      "typeVersion": 4.4,
+      "position": [
+        256,
+        -32
+      ],
+      "id": "4ff6363e-319c-45a5-85f4-420b330be03e",
+      "name": "HTTP Request"
+    },
+    {
+      "parameters": {
+        "jsCode": "const token = '6OlIboLYKOaZI7BqOLWmYvH3QSE4uBd6';\nconst baseUrl = 'https://booking.visionhome.me/api/database/rows/table/292/?user_field_names=true';\nconst pageSize = 200;\n\nlet page = 1;\nlet count = 0;\nconst results = [];\n\nwhile (true) {\n  const url = `${baseUrl}&size=${pageSize}&page=${page}`;\n\n  const response = await this.helpers.httpRequest({\n    method: 'GET',\n    url,\n    headers: {\n      Authorization: `Token ${token}`\n    },\n    json: true\n  });\n\n  count = response.count ?? count;\n\n  if (Array.isArray(response.results) && response.results.length) {\n    results.push(...response.results);\n  }\n\n  if (!response.next || !Array.isArray(response.results) || response.results.length === 0) {\n    break;\n  }\n\n  page += 1;\n}\n\nreturn [{\n  json: {\n    count,\n    next: null,\n    previous: null,\n    results\n  }\n}];"
+      },
+      "type": "n8n-nodes-base.code",
+      "typeVersion": 2,
+      "position": [
+        256,
+        128
+      ],
+      "id": "881a5dbd-43e9-4b76-9cd1-b393f92c50ee",
+      "name": "HTTP Request1"
+    },
+    {
+      "parameters": {
+        "respondWith": "json",
+        "responseBody": "={{$json}}",
+        "options": {
+          "responseHeaders": {
+            "entries": [
+              {
+                "name": "Access-Control-Allow-Origin",
+                "value": "*"
+              },
+              {
+                "name": "Content-Type",
+                "value": "application/json"
+              }
+            ]
+          }
+        }
+      },
+      "type": "n8n-nodes-base.respondToWebhook",
+      "typeVersion": 1.5,
+      "position": [
+        464,
+        128
+      ],
+      "id": "9b8d3d19-9674-495c-bfdf-e8507742d76c",
+      "name": "Respond to Webhook"
+    },
+    {
+      "parameters": {
+        "method": "PATCH",
+        "url": "=https://booking.visionhome.me/api/database/rows/table/292/{{$json.body.id}}/?user_field_names=true",
+        "sendHeaders": true,
+        "headerParameters": {
+          "parameters": [
+            {
+              "name": "Authorization",
+              "value": "Token 6OlIboLYKOaZI7BqOLWmYvH3QSE4uBd6"
+            },
+            {
+              "name": "Content-Type",
+              "value": "application/json"
+            }
+          ]
+        },
+        "sendBody": true,
+        "bodyParameters": {
+          "parameters": [
+            {
+              "name": "Stato",
+              "value": "={{$json.body.stato}}"
+            }
+          ]
+        },
+        "options": {}
+      },
+      "type": "n8n-nodes-base.httpRequest",
+      "typeVersion": 4.4,
+      "position": [
+        256,
+        304
+      ],
+      "id": "dc9b67a8-68e4-467a-af99-539a67fc4bc4",
+      "name": "HTTP Request2"
+    },
+    {
+      "parameters": {
+        "respondWith": "json",
+        "responseBody": "={{$json}}",
+        "options": {
+          "responseHeaders": {
+            "entries": [
+              {
+                "name": "Access-Control-Allow-Origin",
+                "value": "*"
+              },
+              {
+                "name": "Content-Type",
+                "value": "application/json"
+              }
+            ]
+          }
+        }
+      },
+      "type": "n8n-nodes-base.respondToWebhook",
+      "typeVersion": 1.5,
+      "position": [
+        464,
+        304
+      ],
+      "id": "89c5ce42-994e-463b-a982-5d97edb92f48",
+      "name": "Respond to Webhook1"
+    },
+    {
+      "parameters": {
+        "url": "https://booking.visionhome.me/api/database/rows/table/293/?user_field_names=true",
+        "sendHeaders": true,
+        "headerParameters": {
+          "parameters": [
+            {
+              "name": "Authorization",
+              "value": "Token 6OlIboLYKOaZI7BqOLWmYvH3QSE4uBd6"
+            }
+          ]
+        },
+        "options": {}
+      },
+      "type": "n8n-nodes-base.httpRequest",
+      "typeVersion": 4.4,
+      "position": [
+        256,
+        512
+      ],
+      "id": "3b2478f2-2dcf-4681-b56e-958531a1de4e",
+      "name": "HTTP Request3"
+    },
+    {
+      "parameters": {
+        "respondWith": "json",
+        "responseBody": "={{$json}}",
+        "options": {
+          "responseHeaders": {
+            "entries": [
+              {
+                "name": "Access-Control-Allow-Origin",
+                "value": "*"
+              },
+              {
+                "name": "Content-Type",
+                "value": "application/json"
+              }
+            ]
+          }
+        }
+      },
+      "type": "n8n-nodes-base.respondToWebhook",
+      "typeVersion": 1.5,
+      "position": [
+        464,
+        512
+      ],
+      "id": "e83d9d7c-b26b-49fb-8e03-926d8fea529e",
+      "name": "Respond to Webhook2"
+    },
+    {
+      "parameters": {
+        "method": "PATCH",
+        "url": "=https://booking.visionhome.me/api/database/rows/table/292/{{$json.body.id}}/?user_field_names=true",
+        "sendHeaders": true,
+        "headerParameters": {
+          "parameters": [
+            {
+              "name": "Authorization",
+              "value": "Token 6OlIboLYKOaZI7BqOLWmYvH3QSE4uBd6"
+            },
+            {
+              "name": "Content-Type",
+              "value": "application/json"
+            }
+          ]
+        },
+        "sendBody": true,
+        "bodyParameters": {
+          "parameters": [
+            {
+              "name": "Modello",
+              "value": "={{$json.body.modello}}"
+            },
+            {
+              "name": "Arrivo",
+              "value": "={{$json.body.arrivo}}"
+            },
+            {
+              "name": "Consegna",
+              "value": "={{$json.body.consegna}}"
+            },
+            {
+              "name": "Servizi",
+              "value": "={{$json.body.servizi}}"
+            },
+            {
+              "name": "Extra",
+              "value": "={{$json.body.extra}}"
+            },
+            {
+              "name": "Sconto",
+              "value": "={{$json.body.sconto}}"
+            },
+            {
+              "name": "Telefono",
+              "value": "={{$json.body.telefono}}"
+            },
+            {
+              "name": "Note",
+              "value": "={{$json.body.note}}"
+            },
+            {
+              "name": "Stato",
+              "value": "={{$json.body.stato}}"
+            },
+            {
+              "name": "Inserito da",
+              "value": "={{$json.body.inserito_da}}"
+            },
+            {
+              "name": "Nome",
+              "value": "={{$json.body.nome}}"
+            },
+            {
+              "name": "Cognome",
+              "value": "={{$json.body.cognome}}"
+            },
+            {
+              "name": "Concessionaria",
+              "value": "={{$json.body.concessionaria}}"
+            },
+            {
+              "name": "Concessionaria nome",
+              "value": "={{$json.body.nome_concessionaria}}"
+            }
+          ]
+        },
+        "options": {}
+      },
+      "type": "n8n-nodes-base.httpRequest",
+      "typeVersion": 4.4,
+      "position": [
+        256,
+        704
+      ],
+      "id": "6b7d68c3-b1b9-4adb-9a3c-d53c966c198c",
+      "name": "HTTP Request4"
+    },
+    {
+      "parameters": {
+        "respondWith": "json",
+        "responseBody": "={{$json}}",
+        "options": {
+          "responseHeaders": {
+            "entries": [
+              {
+                "name": "Access-Control-Allow-Origin",
+                "value": "*"
+              },
+              {
+                "name": "Content-Type",
+                "value": "application/json"
+              }
+            ]
+          }
+        }
+      },
+      "type": "n8n-nodes-base.respondToWebhook",
+      "typeVersion": 1.5,
+      "position": [
+        464,
+        704
+      ],
+      "id": "c5841a98-0b3f-450d-9060-305ec79255bc",
+      "name": "Respond to Webhook3"
+    },
+    {
+      "parameters": {
+        "httpMethod": "POST",
+        "path": "prenotazione",
+        "options": {}
+      },
+      "type": "n8n-nodes-base.webhook",
+      "typeVersion": 2.1,
+      "position": [
+        48,
+        -32
+      ],
+      "id": "08d046d7-7045-4e24-8c7f-0386eb4917a2",
+      "name": "prenotazione-webhook",
+      "webhookId": "7ea76bd5-1fa0-4b62-a111-1c20c2c945cb"
+    },
+    {
+      "parameters": {
+        "path": "prenotazioni-oggi",
+        "responseMode": "responseNode",
+        "options": {}
+      },
+      "type": "n8n-nodes-base.webhook",
+      "typeVersion": 2.1,
+      "position": [
+        48,
+        128
+      ],
+      "id": "13375f18-e76c-49e6-a8b1-9d4b8d26d8ef",
+      "name": "prenotazioni-oggi-webhook",
+      "webhookId": "f1bba651-7457-4406-8bf6-5dbd9ededa02"
+    },
+    {
+      "parameters": {
+        "httpMethod": "POST",
+        "path": "aggiorna-stato",
+        "responseMode": "responseNode",
+        "options": {}
+      },
+      "type": "n8n-nodes-base.webhook",
+      "typeVersion": 2.1,
+      "position": [
+        48,
+        304
+      ],
+      "id": "94edb01a-985f-493e-ad7d-9b848657fe9c",
+      "name": "aggiorna-stato-webhook",
+      "webhookId": "d2af3585-ec91-479a-9d1a-fbafe0747d9f"
+    },
+    {
+      "parameters": {
+        "path": "servizi",
+        "responseMode": "responseNode",
+        "options": {}
+      },
+      "type": "n8n-nodes-base.webhook",
+      "typeVersion": 2.1,
+      "position": [
+        48,
+        512
+      ],
+      "id": "752b9f02-4c48-4808-9982-104a3560004a",
+      "name": "servizi-webhook",
+      "webhookId": "41f21bd2-c3c6-4fce-a3ce-75be292a393a"
+    },
+    {
+      "parameters": {
+        "httpMethod": "POST",
+        "path": "modifica-prenotazione",
+        "responseMode": "responseNode",
+        "options": {}
+      },
+      "type": "n8n-nodes-base.webhook",
+      "typeVersion": 2.1,
+      "position": [
+        48,
+        704
+      ],
+      "id": "056662bf-b09b-4543-8e46-47eda136d894",
+      "name": "modifica-prenotazione-webhook",
+      "webhookId": "0469c5fd-16c1-47ad-be70-ba180b7f724c"
+    }
+  ],
+  "pinData": {},
+  "connections": {
+    "HTTP Request1": {
+      "main": [
+        [
+          {
+            "node": "Respond to Webhook",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "HTTP Request2": {
+      "main": [
+        [
+          {
+            "node": "Respond to Webhook1",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "HTTP Request3": {
+      "main": [
+        [
+          {
+            "node": "Respond to Webhook2",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "HTTP Request4": {
+      "main": [
+        [
+          {
+            "node": "Respond to Webhook3",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "prenotazione-webhook": {
+      "main": [
+        [
+          {
+            "node": "HTTP Request",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "prenotazioni-oggi-webhook": {
+      "main": [
+        [
+          {
+            "node": "HTTP Request1",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "aggiorna-stato-webhook": {
+      "main": [
+        [
+          {
+            "node": "HTTP Request2",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "servizi-webhook": {
+      "main": [
+        [
+          {
+            "node": "HTTP Request3",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "modifica-prenotazione-webhook": {
+      "main": [
+        [
+          {
+            "node": "HTTP Request4",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    }
+  },
+  "active": true,
+  "settings": {
+    "executionOrder": "v1",
+    "binaryMode": "separate"
+  },
+  "versionId": "22faf737-92b8-4918-9563-4292cc618b83",
+  "meta": {
+    "templateCredsSetupCompleted": true,
+    "instanceId": "c416cca2f62a9c29aaa96c2719f8fdc40e9ea35852f82aadfb5486f7a9e2443b"
+  },
+  "id": "v0ckkGWak3ZP85rD",
+  "tags": []
+}
