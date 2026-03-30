@@ -43,7 +43,7 @@
     .role-chip{margin-top:10px;background:#141c27;border:1px solid #2a364a;color:#d8e8ff}
     .phone-wrap{display:grid;place-items:center;padding:18px;min-height:760px}
     .phone{width:100%;max-width:430px;height:820px;background:#090b10;border-radius:42px;border:10px solid #111319;box-shadow:0 30px 70px rgba(0,0,0,.5);overflow:visible;position:relative}
-        .statusbar{height:26px}
+    .statusbar{height:26px}
     .screen{padding:10px 14px 140px;height:calc(100% - 26px);overflow:auto;position:relative;z-index:1}
     .topbar{display:flex;justify-content:space-between;align-items:center;margin-top:8px;margin-bottom:14px;gap:10px}
     .topbar-right{display:flex;gap:8px;align-items:center}
@@ -59,7 +59,8 @@
     .toolbar{display:flex;gap:8px;flex-wrap:wrap;margin-top:16px}
     .toolbar button{background:#1a2330;color:#dfe6f5;border:1px solid #253245;border-radius:12px;padding:10px 12px;cursor:pointer}
     .list{display:flex;flex-direction:column;gap:10px}
-    .card{background:linear-gradient(180deg,#10151d,#10141b);border:1px solid #202735;border-radius:22px;padding:16px;display:grid;grid-template-columns:1fr auto;gap:12px;cursor:pointer;transition:transform .12s ease,border-color .12s ease,box-shadow .12s ease;position:relative;padding-bottom:52px}.card:hover{transform:translateY(-1px);border-color:#31415a;box-shadow:0 10px 24px rgba(0,0,0,.22)}
+    .card{background:linear-gradient(180deg,#10151d,#10141b);border:1px solid #202735;border-radius:22px;padding:16px;display:grid;grid-template-columns:1fr auto;gap:12px;cursor:pointer;transition:transform .12s ease,border-color .12s ease,box-shadow .12s ease;position:relative;padding-bottom:52px}
+    .card:hover{transform:translateY(-1px);border-color:#31415a;box-shadow:0 10px 24px rgba(0,0,0,.22)}
     .meta{font-size:12px;color:#6fbfff;margin-bottom:6px;font-weight:700}
     .meta2{font-size:12px;color:#8fd3ff;margin-top:2px;font-weight:600}
     .model{font-size:21px;font-weight:800}
@@ -70,6 +71,8 @@
     .b-lavata{background:rgba(37,192,109,.14);color:#85f0b8;border-color:rgba(37,192,109,.25)}
     .b-consegnata{background:rgba(111,119,136,.15);color:#c2c8d5;border-color:rgba(111,119,136,.25)}
     .b-noshow{background:rgba(255,107,107,.12);color:#ff9e9e;border-color:rgba(255,107,107,.22)}
+    .b-sent{background:rgba(37,192,109,.14);color:#85f0b8;border-color:rgba(37,192,109,.25)}
+    .b-pending{background:rgba(57,160,255,.14);color:#91cbff;border-color:rgba(57,160,255,.25)}
     .detail{padding:22px;display:flex;flex-direction:column}
     .detail h2{margin:0 0 10px}
     .muted{color:var(--muted)}
@@ -118,68 +121,24 @@
     .note-box{font-size:13px;color:#b9c3d9}
     .toast{position:fixed;right:16px;bottom:16px;z-index:2000;display:none;padding:12px 14px;border-radius:14px}
     .toast.show{display:block}
-    
-    .sheet-menu-backdrop{
-      position:absolute;
-      inset:0;
-      background:rgba(0,0,0,.32);
-      z-index:45;
-      display:none;
-    }
+    .rapportino-card-status{margin-top:8px;font-size:12px;color:#a9d4ff;font-weight:700}
+    .rapportino-actions{display:flex;gap:8px;align-items:flex-start}
+    .sheet-menu-backdrop{position:absolute;inset:0;background:rgba(0,0,0,.32);z-index:45;display:none}
     .sheet-menu-backdrop.show{display:block}
     .mobile-sheet{
-      position:absolute;
-      left:12px;
-      right:12px;
-      bottom:88px;
-      background:rgba(28,34,44,.62);
-      border:1px solid rgba(255,255,255,.10);
-      border-radius:24px 24px 20px 20px;
-      padding:10px 10px 12px;
-      box-shadow:0 20px 50px rgba(0,0,0,.35), inset 0 1px 0 rgba(255,255,255,.06);
-      z-index:50;
-      transform:translateY(18px);
-      opacity:0;
-      pointer-events:none;
-      transition:transform .2s ease, opacity .2s ease;
-      backdrop-filter:blur(18px) saturate(140%);
-      -webkit-backdrop-filter:blur(18px) saturate(140%);
+      position:absolute;left:12px;right:12px;bottom:88px;background:rgba(28,34,44,.62);
+      border:1px solid rgba(255,255,255,.10);border-radius:24px 24px 20px 20px;padding:10px 10px 12px;
+      box-shadow:0 20px 50px rgba(0,0,0,.35), inset 0 1px 0 rgba(255,255,255,.06);z-index:50;
+      transform:translateY(18px);opacity:0;pointer-events:none;transition:transform .2s ease, opacity .2s ease;
+      backdrop-filter:blur(18px) saturate(140%);-webkit-backdrop-filter:blur(18px) saturate(140%);
     }
-    .mobile-sheet.show{
-      transform:translateY(0);
-      opacity:1;
-      pointer-events:auto;
-    }
-    .mobile-sheet-handle{
-      width:44px;
-      height:5px;
-      border-radius:999px;
-      background:#3a4353;
-      margin:4px auto 10px;
-    }
-    .mobile-sheet-title{
-      text-align:center;
-      font-size:13px;
-      color:var(--muted);
-      margin-bottom:10px;
-    }
+    .mobile-sheet.show{transform:translateY(0);opacity:1;pointer-events:auto}
+    .mobile-sheet-handle{width:44px;height:5px;border-radius:999px;background:#3a4353;margin:4px auto 10px}
+    .mobile-sheet-title{text-align:center;font-size:13px;color:var(--muted);margin-bottom:10px}
     .mobile-sheet button{
-      width:100%;
-      text-align:left;
-      background:rgba(255,255,255,.06);
-      color:#eef2fb;
-      border:1px solid rgba(255,255,255,.08);
-      border-radius:14px;
-      padding:14px 14px;
-      margin-bottom:8px;
-      cursor:pointer;
-      font-weight:700;
-      backdrop-filter:blur(8px);
-      -webkit-backdrop-filter:blur(8px);
+      width:100%;text-align:left;background:rgba(255,255,255,.06);color:#eef2fb;border:1px solid rgba(255,255,255,.08);
+      border-radius:14px;padding:14px 14px;margin-bottom:8px;cursor:pointer;font-weight:700
     }
-    .mobile-sheet button:last-child{margin-bottom:0}
-
-    
     .stats-board{display:grid;grid-template-columns:1fr 1fr;gap:10px;margin-bottom:14px}
     .stats-board .stat-card{background:#11161d;border:1px solid #222833;border-radius:18px;padding:14px}
     .stats-board .stat-title{font-size:12px;color:var(--muted);margin-bottom:6px}
@@ -188,41 +147,15 @@
     .stats-row{display:flex;justify-content:space-between;gap:12px;padding:10px 0;border-bottom:1px solid #202733}
     .stats-row:last-child{border-bottom:none;padding-bottom:0}
     .stats-row:first-child{padding-top:0}
-
-    
     .urgency-tag{
-      display:inline-flex;align-items:center;gap:6px;
-      padding:6px 10px;border-radius:999px;
+      display:inline-flex;align-items:center;gap:6px;padding:6px 10px;border-radius:999px;
       background:rgba(255,255,255,.06);border:1px solid rgba(255,255,255,.08);
       color:#dbe7ff;font-size:12px;font-weight:700;margin-top:10px
     }
     .quick-next{
-      margin-top:8px;background:#1a2330;color:#dfe6f5;border:1px solid #253245;border-radius:10px;padding:8px 10px;cursor:pointer;font-weight:700
+      margin-top:8px;background:#1a2330;color:#dfe6f5;border:1px solid #253245;border-radius:10px;
+      padding:8px 10px;cursor:pointer;font-weight:700
     }
-
-    @media (max-width:1280px){.app{grid-template-columns:260px 1fr}.detail{display:none}}
-    @media (max-width:860px){
-      .app{grid-template-columns:1fr;padding:0;gap:0}
-      .sidebar,.detail{display:none}
-      .phone-wrap{padding:0;background:none;border:none;box-shadow:none;min-height:100vh}
-      .phone{height:100vh;border-radius:0;border:none;max-width:none;width:100%}
-      .screen{padding:14px 14px 126px}
-      .model{font-size:18px}
-      .form-grid,.services-grid,.grid,.stats-grid{grid-template-columns:1fr}
-      .filter-row{grid-template-columns:1fr !important;gap:10px}
-      .modal,.sheet,.login-card{padding:18px;border-radius:22px}
-      .service-pill{padding:12px}
-      .service-name{font-size:15px;line-height:1.25}
-      .service-price{font-size:14px}
-    }
-  
-.card.prenotata{background:linear-gradient(135deg, rgba(255,184,0,0.15), rgba(255,140,0,0.05))}
-.card.inlavaggio{background:linear-gradient(135deg, rgba(59,130,246,0.15), rgba(30,64,175,0.05))}
-.card.lavata{background:linear-gradient(135deg, rgba(34,197,94,0.15), rgba(22,101,52,0.05))}
-.card.consegnata{background:linear-gradient(135deg, rgba(148,163,184,0.12), rgba(71,85,105,0.05))}
-.card.noshow{background:linear-gradient(135deg, rgba(239,68,68,0.15), rgba(127,29,29,0.05))}
-
-
     .calendar-shell{display:flex;flex-direction:column;gap:12px;height:100%}
     .calendar-toolbar{display:flex;align-items:center;justify-content:space-between;gap:10px;flex-wrap:wrap;margin-bottom:10px;flex:0 0 auto}
     .calendar-toolbar-left,.calendar-toolbar-right{display:flex;align-items:center;gap:8px;flex-wrap:wrap}
@@ -240,261 +173,63 @@
     .calendar-events{position:absolute;left:72px;right:0;top:0;bottom:0}
     .calendar-now-line{position:absolute;left:0;right:0;height:2px;background:#46b4ff;box-shadow:0 0 0 1px rgba(70,180,255,.15);z-index:3}
     .calendar-event{position:absolute;border-radius:20px;padding:12px 14px;border:1px solid rgba(255,255,255,.14);cursor:pointer;overflow:hidden;z-index:2;background:rgba(255,255,255,.07);box-shadow:inset 0 1px 0 rgba(255,255,255,.10), 0 10px 28px rgba(0,0,0,.22);backdrop-filter:blur(14px) saturate(145%);-webkit-backdrop-filter:blur(14px) saturate(145%);transition:transform .18s ease, box-shadow .18s ease, border-color .18s ease}
-    .calendar-event .event-time{font-size:12px;opacity:.9;margin-bottom:4px;font-weight:700}
-    .calendar-event .event-title{font-size:14px;font-weight:800;line-height:1.2}
-    .calendar-event .event-sub{font-size:12px;opacity:.92;margin-top:4px}
-    .calendar-empty{padding:18px;border-radius:18px;background:#11161d;border:1px solid #222833;color:#cfd8ea}
-
-
+    .calendar-event .event-time{font-size:12px;opacity:.95;margin-bottom:6px;font-weight:700}
+    .calendar-event .event-title{font-size:15px;font-weight:800;line-height:1.15}
+    .calendar-event .event-sub{font-size:12px;opacity:.95;margin-top:6px;line-height:1.2}
+    .calendar-event.b-prenotata{background:linear-gradient(180deg, rgba(255,196,74,.18), rgba(255,196,74,.09));border-color:rgba(255,214,124,.26)}
+    .calendar-event.b-lavorazione{background:linear-gradient(180deg, rgba(70,180,255,.18), rgba(70,180,255,.08));border-color:rgba(145,203,255,.24)}
+    .calendar-event.b-lavata{background:linear-gradient(180deg, rgba(37,192,109,.18), rgba(37,192,109,.08));border-color:rgba(133,240,184,.24)}
+    .calendar-event.b-consegnata{background:linear-gradient(180deg, rgba(123,135,158,.18), rgba(123,135,158,.08));border-color:rgba(194,200,213,.20)}
+    .calendar-event.b-noshow{background:linear-gradient(180deg, rgba(209,80,80,.18), rgba(209,80,80,.08));border-color:rgba(255,158,158,.22)}
+    .calendar-scroll-hint{display:none;font-size:12px;color:var(--muted);margin-top:8px;text-align:right}
+    .card.prenotata{background:linear-gradient(135deg, rgba(255,184,0,0.15), rgba(255,140,0,0.05))}
+    .card.inlavaggio{background:linear-gradient(135deg, rgba(59,130,246,0.15), rgba(30,64,175,0.05))}
+    .card.lavata{background:linear-gradient(135deg, rgba(34,197,94,0.15), rgba(22,101,52,0.05))}
+    .card.consegnata{background:linear-gradient(135deg, rgba(148,163,184,0.12), rgba(71,85,105,0.05))}
+    .card.noshow{background:linear-gradient(135deg, rgba(239,68,68,0.15), rgba(127,29,29,0.05))}
     html, body{
       height:100%;
       touch-action: manipulation;
       -webkit-text-size-adjust: 100%;
       overscroll-behavior: none;
     }
-    input, select, textarea, button{
-      font-size:16px;
-    }
-
-
-    .calendar-event:hover{
-      transform:translateY(-1px);
-      box-shadow:inset 0 1px 0 rgba(255,255,255,.12), 0 14px 32px rgba(0,0,0,.26);
-    }
-    .calendar-event .event-time{
-      font-size:12px;
-      opacity:.95;
-      margin-bottom:6px;
-      font-weight:700;
-      letter-spacing:.01em;
-    }
-    .calendar-event .event-title{
-      font-size:15px;
-      font-weight:800;
-      line-height:1.15;
-      text-shadow:0 1px 0 rgba(0,0,0,.16);
-    }
-    .calendar-event .event-sub{
-      font-size:12px;
-      opacity:.95;
-      margin-top:6px;
-      line-height:1.2;
-    }
-    .calendar-event.b-prenotata{
-      background:linear-gradient(180deg, rgba(255,196,74,.18), rgba(255,196,74,.09));
-      border-color:rgba(255,214,124,.26);
-      box-shadow:inset 0 1px 0 rgba(255,235,185,.18), 0 0 0 1px rgba(255,196,74,.05), 0 10px 28px rgba(0,0,0,.20), 0 0 26px rgba(255,196,74,.12);
-    }
-    .calendar-event.b-lavorazione{
-      background:linear-gradient(180deg, rgba(70,180,255,.18), rgba(70,180,255,.08));
-      border-color:rgba(145,203,255,.24);
-      box-shadow:inset 0 1px 0 rgba(210,236,255,.14), 0 0 0 1px rgba(70,180,255,.05), 0 10px 28px rgba(0,0,0,.20), 0 0 28px rgba(70,180,255,.14);
-    }
-    .calendar-event.b-lavata{
-      background:linear-gradient(180deg, rgba(37,192,109,.18), rgba(37,192,109,.08));
-      border-color:rgba(133,240,184,.24);
-      box-shadow:inset 0 1px 0 rgba(212,255,228,.14), 0 0 0 1px rgba(37,192,109,.05), 0 10px 28px rgba(0,0,0,.20), 0 0 28px rgba(37,192,109,.14);
-    }
-    .calendar-event.b-consegnata{
-      background:linear-gradient(180deg, rgba(123,135,158,.18), rgba(123,135,158,.08));
-      border-color:rgba(194,200,213,.20);
-      box-shadow:inset 0 1px 0 rgba(240,243,250,.10), 0 0 0 1px rgba(123,135,158,.05), 0 10px 28px rgba(0,0,0,.20), 0 0 24px rgba(123,135,158,.10);
-    }
-    .calendar-event.b-noshow{
-      background:linear-gradient(180deg, rgba(209,80,80,.18), rgba(209,80,80,.08));
-      border-color:rgba(255,158,158,.22);
-      box-shadow:inset 0 1px 0 rgba(255,227,227,.10), 0 0 0 1px rgba(209,80,80,.05), 0 10px 28px rgba(0,0,0,.20), 0 0 26px rgba(209,80,80,.14);
-    }
-
-
-    .bottomnav::before{
-      content:"";
-      position:absolute;
-      inset:0;
-      border-radius:inherit;
-      background:linear-gradient(to bottom, rgba(255,255,255,.08), rgba(255,255,255,0));
-      pointer-events:none;
-    }
-    .calendar-shell,.calendar-board,.calendar-grid{position:relative;z-index:1}
-    @media (max-width:860px){
-      .bottomnav{
-        left:12px !important;
-        right:12px !important;
-        width:auto !important;
-        bottom:12px !important;
-      }
-    }
-
-
-    .calendar-scroll-hint{
-      display:none;
-      font-size:12px;
-      color:var(--muted);
-      margin-top:8px;
-      text-align:right;
-    }
-    @media (max-width:860px){
-      .calendar-event{
-        padding:10px 10px;
-        border-radius:18px;
-      }
-      .calendar-event .event-time{
-        font-size:11px;
-        margin-bottom:4px;
-      }
-      .calendar-event .event-title{
-        font-size:13px;
-      }
-      .calendar-event .event-sub{
-        font-size:11px;
-        margin-top:4px;
-      }
-      .calendar-scroll-hint.show{
-        display:block;
-      }
-    }
-
-
-    body.calendar-page .screen{
-      overflow:hidden !important;
-      display:flex !important;
-      flex-direction:column !important;
-      height:calc(100% - 26px) !important;
-      min-height:0 !important;
-    }
-    body.calendar-page #page-calendar{
-      display:flex !important;
-      flex-direction:column !important;
-      flex:1 1 auto !important;
-      min-height:0 !important;
-      height:100% !important;
-      overflow:hidden !important;
-    }
-    body.calendar-page .calendar-shell{
-      display:flex !important;
-      flex-direction:column !important;
-      flex:1 1 auto !important;
-      min-height:0 !important;
-      height:100% !important;
-      overflow:hidden !important;
-    }
-    body.calendar-page .calendar-board{
-      flex:1 1 auto !important;
-      min-height:0 !important;
-      height:auto !important;
-      overflow:auto !important;
-      overscroll-behavior:contain !important;
-      -webkit-overflow-scrolling:touch !important;
-    }
-    body.calendar-page .calendar-grid{
-      min-height:1248px !important;
-    }
-    @media (max-width:860px){
-      .app{padding:0}
-      
-
-
-    body.calendar-page{
-      position:fixed !important;
-      width:100% !important;
-      left:0 !important;
-      right:0 !important;
-      overflow:hidden !important;
-    }
-
-
-    body.calendar-page .screen{
-      overflow:hidden !important;
-    }
-    body.calendar-page #page-calendar{
-      position:absolute !important;
-      left:14px;
-      right:14px;
-      top:74px;
-      bottom:110px;
-      display:block !important;
-      overflow:hidden !important;
-      z-index:2;
-    }
-    body.calendar-page .calendar-shell{
-      height:100%;
-      display:flex;
-      flex-direction:column;
-      overflow:hidden;
-      min-height:0;
-    }
-    body.calendar-page .calendar-toolbar{
-      flex:0 0 auto;
-      margin-bottom:10px;
-    }
-    body.calendar-page .calendar-board{
-      flex:1 1 auto;
-      min-height:0;
-      overflow:auto !important;
-      -webkit-overflow-scrolling:touch;
-      overscroll-behavior:contain;
-    }
-    body.calendar-page .calendar-empty,
-    body.calendar-page .calendar-scroll-hint{
-      flex:0 0 auto;
-      margin-top:8px;
-    }
-    @media (max-width:860px){
-      body.calendar-page #page-calendar{
-        left:14px;
-        right:14px;
-        top:78px;
-        bottom:104px;
-      }
-    }
-
-
+    input, select, textarea, button{font-size:16px}
     .price-box{
-      min-width:160px;
-      padding:12px 16px;
-      border-radius:22px;
-      background:rgba(255,255,255,.06);
-      border:1px solid rgba(255,255,255,.10);
-      backdrop-filter:blur(12px);
-      -webkit-backdrop-filter:blur(12px);
-      box-shadow:inset 0 1px 0 rgba(255,255,255,.06);
-      display:flex;
-      flex-direction:column;
-      justify-content:center;
-      align-items:flex-start;
-      margin-top:12px;
-      margin-left:auto;
+      min-width:160px;padding:12px 16px;border-radius:22px;background:rgba(255,255,255,.06);
+      border:1px solid rgba(255,255,255,.10);display:flex;flex-direction:column;justify-content:center;align-items:flex-start;
+      margin-top:12px;margin-left:auto;
     }
-    .price-label{
-      font-size:13px;
-      color:#aeb9cc;
-      margin-bottom:4px;
+    .card-side{display:flex;flex-direction:column;align-items:flex-end;justify-content:space-between;min-width:170px}
+    .card-price{position:absolute;right:16px;bottom:14px;font-size:24px;font-weight:800;color:#ffffff;opacity:.96;letter-spacing:-0.5px}
+    @media (max-width:1280px){.app{grid-template-columns:260px 1fr}.detail{display:none}}
+    @media (max-width:860px){
+      .app{grid-template-columns:1fr;padding:0;gap:0}
+      .sidebar,.detail{display:none}
+      .phone-wrap{padding:0;background:none;border:none;box-shadow:none;min-height:100vh}
+      .phone{height:100vh;border-radius:0;border:none;max-width:none;width:100%}
+      .screen{padding:14px 14px 126px}
+      .model{font-size:18px}
+      .form-grid,.services-grid,.grid,.stats-grid{grid-template-columns:1fr}
+      .filter-row{grid-template-columns:1fr !important;gap:10px}
+      .modal,.sheet,.login-card{padding:18px;border-radius:22px}
+      .service-pill{padding:12px}
+      .service-name{font-size:15px;line-height:1.25}
+      .service-price{font-size:14px}
+      .calendar-scroll-hint.show{display:block}
     }
-    .price-value{
-      font-size:30px;
-      font-weight:800;
-      line-height:1;
-      color:#ffffff;
-      letter-spacing:-0.02em;
-    }
-    .card-side{
-      display:flex;
-      flex-direction:column;
-      align-items:flex-end;
-      justify-content:space-between;
-      min-width:170px;
-    }
-
-
-    .card-price{position:absolute;right:16px;bottom:14px;font-size:24px;font-weight:800;color:#ffffff;opacity:.96;letter-spacing:-0.5px;text-shadow:0 0 12px rgba(255,255,255,.12)}
-</style>
+  </style>
 </head>
 <body>
+
 <div class="login-backdrop" id="loginBackdrop">
   <div class="login-card">
-    <div class="brand"><div class="logo"><img src="logo-dallaglio.png" alt="Dall'Aglio logo"></div><div>Accesso<div style="font-size:13px;color:var(--muted);font-weight:500">Admin / Operatore</div></div></div>
+    <div class="brand">
+      <div class="logo"><img src="logo-dallaglio.png" alt="Dall'Aglio logo"></div>
+      <div>Accesso<div style="font-size:13px;color:var(--muted);font-weight:500">Admin / Operatore</div></div>
+    </div>
     <div class="form-group"><label>Utente</label><input id="loginUser" placeholder="username"></div>
     <div class="form-group" style="margin-top:12px"><label>Password</label><input id="loginPass" type="password" placeholder="password"></div>
+    <div id="loginHint" class="muted" style="margin-top:10px;font-size:13px"></div>
     <label class="remember-row"><input type="checkbox" id="rememberCreds" checked><span>Salva credenziali</span></label>
     <div class="toolbar" style="margin-top:16px"><button onclick="login()">Entra</button></div>
   </div>
@@ -502,8 +237,12 @@
 
 <div class="app">
   <aside class="sidebar">
-    <div class="brand"><div class="logo"><img src="logo-dallaglio.png" alt="Dall'Aglio logo"></div><div>Prenotazioni<div style="font-size:13px;color:var(--muted);font-weight:500">Dashboard</div></div></div>
-    <div class="role-chip" id="roleBadge">: -</div>
+    <div class="brand">
+      <div class="logo"><img src="logo-dallaglio.png" alt="Dall'Aglio logo"></div>
+      <div>Prenotazioni<div style="font-size:13px;color:var(--muted);font-weight:500">Dashboard</div></div>
+    </div>
+
+    <div class="role-chip" id="roleBadge">Ruolo: -</div>
 
     <div class="side-title">Navigazione</div>
     <div class="nav-item active" data-nav="today" onclick="setPage('today', this)"><span>🚗 Prenotazioni</span><small>oggi</small></div>
@@ -512,6 +251,7 @@
     <div class="nav-item" data-role-incassi data-nav="incassi" onclick="setPage('incassi', this)"><span>💶 Incassi</span><small>oggi</small></div>
     <div class="nav-item" data-role-allbookings data-nav="all" onclick="setPage('all', this)"><span>📚 Tutte</span><small>filtri</small></div>
     <div class="nav-item" data-role-concessionaria data-nav="concessionaria" onclick="setPage('concessionaria', this)"><span>🏢 Concessionaria</span><small>riepilogo</small></div>
+    <div class="nav-item" data-role-rapportini data-nav="rapportino" onclick="setPage('rapportino', this)"><span>📄 Rapportini</span><small>invio</small></div>
     <div class="nav-item" data-role-statistiche data-nav="statistiche" onclick="setPage('statistiche', this)"><span>📊 Statistiche</span><small>dashboard</small></div>
     <div class="nav-item" data-role-adminpanel data-nav="adminpanel" onclick="setPage('adminpanel', this)"><span>⚙️ Admin</span><small>utenti</small></div>
     <div class="nav-item" data-role-create onclick="openCreateModal()"><span>➕ Nuova auto</span><small>live</small></div>
@@ -523,337 +263,388 @@
     </div>
   </aside>
 
-  <main class="phone-wrap"><div class="phone"><div class="statusbar"></div><div class="screen">
-    <div class="topbar">
-      <div class="title" id="screenTitle">Prenotazioni</div>
-      <div class="topbar-right">
-        <button class="btn-secondary" onclick="loadAll()">↻</button>
-        <button class="btn btn-icon" id="topCreateBtn" onclick="openCreateModal()">+</button>
-        <button class="btn-danger" onclick="logout()">⎋</button>
-      </div>
-    </div>
-
-    <div id="page-today">
-      <div class="stats-grid" id="todayStats"></div>
-      <div class="filter-row">
-        <select id="todayStatusFilter" class="select-input" onchange="render()">
-          <option value="all">Tutti gli stati</option>
-          <option>Prenotata</option><option>In lavaggio</option><option>Lavata</option><option>Consegnata</option><option>No-show</option>
-        </select>
-        <input id="searchToday" class="search" style="margin-bottom:0" placeholder="Cerca" oninput="render()">
-      </div>
-      <div class="list" id="listToday"></div>
-    </div>
-
-    <div id="page-future" style="display:none">
-      <div class="quick-actions">
-        <button onclick="setFuturePreset('')">Tutte</button>
-        <button onclick="setFuturePreset('tomorrow')">Domani</button>
-        <button onclick="setFuturePreset('week')">Settimana</button>
-      </div>
-      <div class="filter-row">
-        <div class="form-group">
-          <label>Data / calendario</label>
-          <input id="futureDateFilter" class="date-input" type="date" onchange="render()">
-        </div>
-        <div class="form-group">
-          <label>Cerca</label>
-          <input id="searchFuture" class="search" style="margin-bottom:0" placeholder="Cerca" oninput="render()">
-        </div>
-      </div>
-      <div class="list" id="listFuture"></div>
-    </div>
-
-    
-    <div id="page-calendar" style="display:none">
-      <div class="calendar-shell">
-        <div class="calendar-toolbar">
-          <div class="calendar-toolbar-left">
-            <button class="btn-secondary" id="calendarPrevBtn" onclick="shiftCalendarDay(-1)">←</button>
-            <button class="btn-secondary" onclick="goTodayCalendar()">Oggi</button>
-            <button class="btn-secondary" onclick="shiftCalendarDay(1)">→</button>
-          </div>
-          <div class="calendar-date-title" id="calendarDateTitle">Calendario</div>
-          <div class="calendar-toolbar-right">
-            <input id="calendarDateFilter" class="date-input" type="date" onchange="onCalendarDateChange()">
+  <main class="phone-wrap">
+    <div class="phone">
+      <div class="statusbar"></div>
+      <div class="screen">
+        <div class="topbar">
+          <div class="title" id="screenTitle">Prenotazioni</div>
+          <div class="topbar-right">
+            <button class="btn-secondary" onclick="loadAll()">↻</button>
+            <button class="btn btn-icon" id="topCreateBtn" onclick="openCreateModal()">+</button>
+            <button class="btn-danger" onclick="logout()">⎋</button>
           </div>
         </div>
-        <div class="calendar-board">
-          <div class="calendar-head">
-            <div class="calendar-head-time">Orario</div>
-            <div class="calendar-head-day" id="calendarHeadDay">Giorno</div>
+
+        <div id="page-today">
+          <div class="stats-grid" id="todayStats"></div>
+          <div class="filter-row">
+            <select id="todayStatusFilter" class="select-input" onchange="render()">
+              <option value="all">Tutti gli stati</option>
+              <option>Prenotata</option>
+              <option>In lavaggio</option>
+              <option>Lavata</option>
+              <option>Consegnata</option>
+              <option>No-show</option>
+            </select>
+            <input id="searchToday" class="search" style="margin-bottom:0" placeholder="Cerca" oninput="render()">
           </div>
-          <div class="calendar-grid" id="calendarGrid">
-            <div class="calendar-hour-labels" id="calendarHours"></div>
-            <div class="calendar-events" id="calendarEvents"></div>
+          <div class="list" id="listToday"></div>
+        </div>
+
+        <div id="page-future" style="display:none">
+          <div class="quick-actions">
+            <button onclick="setFuturePreset('')">Tutte</button>
+            <button onclick="setFuturePreset('tomorrow')">Domani</button>
+            <button onclick="setFuturePreset('week')">Settimana</button>
+          </div>
+          <div class="filter-row">
+            <div class="form-group">
+              <label>Data / calendario</label>
+              <input id="futureDateFilter" class="date-input" type="date" onchange="render()">
+            </div>
+            <div class="form-group">
+              <label>Cerca</label>
+              <input id="searchFuture" class="search" style="margin-bottom:0" placeholder="Cerca" oninput="render()">
+            </div>
+          </div>
+          <div class="list" id="listFuture"></div>
+        </div>
+
+        <div id="page-calendar" style="display:none">
+          <div class="calendar-shell">
+            <div class="calendar-toolbar">
+              <div class="calendar-toolbar-left">
+                <button class="btn-secondary" id="calendarPrevBtn" onclick="shiftCalendarDay(-1)">←</button>
+                <button class="btn-secondary" onclick="goTodayCalendar()">Oggi</button>
+                <button class="btn-secondary" onclick="shiftCalendarDay(1)">→</button>
+              </div>
+              <div class="calendar-date-title" id="calendarDateTitle">Calendario</div>
+              <div class="calendar-toolbar-right">
+                <input id="calendarDateFilter" class="date-input" type="date" onchange="onCalendarDateChange()">
+              </div>
+            </div>
+            <div class="calendar-board">
+              <div class="calendar-head">
+                <div class="calendar-head-time">Orario</div>
+                <div class="calendar-head-day" id="calendarHeadDay">Giorno</div>
+              </div>
+              <div class="calendar-grid" id="calendarGrid">
+                <div class="calendar-hour-labels" id="calendarHours"></div>
+                <div class="calendar-events" id="calendarEvents"></div>
+              </div>
+            </div>
+            <div class="calendar-scroll-hint" id="calendarScrollHint">Scorri orizzontalmente per vedere tutte le prenotazioni</div>
+            <div class="calendar-empty" id="calendarEmpty" style="display:none">Nessuna prenotazione nel giorno selezionato.</div>
           </div>
         </div>
-        <div class="calendar-scroll-hint" id="calendarScrollHint">Scorri orizzontalmente per vedere tutte le prenotazioni</div>
-        <div class="calendar-empty" id="calendarEmpty" style="display:none">Nessuna prenotazione nel giorno selezionato.</div>
+
+        <div id="page-incassi" style="display:none">
+          <div class="filter-row">
+            <div class="form-group">
+              <label>Data incassi</label>
+              <input id="incomeDateFilter" class="date-input" type="date" onchange="render()">
+            </div>
+            <div class="form-group">
+              <label>Stato considerato</label>
+              <select id="incomeStatusFilter" class="select-input" onchange="render()">
+                <option value="Consegnata">Consegnata</option>
+                <option value="Lavata">Lavata</option>
+                <option value="In lavaggio">In lavaggio</option>
+                <option value="Prenotata">Prenotata</option>
+                <option value="No-show">No-show</option>
+              </select>
+            </div>
+          </div>
+          <div class="income-card">
+            <div class="muted" id="incomeTitle">Incasso totale del giorno selezionato</div>
+            <div class="income-big" id="incomeTotal">€ 0,00</div>
+            <div class="muted"><span id="incomeCount">0</span> auto nel riepilogo</div>
+          </div>
+          <div class="income-list" id="incomeList"></div>
+        </div>
+
+        <div id="page-all" style="display:none">
+          <div class="filter-row">
+            <div class="form-group">
+              <label>Data / calendario</label>
+              <input id="allDateFilter" class="date-input" type="date" onchange="render()">
+            </div>
+            <div class="form-group">
+              <label>Stato</label>
+              <select id="allStatusFilter" class="select-input" onchange="render()">
+                <option value="all">Tutti gli stati</option>
+                <option>Prenotata</option>
+                <option>In lavaggio</option>
+                <option>Lavata</option>
+                <option>Consegnata</option>
+                <option>No-show</option>
+              </select>
+            </div>
+          </div>
+          <input id="searchAll" class="search" placeholder="Cerca modello, stato o operatore" oninput="render()">
+          <div class="list" id="listAll"></div>
+        </div>
+
+        <div id="page-concessionaria" style="display:none">
+          <div class="filter-row">
+            <div class="form-group">
+              <label>Data / calendario</label>
+              <input id="dealerDateFilter" class="date-input" type="date" onchange="render()">
+            </div>
+            <div class="form-group">
+              <label>Stato</label>
+              <select id="dealerStatusFilter" class="select-input" onchange="render()">
+                <option value="all">Tutti gli stati</option>
+                <option>Prenotata</option>
+                <option>In lavaggio</option>
+                <option>Lavata</option>
+                <option>Consegnata</option>
+                <option>No-show</option>
+              </select>
+            </div>
+          </div>
+          <input id="searchDealer" class="search" placeholder="Cerca concessionaria, modello o operatore" oninput="render()">
+          <div class="income-card">
+            <div class="muted" id="dealerTitle">Totale concessionarie</div>
+            <div class="income-big" id="dealerTotal">€ 0,00</div>
+            <div class="muted"><span id="dealerCount">0</span> auto concessionaria</div>
+          </div>
+          <div id="dealerGrouped"></div>
+        </div>
+
+        <div id="page-rapportino" style="display:none">
+          <div class="filter-row">
+            <div class="form-group">
+              <label>Concessionaria</label>
+              <select id="rapportinoDealerFilter" class="select-input" onchange="renderRapportini()">
+                <option value="">Tutte</option>
+              </select>
+            </div>
+            <div class="form-group">
+              <label>Stato rapportino</label>
+              <select id="rapportinoSentFilter" class="select-input" onchange="renderRapportini()">
+                <option value="all">Tutti</option>
+                <option value="pending">Da inviare</option>
+                <option value="sent">Inviati</option>
+              </select>
+            </div>
+          </div>
+          <input id="rapportinoSearch" class="search" placeholder="Cerca modello, targa, concessionaria" oninput="renderRapportini()">
+          <div class="list" id="rapportinoList" style="margin-top:12px"></div>
+        </div>
+
+        <div id="page-statistiche" style="display:none">
+          <div class="filter-row">
+            <div class="form-group">
+              <label>Dal</label>
+              <input id="statsFromDate" class="date-input" type="date" onchange="render()">
+            </div>
+            <div class="form-group">
+              <label>Al</label>
+              <input id="statsToDate" class="date-input" type="date" onchange="render()">
+            </div>
+          </div>
+          <div class="quick-actions">
+            <button onclick="setStatsPreset('today')">Oggi</button>
+            <button onclick="setStatsPreset('7')">7 giorni</button>
+            <button onclick="setStatsPreset('30')">30 giorni</button>
+            <button onclick="setStatsPreset('month')">Mese corrente</button>
+          </div>
+          <div class="stats-board" id="statsBoard"></div>
+          <div class="stats-panel">
+            <div style="font-weight:800;margin-bottom:8px">Stati</div>
+            <div id="statsStatuses"></div>
+          </div>
+          <div class="stats-panel">
+            <div style="font-weight:800;margin-bottom:8px">Servizi più richiesti</div>
+            <div id="statsServices"></div>
+          </div>
+          <div class="stats-panel">
+            <div style="font-weight:800;margin-bottom:8px">Operatori / Inserimento</div>
+            <div id="statsOperators"></div>
+          </div>
+        </div>
+
+        <div id="page-adminpanel" style="display:none">
+          <div class="section" style="margin-top:0">
+            <div class="form-grid">
+              <div class="form-group"><label>Nome visualizzato</label><input id="u-label" placeholder="Es. Andrea"></div>
+              <div class="form-group"><label>Username</label><input id="u-username" placeholder="Es. andrea"></div>
+              <div class="form-group"><label>Password</label><input id="u-password" placeholder="Password"></div>
+              <div class="form-group"><label>Ruolo</label><select id="u-role"><option value="operatore">Operatore</option><option value="admin">Admin</option></select></div>
+            </div>
+            <div class="toolbar">
+              <button onclick="saveUser()">Salva utente</button>
+              <button class="btn-secondary" onclick="clearUserForm()">Nuovo</button>
+            </div>
+          </div>
+
+          <div class="section">
+            <div class="form-group">
+              <label>Webhook notifiche Telegram / WhatsApp</label>
+              <input id="notify-endpoint" placeholder="https://... tuo webhook n8n">
+            </div>
+            <div class="toolbar">
+              <button onclick="saveNotifySettings()">Salva webhook</button>
+              <button class="btn-secondary" onclick="testNotification()">Test notifica</button>
+            </div>
+            <div class="note-box" style="margin-top:12px">
+              Inserisci un webhook n8n che poi inoltra su Telegram o WhatsApp.
+            </div>
+          </div>
+
+          <div class="section">
+            <div style="font-weight:700;margin-bottom:10px">Concessionarie</div>
+            <div class="form-grid">
+              <div class="form-group"><label>Nome</label><input id="d-name" placeholder="Es. Gran Prix"></div>
+              <div class="form-group"><label>Email</label><input id="d-email" placeholder="email@concessionaria.it"></div>
+              <div class="form-group"><label>Telefono</label><input id="d-phone" placeholder="+39 ..."></div>
+            </div>
+            <div class="toolbar">
+              <button onclick="saveDealer()">Salva concessionaria</button>
+              <button class="btn-secondary" onclick="clearDealerForm()">Nuova</button>
+            </div>
+            <div id="dealerListAdmin"></div>
+          </div>
+
+          <div class="section">
+            <div style="font-weight:700;margin-bottom:10px">Utenti configurati</div>
+            <div id="usersList"></div>
+          </div>
+        </div>
+      </div>
+
+      <div class="bottomnav">
+        <div class="active" data-bnav="today" onclick="setPage('today')">🏠<br>Oggi</div>
+        <div data-bnav="calendar" onclick="setPage('calendar')">📅<br>Calendario</div>
+        <div data-role-incassi data-bnav="incassi" onclick="setPage('incassi')">💶<br>Incassi</div>
+        <div data-bnav="more" onclick="toggleMoreMenu(event)">☰<br>Menu</div>
+      </div>
+
+      <div id="mobileMoreBackdrop" class="sheet-menu-backdrop" onclick="closeMoreMenu()"></div>
+      <div id="mobileMoreMenu" class="mobile-sheet">
+        <div class="mobile-sheet-handle"></div>
+        <div class="mobile-sheet-title">Altre sezioni</div>
+        <button onclick="openMorePage('future')">🗓️ Prossime</button>
+        <button data-role-allbookings onclick="openMorePage('all')">📚 Tutte</button>
+        <button data-role-concessionaria onclick="openMorePage('concessionaria')">🏢 Concessionaria</button>
+        <button data-role-rapportini onclick="openMorePage('rapportino')">📄 Rapportini</button>
+        <button data-role-statistiche onclick="openMorePage('statistiche')">📊 Statistiche</button>
+        <button data-role-adminpanel onclick="openMorePage('adminpanel')">⚙️ Admin</button>
       </div>
     </div>
-
-<div id="page-incassi" style="display:none">
-      <div class="filter-row">
-        <div class="form-group">
-          <label>Data incassi</label>
-          <input id="incomeDateFilter" class="date-input" type="date" onchange="render()">
-        </div>
-        <div class="form-group">
-          <label>Stato considerato</label>
-          <select id="incomeStatusFilter" class="select-input" onchange="render()">
-            <option value="Consegnata">Consegnata</option>
-            <option value="Lavata">Lavata</option>
-            <option value="In lavaggio">In lavaggio</option>
-            <option value="Prenotata">Prenotata</option>
-            <option value="No-show">No-show</option>
-          </select>
-        </div>
-      </div>
-      <div class="income-card">
-        <div class="muted" id="incomeTitle">Incasso totale del giorno selezionato</div>
-        <div class="income-big" id="incomeTotal">€ 0,00</div>
-        <div class="muted"><span id="incomeCount">0</span> auto nel riepilogo</div>
-      </div>
-      <div class="income-list" id="incomeList"></div>
-    </div>
-
-    <div id="page-all" style="display:none">
-      <div class="filter-row">
-        <div class="form-group">
-          <label>Data / calendario</label>
-          <input id="allDateFilter" class="date-input" type="date" onchange="render()">
-        </div>
-        <div class="form-group">
-          <label>Stato</label>
-          <select id="allStatusFilter" class="select-input" onchange="render()">
-            <option value="all">Tutti gli stati</option>
-            <option>Prenotata</option><option>In lavaggio</option><option>Lavata</option><option>Consegnata</option><option>No-show</option>
-          </select>
-        </div>
-      </div>
-      <input id="searchAll" class="search" placeholder="Cerca modello, stato o operatore" oninput="render()">
-      <div class="list" id="listAll"></div>
-    </div>
-
-    <div id="page-concessionaria" style="display:none">
-      <div class="filter-row">
-        <div class="form-group">
-          <label>Data / calendario</label>
-          <input id="dealerDateFilter" class="date-input" type="date" onchange="render()">
-        </div>
-        <div class="form-group">
-          <label>Stato</label>
-          <select id="dealerStatusFilter" class="select-input" onchange="render()">
-            <option value="all">Tutti gli stati</option>
-            <option>Prenotata</option><option>In lavaggio</option><option>Lavata</option><option>Consegnata</option><option>No-show</option>
-          </select>
-        </div>
-      </div>
-      <input id="searchDealer" class="search" placeholder="Cerca concessionaria, modello o operatore" oninput="render()">
-      <div class="income-card">
-        <div class="muted" id="dealerTitle">Totale concessionarie</div>
-        <div class="income-big" id="dealerTotal">€ 0,00</div>
-        <div class="muted"><span id="dealerCount">0</span> auto concessionaria</div>
-      </div>
-      <div id="dealerGrouped"></div>
-    </div>
-
-    
-    <div id="page-statistiche" style="display:none">
-      <div class="filter-row">
-        <div class="form-group">
-          <label>Dal</label>
-          <input id="statsFromDate" class="date-input" type="date" onchange="render()">
-        </div>
-        <div class="form-group">
-          <label>Al</label>
-          <input id="statsToDate" class="date-input" type="date" onchange="render()">
-        </div>
-      </div>
-      <div class="quick-actions">
-        <button onclick="setStatsPreset('today')">Oggi</button>
-        <button onclick="setStatsPreset('7')">7 giorni</button>
-        <button onclick="setStatsPreset('30')">30 giorni</button>
-        <button onclick="setStatsPreset('month')">Mese corrente</button>
-      </div>
-
-      <div class="stats-board" id="statsBoard"></div>
-
-      <div class="stats-panel">
-        <div style="font-weight:800;margin-bottom:8px">Stati</div>
-        <div id="statsStatuses"></div>
-      </div>
-
-      <div class="stats-panel">
-        <div style="font-weight:800;margin-bottom:8px">Servizi più richiesti</div>
-        <div id="statsServices"></div>
-      </div>
-
-      <div class="stats-panel">
-        <div style="font-weight:800;margin-bottom:8px">Operatori / Inserimento</div>
-        <div id="statsOperators"></div>
-      </div>
-    </div>
-
-<div id="page-adminpanel" style="display:none">
-      <div class="section" style="margin-top:0">
-        <div class="form-grid">
-          <div class="form-group"><label>Nome visualizzato</label><input id="u-label" placeholder="Es. Andrea"></div>
-          <div class="form-group"><label>Username</label><input id="u-username" placeholder="Es. andrea"></div>
-          <div class="form-group"><label>Password</label><input id="u-password" placeholder="Password"></div>
-          <div class="form-group"><label>Ruolo</label><select id="u-role"><option value="operatore">Operatore</option><option value="admin">Admin</option></select></div>
-        </div>
-        <div class="toolbar">
-          <button onclick="saveUser()">Salva utente</button>
-          <button class="btn-secondary" onclick="clearUserForm()">Nuovo</button>
-        </div>
-      </div>
-
-      <div class="section">
-        <div class="form-group">
-          <label>Webhook notifiche Telegram / WhatsApp</label>
-          <input id="notify-endpoint" placeholder="https://... tuo webhook n8n">
-        </div>
-        <div class="toolbar">
-          <button onclick="saveNotifySettings()">Salva webhook</button>
-          <button class="btn-secondary" onclick="testNotification()">Test notifica</button>
-        </div>
-        <div class="note-box" style="margin-top:12px">
-          Inserisci un webhook n8n che poi inoltra su Telegram o WhatsApp. L'app invia una chiamata quando imposti lo stato su Lavata o Consegnata e quando premi Test.
-        </div>
-      </div>
-
-      <div class="section">
-        <div style="font-weight:700;margin-bottom:10px">Concessionarie</div>
-        <div class="form-grid">
-          <div class="form-group"><label>Nome</label><input id="d-name" placeholder="Es. Gran Prix"></div>
-          <div class="form-group"><label>Email</label><input id="d-email" placeholder="email@concessionaria.it"></div>
-          <div class="form-group"><label>Telefono</label><input id="d-phone" placeholder="+39 ..."></div>
-        </div>
-        <div class="toolbar">
-          <button onclick="saveDealer()">Salva concessionaria</button>
-          <button class="btn-secondary" onclick="clearDealerForm()">Nuova</button>
-        </div>
-        <div id="dealerListAdmin"></div>
-      </div>
-
-      <div class="section">
-        <div style="font-weight:700;margin-bottom:10px">Utenti configurati</div>
-        <div id="usersList"></div>
-      </div>
-    </div>
-  </div>
-
-  <div class="bottomnav">
-    <div class="active" data-bnav="today" onclick="setPage('today')">🏠<br>Oggi</div>
-    <div data-bnav="calendar" onclick="setPage('calendar')">📅<br>Calendario</div>
-    <div data-role-incassi data-bnav="incassi" onclick="setPage('incassi')">💶<br>Incassi</div>
-    <div data-bnav="more" onclick="toggleMoreMenu(event)">☰<br>Menu</div>
-  </div>
-  <div id="mobileMoreBackdrop" class="sheet-menu-backdrop" onclick="closeMoreMenu()"></div>
-  <div id="mobileMoreMenu" class="mobile-sheet">
-    <div class="mobile-sheet-handle"></div>
-    <div class="mobile-sheet-title">Altre sezioni</div>
-    <button onclick="openMorePage('future')">🗓️ Prossime</button>
-    <button data-role-allbookings onclick="openMorePage('all')">📚 Tutte</button>
-    <button data-role-concessionaria onclick="openMorePage('concessionaria')">🏢 Concessionaria</button>
-    <button data-role-statistiche onclick="openMorePage('statistiche')">📊 Statistiche</button>
-    <button data-role-adminpanel onclick="openMorePage('adminpanel')">⚙️ Admin</button>
-  </div></div></main>
+  </main>
 
   <aside class="detail">
     <h2 id="d-model">-</h2><div class="muted" id="d-state">-</div>
-    <div class="section"><div class="grid">
-      <div class="field"><label>Arrivo</label><strong id="d-arrivo">-</strong></div><div class="field"><label>Consegna</label><strong id="d-consegna">-</strong></div>
-      <div class="field"><label>Servizi</label><strong id="d-servizi">-</strong></div><div class="field"><label>Telefono</label><strong id="d-telefono">-</strong><div id="d-phone-actions" style="margin-top:10px;display:none;gap:8px;flex-wrap:wrap"></div></div>
-      <div class="field"><label>Extra</label><strong id="d-extra">€ 0,00</strong></div><div class="field"><label>Sconto</label><strong id="d-sconto">€ 0,00</strong></div>
-      <div class="field"><label>Concessionaria</label><strong id="d-concessionaria">-</strong></div><div class="field"><label>Stato</label><strong id="d-stato2">-</strong></div>
-      <div class="field"><label>Inserita da</label><strong id="d-createdby">-</strong></div>
-    </div><div class="total"><span>Totale</span><strong id="d-totale">€ 0,00</strong></div></div>
-    <div class="section"><label style="display:block;font-size:12px;color:var(--muted);margin-bottom:8px">Note</label><div id="d-note" class="muted">-</div>
+    <div class="section">
+      <div class="grid">
+        <div class="field"><label>Arrivo</label><strong id="d-arrivo">-</strong></div>
+        <div class="field"><label>Consegna</label><strong id="d-consegna">-</strong></div>
+        <div class="field"><label>Servizi</label><strong id="d-servizi">-</strong></div>
+        <div class="field"><label>Telefono</label><strong id="d-telefono">-</strong><div id="d-phone-actions" style="margin-top:10px;display:none;gap:8px;flex-wrap:wrap"></div></div>
+        <div class="field"><label>Extra</label><strong id="d-extra">€ 0,00</strong></div>
+        <div class="field"><label>Sconto</label><strong id="d-sconto">€ 0,00</strong></div>
+        <div class="field"><label>Concessionaria</label><strong id="d-concessionaria">-</strong></div>
+        <div class="field"><label>Stato</label><strong id="d-stato2">-</strong></div>
+        <div class="field"><label>Inserita da</label><strong id="d-createdby">-</strong></div>
+      </div>
+      <div class="total"><span>Totale</span><strong id="d-totale">€ 0,00</strong></div>
+    </div>
+    <div class="section">
+      <label style="display:block;font-size:12px;color:var(--muted);margin-bottom:8px">Note</label>
+      <div id="d-note" class="muted">-</div>
       <div class="actions">
         <button class="a-yellow" data-role-status onclick="setStatus('Prenotata')">Prenotata</button>
         <button class="a-blue" data-role-status onclick="setStatus('In lavaggio')">In lavaggio</button>
         <button class="a-green" data-role-status onclick="setStatus('Lavata')">Lavata</button>
         <button class="a-gray" data-role-status onclick="setStatus('Consegnata')">Consegnata</button>
         <button class="a-red" data-role-status onclick="setStatus('No-show')">No-show</button>
-        <button type="button" type="button" class="btn-edit" data-role-edit onclick="openEditModal()">✏️ Modifica</button>
+        <button class="btn-edit" data-role-edit onclick="openEditModal()">✏️ Modifica</button>
       </div>
     </div>
   </aside>
 </div>
 
-<div class="modal-backdrop" id="formBackdrop"><div class="modal" onclick="event.stopPropagation()">
-  <h3 id="formTitle">Nuova prenotazione</h3>
-  <div class="form-grid">
-    <div class="form-group"><label>Modello</label><input id="f-modello"></div>
-    <div class="form-group"><label>Stato</label><select id="f-stato"><option>Prenotata</option><option>In lavaggio</option><option>Lavata</option><option>Consegnata</option><option>No-show</option></select></div>
-    <div class="form-group">
-      <label>Data arrivo</label>
-      <input id="f-arrivo-date" type="date">
-    </div>
-    <div class="form-group">
-      <label>Ora arrivo</label>
-      <input id="f-arrivo-time" type="time" step="60">
-    </div>
-    <div class="form-group">
-      <label>Data consegna</label>
-      <input id="f-consegna-date" type="date">
-    </div>
-    <div class="form-group">
-      <label>Ora consegna</label>
-      <input id="f-consegna-time" type="time" step="60">
-    </div>
-    <div class="form-group"><label>Telefono</label><input id="f-telefono"><div id="customerInfo" style="display:none;background:#11161d;border:1px solid #273041;border-radius:14px;padding:12px;margin-top:8px"></div></div>
-    <div class="form-group">
-      <label>Concessionaria</label>
-      <select id="f-concessionaria" onchange="toggleDealerSelect()"><option value="No">No</option><option value="Si">Si</option></select>
-      <div id="dealerSelectWrap" style="display:none;margin-top:8px">
-        <select id="f-dealer-name"></select>
-      </div>
-    </div>
-    <div class="form-group"><label>Extra (€)</label><input id="f-extra" type="number" value="0"></div>
-    <div class="form-group"><label>Sconto (€)</label><input id="f-sconto" type="number" value="0"></div>
-    <div class="form-group full"><label>Servizi</label><div id="servicesGrid" class="services-grid"></div></div>
-    <div class="form-group full">
-      <div class="section" style="margin-top:0;background:#11161d">
-        <div class="grid">
-          <div class="field"><label>Servizi</label><strong id="sum-services">€ 0,00</strong></div>
-          <div class="field"><label>Extra</label><strong id="sum-extra">€ 0,00</strong></div>
-          <div class="field"><label>Sconto</label><strong id="sum-sconto">€ 0,00</strong></div>
-          <div class="field"><label>Totale</label><strong id="sum-total">€ 0,00</strong></div>
+<div class="modal-backdrop" id="formBackdrop">
+  <div class="modal" onclick="event.stopPropagation()">
+    <h3 id="formTitle">Nuova prenotazione</h3>
+    <div class="form-grid">
+      <div class="form-group"><label>Modello</label><input id="f-modello"></div>
+      <div class="form-group"><label>Targa</label><input id="f-targa" placeholder="AB123CD"></div>
+      <div class="form-group"><label>Stato</label><select id="f-stato"><option>Prenotata</option><option>In lavaggio</option><option>Lavata</option><option>Consegnata</option><option>No-show</option></select></div>
+      <div class="form-group">
+        <label>Concessionaria</label>
+        <select id="f-concessionaria" onchange="toggleDealerSelect()"><option value="No">No</option><option value="Si">Si</option></select>
+        <div id="dealerSelectWrap" style="display:none;margin-top:8px">
+          <select id="f-dealer-name"></select>
         </div>
       </div>
+      <div class="form-group"><label>Data arrivo</label><input id="f-arrivo-date" type="date"></div>
+      <div class="form-group"><label>Ora arrivo</label><input id="f-arrivo-time" type="time" step="60"></div>
+      <div class="form-group"><label>Data consegna</label><input id="f-consegna-date" type="date"></div>
+      <div class="form-group"><label>Ora consegna</label><input id="f-consegna-time" type="time" step="60"></div>
+      <div class="form-group"><label>Telefono</label><input id="f-telefono"><div id="customerInfo" style="display:none;background:#11161d;border:1px solid #273041;border-radius:14px;padding:12px;margin-top:8px"></div></div>
+      <div class="form-group"><label>Extra (€)</label><input id="f-extra" type="number" value="0"></div>
+      <div class="form-group"><label>Sconto (€)</label><input id="f-sconto" type="number" value="0"></div>
+      <div class="form-group full"><label>Servizi</label><div id="servicesGrid" class="services-grid"></div></div>
+      <div class="form-group full">
+        <div class="section" style="margin-top:0;background:#11161d">
+          <div class="grid">
+            <div class="field"><label>Servizi</label><strong id="sum-services">€ 0,00</strong></div>
+            <div class="field"><label>Extra</label><strong id="sum-extra">€ 0,00</strong></div>
+            <div class="field"><label>Sconto</label><strong id="sum-sconto">€ 0,00</strong></div>
+            <div class="field"><label>Totale</label><strong id="sum-total">€ 0,00</strong></div>
+          </div>
+        </div>
+      </div>
+      <div class="form-group full"><label>Note</label><textarea id="f-note" rows="3"></textarea></div>
     </div>
-    <div class="form-group full"><label>Note</label><textarea id="f-note" rows="3"></textarea></div>
+    <div class="modal-actions">
+      <button type="button" class="btn-secondary" onclick="handleCancelEdit()">Annulla</button>
+      <button type="button" class="btn" onclick="saveForm()">Salva</button>
+    </div>
   </div>
-  <div class="modal-actions"><button type="button" class="btn-secondary" onclick="handleCancelEdit()">Annulla</button><button type="button" class="btn" onclick="saveForm()">Salva</button></div>
-</div></div>
+</div>
 
-<div class="modal-backdrop" id="detailBackdrop" onclick="closeDetailModal()"><div class="sheet" onclick="event.stopPropagation()">
-  <div class="sheet-header" style="align-items:center">
-    <div><h3 style="margin:0;font-size:26px" id="m-model">-</h3><div class="muted" id="m-state">-</div></div>
-    <div style="display:flex;gap:8px"><button type="button" type="button" class="btn-edit" data-role-edit onclick="openEditModal()">✏️</button><button type="button" type="button" class="sheet-close" onclick="closeDetailModal()">✕</button></div>
-  </div>
-  <div class="section" style="margin-top:0"><div class="grid">
-    <div class="field"><label>Arrivo</label><strong id="m-arrivo">-</strong></div><div class="field"><label>Consegna</label><strong id="m-consegna">-</strong></div>
-    <div class="field"><label>Servizi</label><strong id="m-servizi">-</strong></div><div class="field"><label>Telefono</label><strong id="m-telefono">-</strong><div id="m-phone-actions" style="margin-top:10px;display:none;gap:8px;flex-wrap:wrap"></div></div>
-    <div class="field"><label>Extra</label><strong id="m-extra">€ 0,00</strong></div><div class="field"><label>Sconto</label><strong id="m-sconto">€ 0,00</strong></div>
-    <div class="field"><label>Concessionaria</label><strong id="m-concessionaria">-</strong></div><div class="field"><label>Stato</label><strong id="m-stato2">-</strong></div>
-    <div class="field"><label>Inserita da</label><strong id="m-createdby">-</strong></div>
-  </div><div class="total"><span>Totale</span><strong id="m-totale">€ 0,00</strong></div></div>
-  <div class="section"><label style="display:block;font-size:12px;color:var(--muted);margin-bottom:8px">Note</label><div id="m-note" class="muted">-</div>
-    <div class="sheet-actions">
-      <button class="a-yellow" data-role-status onclick="setStatus('Prenotata')">Prenotata</button>
-      <button class="a-blue" data-role-status onclick="setStatus('In lavaggio')">In lavaggio</button>
-      <button class="a-green" data-role-status onclick="setStatus('Lavata')">Lavata</button>
-      <button class="a-gray" data-role-status onclick="setStatus('Consegnata')">Consegnata</button>
-      <button class="a-red" data-role-status onclick="setStatus('No-show')">No-show</button>
-      <button type="button" type="button" class="btn-edit" data-role-edit onclick="openEditModal()">✏️ Modifica</button>
+<div class="modal-backdrop" id="detailBackdrop" onclick="closeDetailModal()">
+  <div class="sheet" onclick="event.stopPropagation()">
+    <div class="sheet-header" style="align-items:center">
+      <div><h3 style="margin:0;font-size:26px" id="m-model">-</h3><div class="muted" id="m-state">-</div></div>
+      <div style="display:flex;gap:8px">
+        <button class="btn-edit" data-role-edit onclick="openEditModal()">✏️</button>
+        <button class="sheet-close" onclick="closeDetailModal()">✕</button>
+      </div>
+    </div>
+    <div class="section" style="margin-top:0">
+      <div class="grid">
+        <div class="field"><label>Arrivo</label><strong id="m-arrivo">-</strong></div>
+        <div class="field"><label>Consegna</label><strong id="m-consegna">-</strong></div>
+        <div class="field"><label>Servizi</label><strong id="m-servizi">-</strong></div>
+        <div class="field"><label>Telefono</label><strong id="m-telefono">-</strong><div id="m-phone-actions" style="margin-top:10px;display:none;gap:8px;flex-wrap:wrap"></div></div>
+        <div class="field"><label>Extra</label><strong id="m-extra">€ 0,00</strong></div>
+        <div class="field"><label>Sconto</label><strong id="m-sconto">€ 0,00</strong></div>
+        <div class="field"><label>Concessionaria</label><strong id="m-concessionaria">-</strong></div>
+        <div class="field"><label>Stato</label><strong id="m-stato2">-</strong></div>
+        <div class="field"><label>Inserita da</label><strong id="m-createdby">-</strong></div>
+      </div>
+      <div class="total"><span>Totale</span><strong id="m-totale">€ 0,00</strong></div>
+    </div>
+    <div class="section">
+      <label style="display:block;font-size:12px;color:var(--muted);margin-bottom:8px">Note</label>
+      <div id="m-note" class="muted">-</div>
+      <div class="sheet-actions">
+        <button class="a-yellow" data-role-status onclick="setStatus('Prenotata')">Prenotata</button>
+        <button class="a-blue" data-role-status onclick="setStatus('In lavaggio')">In lavaggio</button>
+        <button class="a-green" data-role-status onclick="setStatus('Lavata')">Lavata</button>
+        <button class="a-gray" data-role-status onclick="setStatus('Consegnata')">Consegnata</button>
+        <button class="a-red" data-role-status onclick="setStatus('No-show')">No-show</button>
+        <button class="btn-edit" data-role-edit onclick="openEditModal()">✏️ Modifica</button>
+      </div>
     </div>
   </div>
-</div></div>
+</div>
 
 <div class="toast" id="toast"></div>
 
@@ -863,6 +654,7 @@ const STATUS_ENDPOINT="https://automazioni.visionhome.me/webhook/aggiorna-stato"
 const SERVICES_ENDPOINT="https://automazioni.visionhome.me/webhook/servizi";
 const CREATE_ENDPOINT="https://automazioni.visionhome.me/webhook/prenotazione";
 const UPDATE_ENDPOINT="https://automazioni.visionhome.me/webhook/modifica-prenotazione";
+const RAPPORTINO_ENDPOINT="https://automazioni.visionhome.me/webhook/rapportino";
 
 const DEFAULT_USERS={
   giorgio:{password:"Batman2024!",role:"admin",label:"Giorgio"},
@@ -877,6 +669,7 @@ let USERS = {};
 let DEALERS = JSON.parse(localStorage.getItem("vh_dealers") || "[]");
 let editingDealerIndex = null;
 let allItems=[],services=[],selected=null,editingId=null,currentUser=null,currentPage='today',formDirty=false;
+let calendarDate = new Date();
 
 function showToast(message){
   const t=document.getElementById("toast");
@@ -885,6 +678,7 @@ function showToast(message){
   clearTimeout(showToast._timer);
   showToast._timer=setTimeout(()=>t.classList.remove("show"), 2200);
 }
+
 function loadUsers(){
   USERS = JSON.parse(JSON.stringify(DEFAULT_USERS));
   localStorage.setItem("vh_booking_users", JSON.stringify(USERS));
@@ -898,10 +692,12 @@ function isDealerBookingValue(value){
 function isDealerBooking(item){
   return isDealerBookingValue(item?.concessionaria);
 }
+
 function saveDealers(){
   localStorage.setItem("vh_dealers", JSON.stringify(DEALERS));
   renderDealerSelect();
   renderDealerAdminList();
+  populateRapportinoDealers();
 }
 function renderDealerSelect(selectedName=""){
   const select = document.getElementById("f-dealer-name");
@@ -921,6 +717,18 @@ function renderDealerSelect(selectedName=""){
       select.appendChild(opt);
     });
   }
+}
+function populateRapportinoDealers(selectedValue=""){
+  const select = document.getElementById("rapportinoDealerFilter");
+  if(!select) return;
+  select.innerHTML = '<option value="">Tutte</option>';
+  DEALERS.forEach(d=>{
+    const opt=document.createElement("option");
+    opt.value=d.name;
+    opt.textContent=d.name;
+    if(selectedValue && selectedValue===d.name) opt.selected=true;
+    select.appendChild(opt);
+  });
 }
 function toggleDealerSelect(forceValue=null, selectedDealer=""){
   const val = forceValue || document.getElementById("f-concessionaria")?.value || "No";
@@ -1033,6 +841,7 @@ function mapRow(r){
   return{
     id:r.id,
     modello:r.Modello||"-",
+    targa:r.Targa||"",
     stato:r.Stato?.value||"-",
     rawArrivo:r.Arrivo || null,
     rawConsegna:r.Consegna || null,
@@ -1045,13 +854,32 @@ function mapRow(r){
     concessionaria:r.Concessionaria?.value||"-",
     totale:Number(r.Totale_riga||0),
     note:r.Note||"",
-    createdBy:(typeof createdBy === "string" ? createdBy : (createdBy?.value || "")) || "-"
+    createdBy:(typeof createdBy === "string" ? createdBy : (createdBy?.value || "")) || "-",
+    rapportino_inviato: !!(r.Rapportino_inviato || r.rapportino_inviato || r["Rapportino inviato"]),
+    rapportino_pdf_url: r.Rapportino_pdf_url || r.rapportino_pdf_url || "",
+    rapportino_esito: r.Rapportino_esito || r.rapportino_esito || ""
   };
 }
 function mapServiceRow(r){return{id:r.id,name:r.Servizio,price:Number(r.Prezzo||0),active:!!r.Attivo};}
 
-function saveRememberedCredentials(username,password){if(document.getElementById("rememberCreds").checked){localStorage.setItem("vh_booking_saved_creds",JSON.stringify({username,password}));}else{localStorage.removeItem("vh_booking_saved_creds");}}
-function restoreRememberedCredentials(){const saved=localStorage.getItem("vh_booking_saved_creds");if(saved){try{const c=JSON.parse(saved);document.getElementById("loginUser").value=c.username||"";document.getElementById("loginPass").value=c.password||"";document.getElementById("rememberCreds").checked=true;}catch(e){}}}
+function saveRememberedCredentials(username,password){
+  if(document.getElementById("rememberCreds").checked){
+    localStorage.setItem("vh_booking_saved_creds",JSON.stringify({username,password}));
+  }else{
+    localStorage.removeItem("vh_booking_saved_creds");
+  }
+}
+function restoreRememberedCredentials(){
+  const saved=localStorage.getItem("vh_booking_saved_creds");
+  if(saved){
+    try{
+      const c=JSON.parse(saved);
+      document.getElementById("loginUser").value=c.username||"";
+      document.getElementById("loginPass").value=c.password||"";
+      document.getElementById("rememberCreds").checked=true;
+    }catch(e){}
+  }
+}
 
 function applyRoleUI(){
   const role=currentUser?.role||null;
@@ -1062,6 +890,7 @@ function applyRoleUI(){
   const canIncassi=role==="admin";
   const canAll=role==="admin";
   const canConcessionaria=role==="admin";
+  const canRapportini=role==="admin"||role==="operatore";
   const canStatistiche=role==="admin";
   const canAdminPanel=role==="admin";
 
@@ -1071,12 +900,15 @@ function applyRoleUI(){
   document.querySelectorAll("[data-role-incassi]").forEach(el=>el.style.display=canIncassi?"":"none");
   document.querySelectorAll("[data-role-allbookings]").forEach(el=>el.style.display=canAll?"":"none");
   document.querySelectorAll("[data-role-concessionaria]").forEach(el=>el.style.display=canConcessionaria?"":"none");
+  document.querySelectorAll("[data-role-rapportini]").forEach(el=>el.style.display=canRapportini?"":"none");
   document.querySelectorAll("[data-role-statistiche]").forEach(el=>el.style.display=canStatistiche?"":"none");
   document.querySelectorAll("[data-role-adminpanel]").forEach(el=>el.style.display=canAdminPanel?"":"none");
   document.getElementById("topCreateBtn").style.display=canCreate?"flex":"none";
+
   if(currentPage==="incassi"&&!canIncassi) setPage("today");
   if(currentPage==="all"&&!canAll) setPage("future");
   if(currentPage==="concessionaria"&&!canConcessionaria) setPage("today");
+  if(currentPage==="rapportino"&&!canRapportini) setPage("today");
   if(currentPage==="statistiche"&&!canStatistiche) setPage("today");
   if(currentPage==="adminpanel"&&!canAdminPanel) setPage("today");
 }
@@ -1084,18 +916,43 @@ function applyRoleUI(){
 function login(){
   const u=document.getElementById("loginUser").value.trim().toLowerCase();
   const p=document.getElementById("loginPass").value;
-  if(!USERS[u]||USERS[u].password!==p){document.getElementById("loginHint").textContent="Credenziali non corrette.";return;}
+  const hint = document.getElementById("loginHint");
+  hint.textContent = "";
+  if(!USERS[u]||USERS[u].password!==p){
+    hint.textContent="Credenziali non corrette.";
+    return;
+  }
   saveRememberedCredentials(u,p);
   currentUser={username:u,role:USERS[u].role,label:USERS[u].label};
   localStorage.setItem("vh_booking_user",JSON.stringify(currentUser));
   document.getElementById("loginBackdrop").style.display="none";
   applyRoleUI();
-  applyCalendarScrollMode();
 }
-function logout(){localStorage.removeItem("vh_booking_user");currentUser=null;document.getElementById("loginBackdrop").style.display="flex";applyRoleUI();applyCalendarScrollMode();}
-function restoreLogin(){restoreRememberedCredentials();const saved=localStorage.getItem("vh_booking_user");if(saved){try{currentUser=JSON.parse(saved);document.getElementById("loginBackdrop").style.display="none";}catch(e){}}applyRoleUI();applyCalendarScrollMode();}
+function logout(){
+  localStorage.removeItem("vh_booking_user");
+  currentUser=null;
+  document.getElementById("loginBackdrop").style.display="flex";
+  applyRoleUI();
+}
+function restoreLogin(){
+  restoreRememberedCredentials();
+  const saved=localStorage.getItem("vh_booking_user");
+  if(saved){
+    try{
+      currentUser=JSON.parse(saved);
+      document.getElementById("loginBackdrop").style.display="none";
+    }catch(e){}
+  }
+  applyRoleUI();
+}
 
-async function loadServices(){const r=await fetch(bustUrl(SERVICES_ENDPOINT),{cache:"no-store",headers:{"Cache-Control":"no-cache, no-store, max-age=0","Pragma":"no-cache"}});if(!r.ok)throw new Error("HTTP "+r.status);const d=await r.json();services=(d.results||[]).map(mapServiceRow).filter(s=>s.active);renderServicesGrid();}
+async function loadServices(){
+  const r=await fetch(bustUrl(SERVICES_ENDPOINT),{cache:"no-store",headers:{"Cache-Control":"no-cache, no-store, max-age=0","Pragma":"no-cache"}});
+  if(!r.ok) throw new Error("HTTP "+r.status);
+  const d=await r.json();
+  services=(d.results||[]).map(mapServiceRow).filter(s=>s.active);
+  renderServicesGrid();
+}
 async function loadBookings(){
   const r=await fetch(bustUrl(READ_ENDPOINT),{cache:"no-store",headers:{"Cache-Control":"no-cache, no-store, max-age=0","Pragma":"no-cache"}});
   if(!r.ok) throw new Error("HTTP "+r.status);
@@ -1110,12 +967,30 @@ async function loadBookings(){
   });
   selected=allItems[0]||null;
   render();
+  renderRapportini();
   showDetail();
 }
-async function loadAll(){try{["listToday","listFuture","listAll"].forEach(id=>{const el=document.getElementById(id); if(el) el.innerHTML='<div class="loading">Caricamento...</div>';});await Promise.all([loadServices(),loadBookings()]);showToast("Dati aggiornati");}catch(e){console.error(e);["listToday","listFuture","listAll"].forEach(id=>{const el=document.getElementById(id); if(el) el.innerHTML='<div class="error">Errore nel caricamento. Controlla webhook attivi e CORS.</div>';});}}
+async function loadAll(){
+  try{
+    ["listToday","listFuture","listAll","rapportinoList"].forEach(id=>{
+      const el=document.getElementById(id);
+      if(el) el.innerHTML='<div class="loading">Caricamento...</div>';
+    });
+    await Promise.all([loadServices(),loadBookings()]);
+    populateRapportinoDealers();
+    showToast("Dati aggiornati");
+  }catch(e){
+    console.error(e);
+    ["listToday","listFuture","listAll","rapportinoList"].forEach(id=>{
+      const el=document.getElementById(id);
+      if(el) el.innerHTML='<div class="error">Errore nel caricamento. Controlla webhook attivi e CORS.</div>';
+    });
+  }
+}
 
 function renderServicesGrid(ids=[]){
-  const g=document.getElementById("servicesGrid"); g.innerHTML="";
+  const g=document.getElementById("servicesGrid");
+  g.innerHTML="";
   services.forEach(s=>{
     const l=document.createElement("label");
     l.className="service-pill";
@@ -1131,10 +1006,18 @@ function updateFormSummary(){
   const extra=Number(document.getElementById("f-extra")?.value||0);
   const sconto=Number(document.getElementById("f-sconto")?.value||0);
   const total=serviceTotal+extra-sconto;
-  [["sum-services",serviceTotal],["sum-extra",extra],["sum-sconto",sconto],["sum-total",total]].forEach(([id,val])=>{const el=document.getElementById(id); if(el) el.textContent=formatEuro(val);});
+  [["sum-services",serviceTotal],["sum-extra",extra],["sum-sconto",sconto],["sum-total",total]].forEach(([id,val])=>{
+    const el=document.getElementById(id);
+    if(el) el.textContent=formatEuro(val);
+  });
 }
 
-function matchesSearch(item,q){return [item.modello,item.stato,item.createdBy,item.servizi.map(s=>s.value).join(" ")].join(" ").toLowerCase().includes(q);}
+function matchesSearch(item,q){
+  return [
+    item.modello,item.targa,item.stato,item.createdBy,item.concessionaria,
+    item.servizi.map(s=>s.value).join(" ")
+  ].join(" ").toLowerCase().includes(q);
+}
 
 function renderCards(listId, items){
   const list=document.getElementById(listId);
@@ -1164,7 +1047,7 @@ function renderCards(listId, items){
       <div>
         <div class="meta">${i.arrivo}</div>
         <div class="model">${i.modello}</div>
-        <div class="sub">${i.stato}</div>
+        <div class="sub">${i.stato}${i.targa ? " • " + i.targa : ""}</div>
         <div class="meta2">→ ${consegnaLabel}</div>
         <div class="urgency-tag">⏱ Consegna ${consegnaLabel}</div>
         ${hasPhone ? `
@@ -1189,9 +1072,66 @@ function renderCards(listId, items){
   });
 }
 
+function renderRapportini(){
+  const list = document.getElementById("rapportinoList");
+  if(!list) return;
+
+  const dealerFilter = document.getElementById("rapportinoDealerFilter")?.value || "";
+  const search = (document.getElementById("rapportinoSearch")?.value || "").toLowerCase().trim();
+  const sentFilter = document.getElementById("rapportinoSentFilter")?.value || "all";
+
+  let items = allItems
+    .filter(i => isDealerBooking(i))
+    .filter(i => dealerFilter ? i.concessionaria === dealerFilter : true)
+    .filter(i => {
+      if(!search) return true;
+      return [i.modello, i.targa, i.concessionaria, i.note, i.servizi.map(s=>s.value).join(" ")].join(" ").toLowerCase().includes(search);
+    })
+    .filter(i => {
+      if(sentFilter === "sent") return !!i.rapportino_inviato;
+      if(sentFilter === "pending") return !i.rapportino_inviato;
+      return true;
+    });
+
+  if(!items.length){
+    list.innerHTML = '<div class="empty">Nessun rapportino trovato.</div>';
+    return;
+  }
+
+  list.innerHTML = "";
+  items.forEach(i=>{
+    const dealer = DEALERS.find(d => d.name === i.concessionaria);
+    const hasEmail = !!dealer?.email;
+    const statusLabel = i.rapportino_inviato ? "Inviato" : "Da inviare";
+    const statusClass = i.rapportino_inviato ? "b-sent" : "b-pending";
+
+    const card = document.createElement("div");
+    card.className = "card";
+    card.innerHTML = `
+      <div>
+        <div class="meta">${i.arrivo}</div>
+        <div class="model">${i.modello}</div>
+        <div class="sub">${i.concessionaria}${i.targa ? " • " + i.targa : ""}</div>
+        <div class="rapportino-card-status">${i.rapportino_esito || (hasEmail ? "Email configurata: " + dealer.email : "Email concessionaria non configurata")}</div>
+      </div>
+      <div class="rapportino-actions">
+        <div class="badge ${statusClass}">${statusLabel}</div>
+        ${i.rapportino_pdf_url ? `<a href="${i.rapportino_pdf_url}" target="_blank" class="btn-secondary" onclick="event.stopPropagation()">PDF</a>` : ""}
+        <button class="btn" onclick="event.stopPropagation();sendRapportino(${i.id})" ${!hasEmail ? "disabled style='opacity:.45;cursor:not-allowed'" : ""}>
+          ${i.rapportino_inviato ? "Reinvia" : "Invia"}
+        </button>
+      </div>
+    `;
+    card.onclick = ()=>{
+      selected=i;
+      showDetail();
+      if(window.innerWidth<=1280) openDetailModal();
+    };
+    list.appendChild(card);
+  });
+}
 
 function render(){
-  const today=todayKey();
   const todayStatus=document.getElementById("todayStatusFilter").value;
   const todaySearch=document.getElementById("searchToday").value.toLowerCase().trim();
   const futureDate=document.getElementById("futureDateFilter").value;
@@ -1236,10 +1176,12 @@ function render(){
     .filter(i=>allStatus==="all"?true:i.stato===allStatus)
     .filter(i=>matchesSearch(i,allSearch))
     .sort(urgencySort);
+
   const incomeItems=allItems
     .filter(i=>incomeDate ? toISODateInput(i.arrivo)===incomeDate : isSameDayDisplay(i.arrivo, nowDate))
     .filter(i=>i.stato===incomeStatus)
     .filter(i=>!isDealerBooking(i));
+
   const dealerItems=allItems
     .filter(i=>isDealerBooking(i))
     .filter(i=>dealerDate ? toISODateInput(i.arrivo)===dealerDate : true)
@@ -1249,18 +1191,20 @@ function render(){
   renderCards("listToday", todayItems);
   renderCards("listFuture", futureItems);
   renderCards("listAll", allFiltered);
+  renderIncome(incomeItems, incomeDate);
+  renderDealerGrouped(dealerItems);
+  renderTodayStats(todayItems);
+
   const statsItems=allItems.filter(i=>{
     const d = toISODateInput(i.arrivo);
     if(statsFrom && d < statsFrom) return false;
     if(statsTo && d > statsTo) return false;
     return true;
   });
-
-  renderIncome(incomeItems, incomeDate);
-  renderDealerGrouped(dealerItems);
-  renderTodayStats(todayItems);
   renderStatistics(statsItems);
+  renderRapportini();
 }
+
 function renderTodayStats(todayItems){
   const stats = [
     ["Prenotate", todayItems.filter(i=>i.stato==="Prenotata").length],
@@ -1277,6 +1221,7 @@ function renderTodayStats(todayItems){
     box.appendChild(el);
   });
 }
+
 function showDetail(){
   if(!selected) return;
   const st = selected.servizi.length ? selected.servizi.map(s=>s.value).join(" + ") : "Nessun servizio";
@@ -1313,6 +1258,7 @@ function showDetail(){
     box.style.display = hasPhone ? "flex" : "none";
   });
 }
+
 function renderIncome(items, incomeDate){
   const total=items.reduce((s,i)=>s+i.totale,0);
   const title=document.getElementById("incomeTitle");
@@ -1322,8 +1268,16 @@ function renderIncome(items, incomeDate){
   document.getElementById("incomeCount").textContent=items.length;
   const box=document.getElementById("incomeList");
   box.innerHTML="";
-  if(!items.length){box.innerHTML='<div class="income-item"><div class="muted">Nessuna prenotazione per il filtro selezionato.</div></div>';return;}
-  items.forEach(i=>{const r=document.createElement("div");r.className="income-item";r.innerHTML=`<div><div style="font-weight:800">${i.modello}</div><div class="muted" style="font-size:13px">${i.arrivo} → ${i.consegna}<br>${i.createdBy ? "Inserita da: "+i.createdBy : ""}</div></div><strong>${formatEuro(i.totale)}</strong>`;box.appendChild(r);});
+  if(!items.length){
+    box.innerHTML='<div class="income-item"><div class="muted">Nessuna prenotazione per il filtro selezionato.</div></div>';
+    return;
+  }
+  items.forEach(i=>{
+    const r=document.createElement("div");
+    r.className="income-item";
+    r.innerHTML=`<div><div style="font-weight:800">${i.modello}</div><div class="muted" style="font-size:13px">${i.arrivo} → ${i.consegna}<br>${i.createdBy ? "Inserita da: "+i.createdBy : ""}</div></div><strong>${formatEuro(i.totale)}</strong>`;
+    box.appendChild(r);
+  });
 }
 
 function renderDealerGrouped(items){
@@ -1336,7 +1290,6 @@ function renderDealerGrouped(items){
     return;
   }
 
-  // raggruppa per cliente concessionaria
   const groups = {};
   items.forEach(i=>{
     const key = i.concessionaria || "Altro";
@@ -1350,7 +1303,6 @@ function renderDealerGrouped(items){
 
     const block = document.createElement("div");
     block.style.marginBottom = "16px";
-
     block.innerHTML = `
       <div style="font-weight:800;font-size:16px;margin-bottom:6px">${group}</div>
       <div class="income-card" style="margin-bottom:8px">
@@ -1378,24 +1330,9 @@ function renderDealerGrouped(items){
 
     container.appendChild(block);
   });
-}
 
-function renderDealer(items, dealerDate){
-  const total=items.reduce((s,i)=>s+i.totale,0);
-  const title=document.getElementById("dealerTitle");
-  const selectedLabel = dealerDate ? dealerDate.split("-").reverse().join("/") : "tutte le date";
-  title.textContent=`Totale concessionarie ${selectedLabel}`;
-  document.getElementById("dealerTotal").textContent=formatEuro(total);
+  document.getElementById("dealerTotal").textContent=formatEuro(items.reduce((s,i)=>s+i.totale,0));
   document.getElementById("dealerCount").textContent=items.length;
-  const box=document.getElementById("dealerList");
-  box.innerHTML="";
-  if(!items.length){box.innerHTML='<div class="income-item"><div class="muted">Nessuna auto concessionaria per il filtro selezionato.</div></div>';return;}
-  items.forEach(i=>{
-    const r=document.createElement("div");
-    r.className="income-item";
-    r.innerHTML=`<div><div style="font-weight:800">${i.modello}</div><div class="muted" style="font-size:13px">${i.arrivo} → ${i.consegna}<br>Stato: ${i.stato}${i.createdBy ? " • Inserita da: "+i.createdBy : ""}</div></div><strong>${formatEuro(i.totale)}</strong>`;
-    box.appendChild(r);
-  });
 }
 
 function toggleMoreMenu(event){
@@ -1417,7 +1354,6 @@ function openMorePage(page){
   closeMoreMenu();
   setPage(page);
 }
-
 
 function setStatsPreset(mode){
   const from = document.getElementById("statsFromDate");
@@ -1504,50 +1440,49 @@ function setFuturePreset(mode){
   render();
 }
 
-
-
-
-let __calendarTouchStartY = 0;
-
-
-function applyCalendarScrollMode(){
-  const screen = document.querySelector('.screen');
-  if(!screen) return;
-  if(currentPage === 'calendar'){
-    screen.style.overflow = 'hidden';
-  } else {
-    screen.style.overflow = 'auto';
-  }
-}
-
 function setPage(page, el){
   if(page==="incassi"&&currentUser?.role!=="admin") return;
   if(page==="all"&&currentUser?.role!=="admin") return;
+  if(page==="concessionaria"&&currentUser?.role!=="admin") return;
+  if(page==="rapportino"&&!(currentUser?.role==="admin"||currentUser?.role==="operatore")) return;
   if(page==="adminpanel"&&currentUser?.role!=="admin") return;
+
   currentPage=page;
-  document.body.classList.toggle("calendar-page", page==="calendar");
-  const titles={today:"Prenotazioni",future:"Prossime",calendar:"Calendario",incassi:"Incassi",all:"Tutte le prenotazioni",concessionaria:"Concessionaria",statistiche:"Statistiche",adminpanel:"Pannello Admin"};
+  const titles={
+    today:"Prenotazioni",
+    future:"Prossime",
+    calendar:"Calendario",
+    incassi:"Incassi",
+    all:"Tutte le prenotazioni",
+    concessionaria:"Concessionaria",
+    rapportino:"Rapportini",
+    statistiche:"Statistiche",
+    adminpanel:"Pannello Admin"
+  };
   document.getElementById("screenTitle").textContent=titles[page]||"Prenotazioni";
-  ["today","future","calendar","incassi","all","concessionaria","statistiche","adminpanel"].forEach(p=>document.getElementById("page-"+p).style.display=p===page?"block":"none");
+
+  ["today","future","calendar","incassi","all","concessionaria","rapportino","statistiche","adminpanel"].forEach(p=>{
+    const elPage = document.getElementById("page-"+p);
+    if(elPage) elPage.style.display=p===page?"block":"none";
+  });
+
   document.querySelectorAll(".sidebar .nav-item[data-nav]").forEach(x=>x.classList.remove("active"));
   if(el) el.classList.add("active");
   else{
     const sidebarActive=document.querySelector(`.sidebar .nav-item[data-nav="${page}"]`);
     if(sidebarActive) sidebarActive.classList.add("active");
   }
+
   document.querySelectorAll(".bottomnav div[data-bnav]").forEach(x=>x.classList.remove("active"));
   const activeBottom=document.querySelector(`.bottomnav div[data-bnav="${page}"]`);
   if(activeBottom) activeBottom.classList.add("active");
+
   if(page==="adminpanel") renderUsersList();
-  if(page==="statistiche") render();
-  applyCalendarScrollMode();
   if(page==="calendar") renderCalendar();
+  if(page==="rapportino") renderRapportini();
 }
 
-
-function normalizePhone(v){
-  return String(v||"").replace(/\D+/g,"");
-}
+function normalizePhone(v){ return String(v||"").replace(/\D+/g,""); }
 function checkCustomer(){
   const tel = normalizePhone(document.getElementById("f-telefono")?.value || "");
   const box = document.getElementById("customerInfo");
@@ -1560,7 +1495,6 @@ function checkCustomer(){
   }
 
   const matches = allItems.filter(i => normalizePhone(i.telefono) === tel);
-
   if(matches.length === 0){
     box.style.display = "none";
     box.innerHTML = "";
@@ -1600,11 +1534,12 @@ function checkCustomer(){
   `;
   box.style.display = "block";
 }
+
 function clearForm(){
   editingId=null;
   formDirty=false;
   document.getElementById("formTitle").textContent="Nuova prenotazione";
-  ["f-modello","f-arrivo-date","f-arrivo-time","f-consegna-date","f-consegna-time","f-telefono","f-note"].forEach(id=>document.getElementById(id).value="");
+  ["f-modello","f-targa","f-arrivo-date","f-arrivo-time","f-consegna-date","f-consegna-time","f-telefono","f-note"].forEach(id=>document.getElementById(id).value="");
   document.getElementById("f-stato").value="Prenotata";
   document.getElementById("f-concessionaria").value="No";
   toggleDealerSelect("No");
@@ -1619,15 +1554,11 @@ function openCreateModal(){
   clearForm();
   document.getElementById("formBackdrop").style.display="flex";
 }
-function closeFormModal(){
-  document.getElementById("formBackdrop").style.display="none";
-}
-function handleCancelEdit(){
-  closeFormModal();
-  clearForm();
-}
-function openDetailModal(){document.getElementById("detailBackdrop").style.display="flex";}
-function closeDetailModal(){document.getElementById("detailBackdrop").style.display="none";}
+function closeFormModal(){ document.getElementById("formBackdrop").style.display="none"; }
+function handleCancelEdit(){ closeFormModal(); clearForm(); }
+function openDetailModal(){ document.getElementById("detailBackdrop").style.display="flex"; }
+function closeDetailModal(){ document.getElementById("detailBackdrop").style.display="none"; }
+
 function openEditModal(){
   if(!(currentUser&&(currentUser.role==="admin"||currentUser.role==="operatore")))return;
   if(!selected)return;
@@ -1635,6 +1566,7 @@ function openEditModal(){
   editingId=selected.id;
   document.getElementById("formTitle").textContent="Modifica prenotazione";
   document.getElementById("f-modello").value=selected.modello==="-"?"":selected.modello;
+  document.getElementById("f-targa").value=selected.targa||"";
   document.getElementById("f-stato").value=selected.stato;
   const arrivoParts = splitIsoToLocalParts(selected.rawArrivo);
   const consegnaParts = splitIsoToLocalParts(selected.rawConsegna);
@@ -1656,6 +1588,7 @@ function openEditModal(){
   closeDetailModal();
   document.getElementById("formBackdrop").style.display="flex";
 }
+
 async function quickSetStatus(id, status){
   selected = allItems.find(i=>i.id===id) || selected;
   await setStatus(status);
@@ -1672,14 +1605,19 @@ async function setStatus(status){
     if(u){selected=u;showDetail();}
     closeDetailModal();
     showToast(`Stato aggiornato: ${status}`);
-  }catch(e){console.error(e);alert("Errore aggiornamento stato.");}
+  }catch(e){
+    console.error(e);
+    alert("Errore aggiornamento stato.");
+  }
 }
+
 async function saveForm(){
   if(!(currentUser&&(currentUser.role==="admin"||currentUser.role==="operatore")))return;
   const isEdit = !!editingId;
   const payload={
     stato:document.getElementById("f-stato").value,
     modello:document.getElementById("f-modello").value.trim(),
+    targa:document.getElementById("f-targa").value.trim(),
     arrivo:localPartsToUTCString(document.getElementById("f-arrivo-date").value, document.getElementById("f-arrivo-time").value),
     consegna:localPartsToUTCString(document.getElementById("f-consegna-date").value, document.getElementById("f-consegna-time").value),
     servizi:selectedServiceIds(),
@@ -1694,7 +1632,10 @@ async function saveForm(){
     alert("Seleziona la concessionaria.");
     return;
   }
-  if(!payload.modello||!payload.arrivo||!payload.servizi.length){alert("Compila almeno modello, arrivo e un servizio.");return;}
+  if(!payload.modello||!payload.arrivo||!payload.servizi.length){
+    alert("Compila almeno modello, arrivo e un servizio.");
+    return;
+  }
   const endpoint=isEdit?UPDATE_ENDPOINT:CREATE_ENDPOINT;
   const body=isEdit?{id:editingId,...payload}:payload;
   try{
@@ -1704,7 +1645,57 @@ async function saveForm(){
     clearForm();
     await loadBookings();
     showToast(isEdit ? "Prenotazione modificata" : "Prenotazione creata");
-  }catch(e){console.error(e);alert("Errore salvataggio prenotazione.");}
+  }catch(e){
+    console.error(e);
+    alert("Errore salvataggio prenotazione.");
+  }
+}
+
+async function sendRapportino(id){
+  const item = allItems.find(i=>i.id===id);
+  if(!item) return;
+
+  const dealer = DEALERS.find(d => d.name === item.concessionaria);
+  if(!dealer){
+    alert("Concessionaria non configurata.");
+    return;
+  }
+  if(!dealer.email){
+    alert("Email concessionaria non configurata.");
+    return;
+  }
+
+  try{
+    const payload = {
+      id: item.id,
+      modello: item.modello,
+      targa: item.targa || "",
+      arrivo: item.arrivo,
+      consegna: item.consegna,
+      stato: item.stato,
+      lavoro: item.servizi.map(s=>s.value).join(", "),
+      note: item.note || "",
+      concessionaria: item.concessionaria,
+      email: dealer.email,
+      telefono: dealer.phone || "",
+      totale: item.totale || 0,
+      operatore: currentUser?.label || ""
+    };
+
+    const r = await fetch(RAPPORTINO_ENDPOINT,{
+      method:"POST",
+      headers:{"Content-Type":"application/json"},
+      body:JSON.stringify(payload)
+    });
+
+    if(!r.ok) throw new Error("HTTP " + r.status);
+
+    showToast("Rapportino inviato");
+    await loadBookings();
+  }catch(e){
+    console.error(e);
+    alert("Errore invio rapportino.");
+  }
 }
 
 function clearUserForm(){
@@ -1773,12 +1764,16 @@ async function testNotification(){
   showToast("Test notifica inviato");
 }
 
-["f-extra","f-sconto"].forEach(id=>{const el=document.getElementById(id); if(el) el.addEventListener("input", ()=>{formDirty=true; updateFormSummary();});});
-["f-modello","f-arrivo-date","f-arrivo-time","f-consegna-date","f-consegna-time","f-telefono","f-note","f-stato","f-concessionaria","f-dealer-name"].forEach(id=>{const el=document.getElementById(id); if(el) el.addEventListener("input", ()=>{formDirty=true; if(id==="f-telefono") checkCustomer();}); if(el) el.addEventListener("change", ()=>{formDirty=true; if(id==="f-telefono") checkCustomer();});});
+["f-extra","f-sconto"].forEach(id=>{
+  const el=document.getElementById(id);
+  if(el) el.addEventListener("input", ()=>{formDirty=true; updateFormSummary();});
+});
+["f-modello","f-targa","f-arrivo-date","f-arrivo-time","f-consegna-date","f-consegna-time","f-telefono","f-note","f-stato","f-concessionaria","f-dealer-name"].forEach(id=>{
+  const el=document.getElementById(id);
+  if(el) el.addEventListener("input", ()=>{formDirty=true; if(id==="f-telefono") checkCustomer();});
+  if(el) el.addEventListener("change", ()=>{formDirty=true; if(id==="f-telefono") checkCustomer();});
+});
 document.addEventListener("change", (e)=>{ if(e.target && e.target.closest("#servicesGrid")) formDirty=true; });
-
-
-let calendarDate = new Date();
 
 function formatCalendarInputDate(date){
   const y = date.getFullYear();
@@ -1789,9 +1784,7 @@ function formatCalendarInputDate(date){
 function sameDay(a,b){
   return a.getFullYear()===b.getFullYear() && a.getMonth()===b.getMonth() && a.getDate()===b.getDate();
 }
-function minutesFromDate(date){
-  return date.getHours()*60 + date.getMinutes();
-}
+function minutesFromDate(date){ return date.getHours()*60 + date.getMinutes(); }
 function calendarStatusClass(status){
   if(status==="Prenotata") return "b-prenotata";
   if(status==="In lavaggio") return "b-lavorazione";
@@ -1834,15 +1827,8 @@ function renderCalendarNowLine(){
   line.style.top = `${(minutesFromDate(now)/60)*52}px`;
   eventsBox.appendChild(line);
 }
-
-
-
-function isAdminUser(){
-  return currentUser?.role === "admin";
-}
-function normalizeDateOnly(d){
-  return new Date(d.getFullYear(), d.getMonth(), d.getDate());
-}
+function isAdminUser(){ return currentUser?.role === "admin"; }
+function normalizeDateOnly(d){ return new Date(d.getFullYear(), d.getMonth(), d.getDate()); }
 function canAccessCalendarDate(date){
   if (isAdminUser()) return true;
   const today = normalizeDateOnly(new Date());
@@ -1854,11 +1840,8 @@ function enforceCalendarPermissions(){
   calendarDate = new Date();
   const input = document.getElementById("calendarDateFilter");
   if (input) input.value = formatCalendarInputDate(calendarDate);
-  if (typeof showToast === "function") {
-    showToast("Gli operatori possono vedere solo oggi e i giorni futuri");
-  }
+  showToast("Gli operatori possono vedere solo oggi e i giorni futuri");
 }
-
 function renderCalendar(){
   enforceCalendarPermissions();
   buildCalendarHours();
@@ -1973,60 +1956,47 @@ function renderCalendar(){
 
   renderCalendarNowLine();
 }
-
-
 function shiftCalendarDay(delta){
   const newDate = new Date(calendarDate);
   newDate.setDate(newDate.getDate() + delta);
-
   if (!canAccessCalendarDate(newDate)) {
-    if (typeof showToast === "function") {
-      showToast("Gli operatori non possono andare indietro nel calendario");
-    }
+    showToast("Gli operatori non possono andare indietro nel calendario");
     return;
   }
-
   calendarDate = newDate;
   renderCalendar();
 }
-function goTodayCalendar(){
-  calendarDate = new Date();
-  renderCalendar();
-}
+function goTodayCalendar(){ calendarDate = new Date(); renderCalendar(); }
 function onCalendarDateChange(){
   const v = document.getElementById("calendarDateFilter").value;
   if(!v) return;
-
   const [y,m,d] = v.split("-").map(Number);
   const newDate = new Date(y, m-1, d);
-
   if (!canAccessCalendarDate(newDate)) {
-    if (typeof showToast === "function") {
-      showToast("Gli operatori non possono aprire date passate");
-    }
+    showToast("Gli operatori non possono aprire date passate");
     document.getElementById("calendarDateFilter").value = formatCalendarInputDate(calendarDate);
     return;
   }
-
   calendarDate = newDate;
   renderCalendar();
 }
 
+window.addEventListener('resize', ()=>{
+  if (currentPage==='calendar') renderCalendar();
+});
 
 loadUsers();
 restoreLogin();
-applyCalendarScrollMode();
 restoreNotifySettings();
 renderDealerSelect();
 renderDealerAdminList();
+populateRapportinoDealers();
 toggleDealerSelect("No");
-setInterval(()=>{if(currentUser){loadBookings().catch(console.error);}},15000);
 document.getElementById("incomeDateFilter").value = new Date().toISOString().slice(0,10);
 document.getElementById("dealerDateFilter").value = "";
+setInterval(()=>{if(currentUser){loadBookings().catch(console.error);}},15000);
 loadAll();
-applyCalendarScrollMode();
 renderCalendar();
 </script>
 </body>
 </html>
-<script>window.addEventListener('resize', ()=>{ if (typeof currentPage !== 'undefined' && currentPage==='calendar' && typeof renderCalendar==='function') renderCalendar(); });</script>
