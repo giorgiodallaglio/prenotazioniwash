@@ -1,902 +1,164 @@
 <!DOCTYPE html>
 <html lang="it">
 <head>
-  <meta charset="UTF-8" />
-  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-  <title>Gestionale Magazzino Macchinette</title>
-  <style>
-    :root{
-      --bg:#0b1020;
-      --bg2:#11182b;
-      --card:rgba(255,255,255,.08);
-      --card-strong:rgba(255,255,255,.14);
-      --line:rgba(255,255,255,.12);
-      --text:#eef3ff;
-      --muted:#aeb8d6;
-      --accent:#7aa2ff;
-      --accent2:#8ef0d0;
-      --danger:#ff8e8e;
-      --success:#7ff0b0;
-      --warning:#ffd680;
-      --shadow:0 10px 30px rgba(0,0,0,.28);
-      --radius:22px;
-      --radius-sm:14px;
-      --blur:18px;
-    }
-    *{box-sizing:border-box}
-    body{
-      margin:0;
-      font-family: Inter, ui-sans-serif, system-ui, -apple-system, BlinkMacSystemFont, "Segoe UI", sans-serif;
-      color:var(--text);
-      background:
-        radial-gradient(circle at top left, rgba(122,162,255,.24), transparent 26%),
-        radial-gradient(circle at top right, rgba(142,240,208,.18), transparent 24%),
-        linear-gradient(180deg, #0a0f1d 0%, #0b1020 100%);
-      min-height:100vh;
-    }
-    .app{max-width:1480px;margin:0 auto;padding:20px}
-    .shell{display:grid;grid-template-columns:290px 1fr;gap:18px;min-height:calc(100vh - 40px)}
-    .sidebar,.panel,.modal-card,.toast{
-      backdrop-filter: blur(var(--blur));
-      -webkit-backdrop-filter: blur(var(--blur));
-      background: linear-gradient(180deg, rgba(255,255,255,.10), rgba(255,255,255,.06));
-      border:1px solid var(--line);
-      box-shadow:var(--shadow);
-    }
-    .sidebar{border-radius:28px;padding:18px;position:sticky;top:20px;height:calc(100vh - 40px);overflow:auto}
-    .brand{display:flex;align-items:center;gap:14px;margin-bottom:18px}
-    .brand-badge{
-      width:48px;height:48px;border-radius:16px;display:grid;place-items:center;
-      background: linear-gradient(135deg, rgba(122,162,255,.28), rgba(142,240,208,.18));
-      border:1px solid var(--line);font-weight:700;letter-spacing:.4px;
-    }
-    .brand h1{font-size:20px;margin:0;line-height:1.1}
-    .brand small{display:block;color:var(--muted);margin-top:4px}
-    .nav{display:grid;gap:10px;margin-top:18px}
-    .nav button{
-      width:100%;text-align:left;border:0;background:transparent;color:var(--text);
-      padding:14px 16px;border-radius:16px;cursor:pointer;font-size:15px;transition:.18s ease;border:1px solid transparent;
-    }
-    .nav button.active,.nav button:hover{background:rgba(255,255,255,.09);border-color:var(--line);transform:translateY(-1px)}
-    .sidebar-footer{
-      margin-top:18px;padding:14px;border-radius:18px;background:rgba(255,255,255,.06);
-      border:1px solid var(--line);color:var(--muted);font-size:13px;line-height:1.45;
-    }
-    .main{display:grid;grid-template-rows:auto auto 1fr;gap:18px;min-width:0}
-    .hero{
-      padding:22px;border-radius:28px;
-      background: linear-gradient(135deg, rgba(122,162,255,.14), rgba(142,240,208,.09));
-      border:1px solid var(--line);box-shadow:var(--shadow);
-    }
-    .hero-top{display:flex;gap:12px;align-items:flex-start;justify-content:space-between;flex-wrap:wrap}
-    .hero h2{margin:0 0 8px;font-size:30px}
-    .hero p{margin:0;color:var(--muted);max-width:840px}
-    .hero-actions{display:flex;gap:10px;flex-wrap:wrap}
-    .btn{
-      border:0;cursor:pointer;padding:12px 16px;border-radius:16px;font-weight:600;transition:.18s ease;
-      color:var(--text);background:rgba(255,255,255,.08);border:1px solid var(--line);
-    }
-    .btn:hover{transform:translateY(-1px); background:rgba(255,255,255,.11)}
-    .btn.primary{background:linear-gradient(135deg, rgba(122,162,255,.35), rgba(122,162,255,.18))}
-    .btn.good{background:linear-gradient(135deg, rgba(127,240,176,.25), rgba(127,240,176,.12))}
-    .btn.warn{background:linear-gradient(135deg, rgba(255,214,128,.25), rgba(255,214,128,.10))}
-    .stats{display:grid;grid-template-columns:repeat(4,minmax(0,1fr));gap:14px;margin-top:18px}
-    .stat{padding:16px;border-radius:20px;background:rgba(255,255,255,.06);border:1px solid var(--line)}
-    .stat .label{color:var(--muted);font-size:13px}
-    .stat .value{font-size:28px;font-weight:800;margin-top:8px}
-    .grid{display:grid;grid-template-columns:1.18fr .82fr;gap:18px;min-width:0}
-    .panel{border-radius:28px;padding:18px;min-width:0}
-    .panel h3{margin:0 0 4px;font-size:20px}
-    .sub{color:var(--muted);font-size:14px;margin-bottom:16px}
-    .scanner{display:grid;grid-template-columns:1.2fr .8fr auto;gap:12px;margin-bottom:14px}
-    .top-form{display:grid;grid-template-columns:repeat(3,minmax(0,1fr));gap:12px;margin-bottom:14px}
-    .field,.select,.textarea{
-      width:100%;border-radius:16px;border:1px solid var(--line);background:rgba(255,255,255,.06);
-      color:var(--text);padding:14px 15px;outline:none;font-size:15px;
-    }
-    .field::placeholder, .textarea::placeholder{color:#99a7cb}
-    .select option{color:#000}
-    .product-card{
-      border:1px solid var(--line);background:rgba(255,255,255,.05);border-radius:22px;
-      padding:16px;display:grid;grid-template-columns:1fr auto;gap:12px;align-items:start;margin-bottom:14px;
-    }
-    .product-main{display:grid;gap:10px}
-    .kpis-inline{display:flex;gap:8px;flex-wrap:wrap}
-    .chip{
-      padding:8px 11px;border-radius:999px;font-size:12px;background:rgba(255,255,255,.07);
-      border:1px solid var(--line);color:var(--muted);
-    }
-    .chip strong{color:var(--text)}
-    .movement-form{display:grid;grid-template-columns:repeat(2,minmax(0,1fr));gap:12px;margin-top:12px}
-    .movement-form .full{grid-column:1/-1}
-    .quick{display:flex;gap:10px;flex-wrap:wrap}
-    .qty-btn{
-      min-width:58px;padding:10px 12px;border-radius:14px;border:1px solid var(--line);
-      background:rgba(255,255,255,.05);color:var(--text);cursor:pointer;font-weight:700;
-    }
-    .recent-list{display:grid;gap:12px;max-height:640px;overflow:auto;padding-right:4px}
-    .recent-item{border-radius:18px;padding:14px;background:rgba(255,255,255,.05);border:1px solid var(--line)}
-    .recent-top{display:flex;justify-content:space-between;gap:10px;align-items:center;margin-bottom:8px}
-    .tag{
-      display:inline-flex;align-items:center;gap:6px;padding:7px 10px;border-radius:999px;
-      font-size:12px;font-weight:700;border:1px solid var(--line);
-    }
-    .tag.carico{background:rgba(127,240,176,.14); color:var(--success)}
-    .tag.scarico{background:rgba(255,142,142,.14); color:var(--danger)}
-    .tag.rettifica{background:rgba(255,214,128,.14); color:var(--warning)}
-    .muted{color:var(--muted)}
-    .modal{position:fixed;inset:0;background:rgba(0,0,0,.48);display:none;align-items:center;justify-content:center;padding:20px;z-index:30}
-    .modal.show{display:flex}
-    .modal-card{width:min(760px, 100%);border-radius:28px;padding:20px}
-    .modal-grid{display:grid;grid-template-columns:repeat(2,minmax(0,1fr));gap:12px;margin-top:12px}
-    .modal-grid .full{grid-column:1/-1}
-    .toolbar{display:flex;justify-content:space-between;gap:12px;align-items:center;flex-wrap:wrap;margin-bottom:14px}
-    .pill-status{
-      padding:8px 12px;border-radius:999px;font-size:12px;font-weight:700;border:1px solid var(--line);
-      background:rgba(255,255,255,.07);
-    }
-    .ok{color:var(--success)}
-    .ko{color:var(--danger)}
-    .toast-wrap{position:fixed;right:20px;bottom:20px;z-index:50;display:grid;gap:10px}
-    .toast{border-radius:18px;padding:14px 16px;min-width:280px;max-width:420px}
-    .table{width:100%;border-collapse:separate;border-spacing:0 10px}
-    .table th{text-align:left;color:var(--muted);font-size:12px;font-weight:700;padding:0 10px 6px;text-transform:uppercase;letter-spacing:.06em}
-    .table td{
-      padding:12px 10px;background:rgba(255,255,255,.05);border-top:1px solid var(--line);border-bottom:1px solid var(--line);
-    }
-    .table td:first-child{border-left:1px solid var(--line); border-top-left-radius:14px; border-bottom-left-radius:14px;}
-    .table td:last-child{border-right:1px solid var(--line); border-top-right-radius:14px; border-bottom-right-radius:14px;}
-    .auto-badge{
-      display:inline-flex;align-items:center;gap:8px;padding:9px 12px;border-radius:999px;
-      background:rgba(127,240,176,.10);border:1px solid var(--line);font-size:12px;font-weight:700;color:var(--success);
-    }
-    @media (max-width:1180px){
-      .grid{grid-template-columns:1fr}
-      .stats{grid-template-columns:repeat(2,minmax(0,1fr))}
-      .scanner,.top-form{grid-template-columns:1fr}
-      .shell{grid-template-columns:1fr}
-      .sidebar{position:relative;height:auto;top:auto}
-    }
-    @media (max-width:720px){
-      .stats{grid-template-columns:1fr}
-      .movement-form,.modal-grid{grid-template-columns:1fr}
-      .product-card{grid-template-columns:1fr}
-      .hero h2{font-size:24px}
-    }
-  </style>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Gestionale Magazzino</title>
+
+<script src="https://unpkg.com/html5-qrcode"></script>
+
+<style>
+body {
+    margin: 0;
+    font-family: -apple-system, BlinkMacSystemFont, sans-serif;
+    background: #0b0b0b;
+    color: white;
+}
+
+.container {
+    padding: 20px;
+}
+
+.card {
+    background: rgba(255,255,255,0.05);
+    border-radius: 20px;
+    padding: 15px;
+    margin-bottom: 15px;
+}
+
+input {
+    width: 100%;
+    padding: 12px;
+    border-radius: 12px;
+    border: none;
+    margin-top: 10px;
+    font-size: 16px;
+}
+
+button {
+    width: 100%;
+    padding: 14px;
+    margin-top: 10px;
+    border-radius: 12px;
+    border: none;
+    background: #007aff;
+    color: white;
+    font-size: 16px;
+}
+
+#reader {
+    width: 100%;
+    margin-top: 10px;
+}
+
+h2 {
+    margin: 0;
+}
+</style>
 </head>
+
 <body>
-  <div class="app">
-    <div class="shell">
-      <aside class="sidebar">
-        <div class="brand">
-          <div class="brand-badge">VM</div>
-          <div>
-            <h1>Vision Magazzino</h1>
-            <small>Carico / scarico macchinette</small>
-          </div>
-        </div>
 
-        <div class="nav">
-          <button class="active">Rifornimento rapido</button>
-          <button id="openConfigSide">Configurazione Baserow</button>
-          <button id="refreshAll">Aggiorna dati</button>
-          <button id="focusBarcode">Focus scanner</button>
-        </div>
+<div class="container">
 
-        <div class="sidebar-footer">
-          <strong>Flusso consigliato</strong><br>
-          1. Seleziona la macchinetta<br>
-          2. Scansiona il codice a barre<br>
-          3. Ricerca automatica immediata<br>
-          4. Salva il movimento senza clic extra
-        </div>
-      </aside>
-
-      <main class="main">
-        <section class="hero">
-          <div class="hero-top">
-            <div>
-              <h2>Rifornimento macchinette</h2>
-              <p>Ho mantenuto la base grafica che preferisci e l’ho adattata ai tuoi campi reali Baserow. Ora include <strong>ricerca immediata senza clic</strong> e modalità operatore molto più rapida.</p>
-            </div>
-            <div class="hero-actions">
-              <button class="btn" id="openConfigTop">Configura API</button>
-              <button class="btn primary" id="testConnection">Test connessione</button>
-              <button class="btn good" id="loadDemo">Carica demo locale</button>
-            </div>
-          </div>
-          <div class="stats">
-            <div class="stat"><div class="label">Macchinette</div><div class="value" id="statMachines">0</div></div>
-            <div class="stat"><div class="label">Prodotti caricati</div><div class="value" id="statProducts">0</div></div>
-            <div class="stat"><div class="label">Movimenti recenti</div><div class="value" id="statMovements">0</div></div>
-            <div class="stat"><div class="label">Stato connessione</div><div class="value" id="statConn">—</div></div>
-          </div>
-        </section>
-
-        <div class="grid">
-          <section class="panel">
-            <div class="toolbar">
-              <div>
-                <h3>Scanner + scheda prodotto</h3>
-                <div class="sub">Barcode immediato. Appena lo scanner invia Invio, il prodotto viene cercato in automatico.</div>
-              </div>
-              <div class="pill-status" id="connBadge">Non configurato</div>
-            </div>
-
-            <div class="top-form">
-              <select class="select" id="machineSelect"></select>
-              <select class="select" id="operatorSelect"></select>
-              <input class="field" id="giroInput" placeholder="Giro (es. GIR-2026-0001)" />
-            </div>
-
-            <div class="scanner">
-              <input class="field" id="barcodeInput" placeholder="Scansiona codice a barre..." autocomplete="off" />
-              <select class="select" id="presetSelect">
-                <option value="load_machine">Carico macchinetta</option>
-                <option value="sale">Vendita / uscita</option>
-                <option value="supplier_receipt">Ricezione fornitore</option>
-                <option value="custom">Personalizzato</option>
-              </select>
-              <div class="auto-badge">Ricerca automatica attiva</div>
-            </div>
-
-            <div id="productArea">
-              <div class="product-card">
-                <div class="product-main">
-                  <div style="font-size:19px;font-weight:800">Nessun prodotto selezionato</div>
-                  <div class="muted">Scansiona un barcode per caricare in automatico la scheda prodotto.</div>
-                </div>
-              </div>
-            </div>
-
-            <div class="toolbar" style="margin-top:20px">
-              <div>
-                <h3>Anteprima prodotti</h3>
-                <div class="sub">Vista di supporto con i campi reali: Nome, Codice a barre, Giacenza.</div>
-              </div>
-            </div>
-            <div style="overflow:auto">
-              <table class="table">
-                <thead>
-                  <tr>
-                    <th>Prodotto</th>
-                    <th>Barcode</th>
-                    <th>Giacenza</th>
-                  </tr>
-                </thead>
-                <tbody id="stockBody"></tbody>
-              </table>
-            </div>
-          </section>
-
-          <section class="panel">
-            <div class="toolbar">
-              <div>
-                <h3>Movimenti recenti</h3>
-                <div class="sub">Ultimi inserimenti letti o salvati nella tabella Movimenti.</div>
-              </div>
-            </div>
-            <div class="recent-list" id="recentList"></div>
-          </section>
-        </div>
-      </main>
+    <div class="card">
+        <h2>🔎 Ricerca Prodotto</h2>
+        <input type="text" id="search" placeholder="Nome prodotto...">
+        <input type="text" id="barcode" placeholder="Codice a barre...">
+        <button onclick="startScanner()">📷 Scansiona Barcode</button>
+        <div id="reader"></div>
     </div>
-  </div>
 
-  <div class="modal" id="configModal">
-    <div class="modal-card">
-      <div class="toolbar">
-        <div>
-          <h3>Configurazione Baserow</h3>
-          <div class="sub">Qui servono solo URL, token e ID tabelle.</div>
-        </div>
-        <button class="btn" id="closeConfig">Chiudi</button>
-      </div>
-
-      <div class="modal-grid">
-        <div class="full"><input class="field" id="cfgBaseUrl" placeholder="https://booking.visionhome.me" /></div>
-        <div class="full"><input class="field" id="cfgToken" placeholder="Token Baserow" /></div>
-        <div><input class="field" id="cfgProductsTable" placeholder="ID tabella Prodotti" /></div>
-        <div><input class="field" id="cfgMovementsTable" placeholder="ID tabella Movimenti" /></div>
-        <div><input class="field" id="cfgMachinesTable" placeholder="ID tabella Macchinette" /></div>
-        <div><input class="field" id="cfgOperatorsTable" placeholder="ID tabella Operatori" /></div>
-        <div><input class="field" id="cfgAssortmentTable" placeholder="ID tabella Assortimento (opzionale)" /></div>
-        <div><input class="field" id="cfgWarehouseRef" placeholder="Magazzino ref (es. WH-001)" /></div>
-      </div>
-
-      <div class="toolbar" style="margin-top:16px">
-        <button class="btn" id="saveConfig">Salva configurazione</button>
-        <button class="btn primary" id="saveAndLoad">Salva e carica dati</button>
-      </div>
+    <div class="card">
+        <h2>📦 Dettaglio Prodotto</h2>
+        <p><strong>Nome:</strong> <span id="nome">-</span></p>
+        <p><strong>Magazzino:</strong> <span id="magazzino">0</span></p>
+        <p><strong>Macchinetta:</strong> <span id="macchinetta">0</span></p>
+        <p><strong>Prezzo acquisto:</strong> € <span id="acquisto">0</span></p>
+        <p><strong>Prezzo vendita:</strong> € <span id="vendita">0</span></p>
+        <p><strong>Valore stock:</strong> € <span id="valore">0</span></p>
+        <p><strong>Stato:</strong> <span id="stato">-</span></p>
     </div>
-  </div>
 
-  <div class="toast-wrap" id="toasts"></div>
+</div>
 
-  <script>
-    const STORAGE_KEY = "vision_magazzino_baserow_v3";
-
-    const FIELD = {
-      productName: "Nome",
-      productBarcode: "Codice a barre",
-      productStock: "Giacenza",
-      machineName: "Nome",
-      operatorCode: "CodiceOperatore",
-      operatorName: "Nome",
-      operatorSurname: "Cognome",
-      movementCode: "CodiceMovimento",
-      movementDateTime: "DataOra",
-      movementType: "TipoMovimento",
-      movementProduct: "Prodotto",
-      movementQty: "Quantita",
-      movementOriginType: "OrigineTipo",
-      movementOriginRef: "OrigineRef",
-      movementDestType: "DestinazioneTipo",
-      movementDestRef: "DestinazioneRef",
-      movementMachine: "Macchinetta",
-      movementOperator: "Operatore",
-      movementTour: "Giro",
-      movementCost: "CostoUnitario",
-      movementSell: "PrezzoUnitario",
-      movementLot: "Lotto",
-      movementExpiry: "DataScadenza",
-      movementNote: "Note",
-      assortmentMachine: "Macchinetta",
-      assortmentProduct: "Prodotto",
-      assortmentSlot: "Slot",
-      assortmentCapacity: "CapacitaSlot",
-      assortmentReorder: "LivelloRiordino",
-      assortmentTarget: "LivelloTarget",
-      assortmentPrice: "PrezzoVenditaOverride"
-    };
-
-    const defaultConfig = {
-      baseUrl: "https://booking.visionhome.me",
-      token: "",
-      productsTableId: "",
-      movementsTableId: "",
-      machinesTableId: "",
-      operatorsTableId: "",
-      assortmentTableId: "",
-      warehouseRef: "WH-001"
-    };
-
-    let state = {
-      config: {...defaultConfig},
-      products: [],
-      machines: [],
-      operators: [],
-      assortments: [],
-      movements: [],
-      currentProduct: null,
-      demoMode: false
-    };
-
-    const $ = (id) => document.getElementById(id);
-    let barcodeTimer = null;
-
-    function toast(message, type="info"){
-      const wrap = $("toasts");
-      const div = document.createElement("div");
-      div.className = "toast";
-      div.innerHTML = `<strong>${type === "error" ? "Errore" : type === "success" ? "OK" : "Info"}</strong><div style="margin-top:6px;color:var(--muted)">${escapeHtml(message)}</div>`;
-      wrap.appendChild(div);
-      setTimeout(() => div.remove(), 3200);
+<script>
+// DATABASE DEMO
+const prodotti = [
+    {
+        nome: "Shampoo Auto",
+        barcode: "123456789",
+        magazzino: 50,
+        macchinetta: 10,
+        acquisto: 5,
+        vendita: 10
+    },
+    {
+        nome: "Cera Rapida",
+        barcode: "987654321",
+        magazzino: 20,
+        macchinetta: 5,
+        acquisto: 7,
+        vendita: 15
     }
+];
 
-    function setConnStatus(ok, text){
-      $("statConn").textContent = ok ? "OK" : "KO";
-      $("connBadge").textContent = text;
-      $("connBadge").className = "pill-status " + (ok ? "ok" : "ko");
+// CERCA PRODOTTO
+document.getElementById("barcode").addEventListener("input", function() {
+    cercaProdotto(this.value);
+});
+
+function cercaProdotto(codice) {
+    const prodotto = prodotti.find(p => p.barcode === codice);
+    if (prodotto) {
+        mostraProdotto(prodotto);
     }
+}
 
-    function loadConfig(){
-      try{
-        const saved = JSON.parse(localStorage.getItem(STORAGE_KEY) || "{}");
-        state.config = {...defaultConfig, ...saved};
-      }catch(e){
-        state.config = {...defaultConfig};
-      }
-      $("cfgBaseUrl").value = state.config.baseUrl || "";
-      $("cfgToken").value = state.config.token || "";
-      $("cfgProductsTable").value = state.config.productsTableId || "";
-      $("cfgMovementsTable").value = state.config.movementsTableId || "";
-      $("cfgMachinesTable").value = state.config.machinesTableId || "";
-      $("cfgOperatorsTable").value = state.config.operatorsTableId || "";
-      $("cfgAssortmentTable").value = state.config.assortmentTableId || "";
-      $("cfgWarehouseRef").value = state.config.warehouseRef || "";
+// MOSTRA DATI
+function mostraProdotto(p) {
+    document.getElementById("nome").innerText = p.nome;
+    document.getElementById("magazzino").innerText = p.magazzino;
+    document.getElementById("macchinetta").innerText = p.macchinetta;
+    document.getElementById("acquisto").innerText = p.acquisto;
+    document.getElementById("vendita").innerText = p.vendita;
+
+    const valore = (p.magazzino + p.macchinetta) * p.acquisto;
+    document.getElementById("valore").innerText = valore.toFixed(2);
+
+    if (p.magazzino < 5) {
+        document.getElementById("stato").innerText = "⚠️ Scorta bassa";
+    } else {
+        document.getElementById("stato").innerText = "✅ Disponibile";
     }
+}
 
-    function saveConfigFromInputs(){
-      state.config.baseUrl = $("cfgBaseUrl").value.trim().replace(/\/+$/, "");
-      state.config.token = $("cfgToken").value.trim();
-      state.config.productsTableId = $("cfgProductsTable").value.trim();
-      state.config.movementsTableId = $("cfgMovementsTable").value.trim();
-      state.config.machinesTableId = $("cfgMachinesTable").value.trim();
-      state.config.operatorsTableId = $("cfgOperatorsTable").value.trim();
-      state.config.assortmentTableId = $("cfgAssortmentTable").value.trim();
-      state.config.warehouseRef = $("cfgWarehouseRef").value.trim() || "WH-001";
-      localStorage.setItem(STORAGE_KEY, JSON.stringify(state.config));
-      toast("Configurazione salvata.", "success");
-    }
+// SCANNER
+function startScanner() {
+    const html5QrCode = new Html5Qrcode("reader");
 
-    function openConfig(){ $("configModal").classList.add("show"); }
-    function closeConfig(){ $("configModal").classList.remove("show"); }
+    Html5Qrcode.getCameras().then(devices => {
+        if (devices && devices.length) {
+            const cameraId = devices[0].id;
 
-    async function api(path, options = {}){
-      const { baseUrl, token } = state.config;
-      if(!baseUrl || !token) throw new Error("Configura URL e token Baserow.");
-      const res = await fetch(`${baseUrl}${path}`, {
-        ...options,
-        headers: {
-          "Authorization": `Token ${token}`,
-          "Content-Type": "application/json",
-          ...(options.headers || {})
+            html5QrCode.start(
+                cameraId,
+                {
+                    fps: 10,
+                    qrbox: 250
+                },
+                (decodedText) => {
+                    document.getElementById("barcode").value = decodedText;
+                    cercaProdotto(decodedText);
+                    html5QrCode.stop();
+                }
+            );
         }
-      });
-      if(!res.ok){
-        const txt = await res.text();
-        throw new Error(`Baserow ${res.status}: ${txt}`);
-      }
-      const ct = res.headers.get("content-type") || "";
-      if(ct.includes("application/json")) return res.json();
-      return res.text();
-    }
+    }).catch(err => {
+        alert("Errore accesso fotocamera");
+    });
+}
+</script>
 
-    async function listRows(tableId, pageSize=200){
-      let page = 1;
-      let all = [];
-      while(true){
-        const data = await api(`/api/database/rows/table/${tableId}/?user_field_names=true&size=${pageSize}&page=${page}`);
-        all = all.concat(data.results || []);
-        if(!data.next) break;
-        page++;
-      }
-      return all;
-    }
-
-    async function testConnection(){
-      try{
-        if(!state.config.productsTableId) throw new Error("Manca l'ID tabella Prodotti.");
-        await listRows(state.config.productsTableId, 1);
-        setConnStatus(true, "Connesso a Baserow");
-        toast("Connessione riuscita.", "success");
-      }catch(err){
-        setConnStatus(false, "Errore connessione");
-        toast(err.message, "error");
-      }
-    }
-
-    function escapeHtml(value){
-      return String(value ?? "").replace(/[&<>"']/g, s => ({
-        "&":"&amp;","<":"&lt;",">":"&gt;",'"':"&quot;","'":"&#039;"
-      }[s]));
-    }
-
-    function linkedLabel(value){
-      if(Array.isArray(value)) return value.map(v => typeof v === "string" ? v : (v?.value || v?.id || "")).join(", ");
-      if(typeof value === "object" && value !== null) return value.value || value.id || "";
-      return value || "";
-    }
-
-    function renderMachines(){
-      const select = $("machineSelect");
-      select.innerHTML = `<option value="">Seleziona macchinetta</option>`;
-      state.machines.forEach(m => {
-        const o = document.createElement("option");
-        o.value = m.id;
-        o.textContent = m[FIELD.machineName] || `Macchinetta ${m.id}`;
-        select.appendChild(o);
-      });
-      $("statMachines").textContent = state.machines.length;
-    }
-
-    function renderOperators(){
-      const select = $("operatorSelect");
-      select.innerHTML = `<option value="">Operatore</option>`;
-      state.operators.forEach(op => {
-        const label = [op[FIELD.operatorCode], [op[FIELD.operatorName], op[FIELD.operatorSurname]].filter(Boolean).join(" ")].filter(Boolean).join(" · ");
-        const o = document.createElement("option");
-        o.value = op.id;
-        o.textContent = label || `Operatore ${op.id}`;
-        select.appendChild(o);
-      });
-    }
-
-    function renderProductsTable(){
-      const body = $("stockBody");
-      body.innerHTML = "";
-      state.products.slice(0, 20).forEach(p => {
-        const tr = document.createElement("tr");
-        tr.innerHTML = `
-          <td>${escapeHtml(p[FIELD.productName] || "—")}</td>
-          <td>${escapeHtml(p[FIELD.productBarcode] || "—")}</td>
-          <td>${escapeHtml(p[FIELD.productStock] ?? "—")}</td>
-        `;
-        body.appendChild(tr);
-      });
-      $("statProducts").textContent = state.products.length;
-    }
-
-    function renderMovements(){
-      const wrap = $("recentList");
-      wrap.innerHTML = "";
-      const list = [...state.movements].slice(0, 40);
-      $("statMovements").textContent = list.length;
-      if(!list.length){
-        wrap.innerHTML = `<div class="recent-item"><div class="muted">Nessun movimento caricato.</div></div>`;
-        return;
-      }
-      list.forEach(m => {
-        const type = (m[FIELD.movementType] || "").toString();
-        const cls = type.toLowerCase().includes("carico") ? "carico" :
-                    type.toLowerCase().includes("scarico") || type.toLowerCase().includes("vendita") ? "scarico" : "rettifica";
-        const code = m[FIELD.movementCode] || `MOV-${m.id || ""}`;
-        const qty = m[FIELD.movementQty] ?? "—";
-        const note = m[FIELD.movementNote] || "";
-        const product = linkedLabel(m[FIELD.movementProduct]);
-        const machine = linkedLabel(m[FIELD.movementMachine]) || m[FIELD.movementDestRef] || "—";
-        const date = m[FIELD.movementDateTime] || "";
-        const card = document.createElement("div");
-        card.className = "recent-item";
-        card.innerHTML = `
-          <div class="recent-top">
-            <strong>${escapeHtml(code)}</strong>
-            <span class="tag ${cls}">${escapeHtml(type || "Movimento")}</span>
-          </div>
-          <div><strong>${escapeHtml(product || "Prodotto non indicato")}</strong></div>
-          <div class="muted" style="margin-top:6px">${escapeHtml(machine)} · Q.tà ${escapeHtml(String(qty))}</div>
-          <div class="muted" style="margin-top:6px">${escapeHtml(String(date || ""))}</div>
-          ${note ? `<div class="muted" style="margin-top:8px">${escapeHtml(note)}</div>` : ""}
-        `;
-        wrap.appendChild(card);
-      });
-    }
-
-    async function loadAllData(){
-      try{
-        if(state.demoMode){
-          loadDemoData();
-          return;
-        }
-        const cfg = state.config;
-        if(!cfg.productsTableId || !cfg.movementsTableId || !cfg.machinesTableId){
-          openConfig();
-          throw new Error("Compila gli ID delle tabelle Prodotti, Movimenti e Macchinette.");
-        }
-        const requests = [
-          listRows(cfg.productsTableId),
-          listRows(cfg.movementsTableId),
-          listRows(cfg.machinesTableId),
-          cfg.operatorsTableId ? listRows(cfg.operatorsTableId) : Promise.resolve([]),
-          cfg.assortmentTableId ? listRows(cfg.assortmentTableId) : Promise.resolve([])
-        ];
-        const [products, movements, machines, operators, assortments] = await Promise.all(requests);
-        state.products = products;
-        state.movements = movements;
-        state.machines = machines;
-        state.operators = operators;
-        state.assortments = assortments;
-        renderMachines();
-        renderOperators();
-        renderProductsTable();
-        renderMovements();
-        setConnStatus(true, "Dati caricati");
-        toast("Dati caricati da Baserow.", "success");
-      }catch(err){
-        setConnStatus(false, "Errore caricamento");
-        toast(err.message, "error");
-      }
-    }
-
-    function loadDemoData(){
-      state.demoMode = true;
-      state.products = [
-        { id: 1, "Nome":"ARBRE MAG NUM 1", "Codice a barre":"8001365022265", "Giacenza":18 },
-        { id: 2, "Nome":"ARBRE MAG NUM 2", "Codice a barre":"8001365022266", "Giacenza":12 },
-        { id: 3, "Nome":"ARBRE MAG NUM 3", "Codice a barre":"8001365022267", "Giacenza":6 }
-      ];
-      state.machines = [
-        { id: 11, "Nome":"FAS F900 Pro" },
-        { id: 12, "Nome":"Roma 01" }
-      ];
-      state.operators = [
-        { id: 21, "CodiceOperatore":"OP-001", "Nome":"Giorgio", "Cognome":"Dall'Aglio" },
-        { id: 22, "CodiceOperatore":"OP-002", "Nome":"Massimo", "Cognome":"Pezzolo" }
-      ];
-      state.assortments = [
-        { id:31, "Macchinetta":["FAS F900 Pro"], "Prodotto":["ARBRE MAG NUM 1"], "Slot":"A1", "CapacitaSlot":24, "LivelloRiordino":8, "LivelloTarget":24, "PrezzoVenditaOverride":1.6 }
-      ];
-      state.movements = [
-        { id:101, "CodiceMovimento":"MOV-2026-000001", "TipoMovimento":"Carico deposito", "Prodotto":["ARBRE MAG NUM 1"], "Macchinetta":["FAS F900 Pro"], "Quantita":24, "DataOra":new Date().toISOString() },
-        { id:102, "CodiceMovimento":"MOV-2026-000002", "TipoMovimento":"Vendita", "Prodotto":["ARBRE MAG NUM 2"], "Macchinetta":["FAS F900 Pro"], "Quantita":6, "DataOra":new Date().toISOString() }
-      ];
-      renderMachines();
-      renderOperators();
-      renderProductsTable();
-      renderMovements();
-      setConnStatus(true, "Modalità demo");
-      toast("Demo locale caricata.", "success");
-    }
-
-    function findProductByBarcodeLocal(barcode){
-      return state.products.find(p => String(p[FIELD.productBarcode] || "").trim() === barcode.trim());
-    }
-
-    function getSelectedMachine(){
-      const machineId = $("machineSelect").value;
-      return state.machines.find(m => String(m.id) === String(machineId));
-    }
-
-    function getSelectedOperator(){
-      const operatorId = $("operatorSelect").value;
-      return state.operators.find(o => String(o.id) === String(operatorId));
-    }
-
-    function applyPreset(machineLabel){
-      const mode = $("presetSelect").value;
-      if(mode === "supplier_receipt"){
-        return {
-          type: "Carico deposito",
-          originType: "Fornitore",
-          originRef: "FOR-001",
-          destType: "Magazzino",
-          destRef: state.config.warehouseRef || "WH-001"
-        };
-      }
-      if(mode === "sale"){
-        return {
-          type: "Vendita",
-          originType: "Macchinetta",
-          originRef: machineLabel || "",
-          destType: "Cliente",
-          destRef: "VENDUTO"
-        };
-      }
-      if(mode === "load_machine"){
-        return {
-          type: "Scarico magazzino",
-          originType: "Magazzino",
-          originRef: state.config.warehouseRef || "WH-001",
-          destType: "Macchinetta",
-          destRef: machineLabel || ""
-        };
-      }
-      return { type: "", originType: "", originRef: "", destType: "", destRef: "" };
-    }
-
-    function findAssortment(machineName, productName){
-      return state.assortments.find(a => {
-        const m = linkedLabel(a[FIELD.assortmentMachine]);
-        const p = linkedLabel(a[FIELD.assortmentProduct]);
-        return String(m).trim() === String(machineName).trim() && String(p).trim() === String(productName).trim();
-      });
-    }
-
-    async function searchProduct(barcodeOverride = null){
-      const barcode = (barcodeOverride || $("barcodeInput").value).trim();
-      if(!barcode){
-        return;
-      }
-
-      try{
-        let product = findProductByBarcodeLocal(barcode);
-
-        if(!product && !state.demoMode && state.config.productsTableId){
-          const field = encodeURIComponent(`filter__field_${FIELD.productBarcode}__equal`);
-          const path = `/api/database/rows/table/${state.config.productsTableId}/?user_field_names=true&size=1&${field}=${encodeURIComponent(barcode)}`;
-          const data = await api(path);
-          product = data.results?.[0] || null;
-          if(product && !state.products.some(p => p.id === product.id)){
-            state.products.unshift(product);
-            renderProductsTable();
-          }
-        }
-
-        if(!product){
-          state.currentProduct = null;
-          renderProductCard(null, barcode);
-          toast("Prodotto non trovato.", "error");
-          return;
-        }
-
-        state.currentProduct = product;
-        renderProductCard(product, barcode);
-        toast("Prodotto trovato.", "success");
-      }catch(err){
-        toast(err.message, "error");
-      }
-    }
-
-    function renderProductCard(product, barcode = ""){
-      const area = $("productArea");
-      if(!product){
-        area.innerHTML = `
-          <div class="product-card">
-            <div class="product-main">
-              <div style="font-size:19px;font-weight:800">Prodotto non trovato</div>
-              <div class="muted">Barcode cercato: <strong>${escapeHtml(barcode || "—")}</strong></div>
-              <div class="muted">Controlla il campo <strong>Codice a barre</strong> nella tabella Prodotti.</div>
-            </div>
-          </div>
-        `;
-        return;
-      }
-
-      const machine = getSelectedMachine();
-      const machineLabel = machine?.[FIELD.machineName] || "";
-      const productName = product[FIELD.productName] || "Prodotto";
-      const barcodeValue = product[FIELD.productBarcode] || barcode || "—";
-      const stock = product[FIELD.productStock] ?? "—";
-      const assort = machine ? findAssortment(machineLabel, productName) : null;
-      const preset = applyPreset(machineLabel);
-
-      area.innerHTML = `
-        <div class="product-card">
-          <div class="product-main">
-            <div style="font-size:22px;font-weight:900">${escapeHtml(productName)}</div>
-            <div class="kpis-inline">
-              <span class="chip"><strong>Barcode</strong> ${escapeHtml(barcodeValue)}</span>
-              <span class="chip"><strong>Giacenza</strong> ${escapeHtml(String(stock))}</span>
-              ${assort ? `<span class="chip"><strong>Slot</strong> ${escapeHtml(assort[FIELD.assortmentSlot] || "—")}</span>` : ""}
-              ${assort ? `<span class="chip"><strong>Target</strong> ${escapeHtml(String(assort[FIELD.assortmentTarget] ?? "—"))}</span>` : ""}
-            </div>
-
-            <div class="movement-form">
-              <input class="field" id="movementCode" placeholder="Codice movimento" value="MOV-${Date.now()}" />
-              <input class="field" id="movementType" placeholder="Tipo movimento" value="${escapeHtml(preset.type)}" />
-              <input class="field" id="movementQty" type="number" min="1" step="1" placeholder="Quantità" />
-              <input class="field" id="movementPrice" type="number" min="0" step="0.01" placeholder="Prezzo unitario" value="${assort?.[FIELD.assortmentPrice] ?? ""}" />
-              <input class="field" id="movementOriginType" placeholder="OrigineTipo" value="${escapeHtml(preset.originType)}" />
-              <input class="field" id="movementOriginRef" placeholder="OrigineRef" value="${escapeHtml(preset.originRef)}" />
-              <input class="field" id="movementDestType" placeholder="DestinazioneTipo" value="${escapeHtml(preset.destType)}" />
-              <input class="field" id="movementDestRef" placeholder="DestinazioneRef" value="${escapeHtml(preset.destRef)}" />
-              <input class="field" id="movementLot" placeholder="Lotto" />
-              <input class="field" id="movementExpiry" type="date" />
-              <textarea class="textarea full" id="movementNote" rows="3" placeholder="Note movimento"></textarea>
-            </div>
-
-            <div class="quick" style="margin-top:12px">
-              <button class="qty-btn" data-qty="1">+1</button>
-              <button class="qty-btn" data-qty="6">+6</button>
-              <button class="qty-btn" data-qty="12">+12</button>
-              <button class="qty-btn" data-qty="24">+24</button>
-              <button class="qty-btn" data-qty="48">+48</button>
-            </div>
-          </div>
-          <div style="display:grid;gap:10px;min-width:220px">
-            <button class="btn primary" id="saveMovement">Salva movimento</button>
-            <button class="btn warn" id="saveAndNext">Salva e prossimo scan</button>
-            <button class="btn" id="clearProduct">Pulisci scheda</button>
-          </div>
-        </div>
-      `;
-
-      document.querySelectorAll(".qty-btn").forEach(btn => {
-        btn.addEventListener("click", () => {
-          $("movementQty").value = Number(btn.dataset.qty || 0);
-        });
-      });
-
-      $("saveMovement").addEventListener("click", () => saveMovement(false));
-      $("saveAndNext").addEventListener("click", () => saveMovement(true));
-      $("clearProduct").addEventListener("click", clearProductCard);
-    }
-
-    function clearProductCard(){
-      state.currentProduct = null;
-      $("barcodeInput").value = "";
-      renderProductCard(null);
-      $("barcodeInput").focus();
-    }
-
-    async function saveMovement(goNext){
-      if(!state.currentProduct){
-        toast("Nessun prodotto selezionato.", "error");
-        return;
-      }
-      const qty = Number($("movementQty").value || 0);
-      if(!qty){
-        toast("Inserisci la quantità.", "error");
-        return;
-      }
-
-      const machine = getSelectedMachine();
-      const operator = getSelectedOperator();
-
-      const payload = {};
-      payload[FIELD.movementCode] = $("movementCode").value.trim() || `MOV-${Date.now()}`;
-      payload[FIELD.movementDateTime] = new Date().toISOString();
-      payload[FIELD.movementType] = $("movementType").value.trim();
-      payload[FIELD.movementProduct] = [state.currentProduct[FIELD.productName]];
-      payload[FIELD.movementQty] = qty;
-      payload[FIELD.movementOriginType] = $("movementOriginType").value.trim();
-      payload[FIELD.movementOriginRef] = $("movementOriginRef").value.trim();
-      payload[FIELD.movementDestType] = $("movementDestType").value.trim();
-      payload[FIELD.movementDestRef] = $("movementDestRef").value.trim();
-      payload[FIELD.movementMachine] = machine ? [machine[FIELD.machineName]] : [];
-      payload[FIELD.movementOperator] = operator ? [[operator[FIELD.operatorName], operator[FIELD.operatorSurname]].filter(Boolean).join(" ")] : [];
-      payload[FIELD.movementTour] = $("giroInput").value.trim();
-      payload[FIELD.movementSell] = Number($("movementPrice").value || 0);
-      payload[FIELD.movementLot] = $("movementLot").value.trim();
-      payload[FIELD.movementExpiry] = $("movementExpiry").value || null;
-      payload[FIELD.movementNote] = $("movementNote").value.trim();
-
-      try{
-        let created;
-        if(state.demoMode){
-          created = { id: Date.now(), ...payload };
-        }else{
-          created = await api(`/api/database/rows/table/${state.config.movementsTableId}/?user_field_names=true`, {
-            method: "POST",
-            body: JSON.stringify(payload)
-          });
-        }
-
-        state.movements.unshift(created);
-        renderMovements();
-        toast("Movimento salvato.", "success");
-
-        if(goNext){
-          clearProductCard();
-        }
-      }catch(err){
-        toast("Salvataggio non riuscito: " + err.message, "error");
-      }
-    }
-
-    function wireEvents(){
-      $("openConfigTop").addEventListener("click", openConfig);
-      $("openConfigSide").addEventListener("click", openConfig);
-      $("closeConfig").addEventListener("click", closeConfig);
-      $("saveConfig").addEventListener("click", saveConfigFromInputs);
-      $("saveAndLoad").addEventListener("click", async () => {
-        saveConfigFromInputs();
-        closeConfig();
-        await loadAllData();
-      });
-      $("testConnection").addEventListener("click", testConnection);
-      $("refreshAll").addEventListener("click", loadAllData);
-      $("focusBarcode").addEventListener("click", () => $("barcodeInput").focus());
-      $("loadDemo").addEventListener("click", loadDemoData);
-
-      $("barcodeInput").addEventListener("keydown", (e) => {
-        if(e.key === "Enter"){
-          e.preventDefault();
-          clearTimeout(barcodeTimer);
-          searchProduct();
-        }
-      });
-
-      $("barcodeInput").addEventListener("input", () => {
-        clearTimeout(barcodeTimer);
-        const value = $("barcodeInput").value.trim();
-        if(value.length >= 8){
-          barcodeTimer = setTimeout(() => searchProduct(value), 180);
-        }
-      });
-
-      $("presetSelect").addEventListener("change", () => {
-        if(state.currentProduct) renderProductCard(state.currentProduct, $("barcodeInput").value.trim());
-      });
-
-      $("machineSelect").addEventListener("change", () => {
-        if(state.currentProduct) renderProductCard(state.currentProduct, $("barcodeInput").value.trim());
-      });
-    }
-
-    function init(){
-      loadConfig();
-      wireEvents();
-      renderProductCard(null);
-      renderMovements();
-      renderMachines();
-      renderOperators();
-      renderProductsTable();
-    }
-
-    init();
-  </script>
 </body>
 </html>
