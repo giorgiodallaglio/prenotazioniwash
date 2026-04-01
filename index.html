@@ -1,164 +1,853 @@
 <!DOCTYPE html>
 <html lang="it">
 <head>
-<meta charset="UTF-8">
-<meta name="viewport" content="width=device-width, initial-scale=1.0">
-<title>Gestionale Magazzino</title>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Gestionale Inventario</title>
+  <script src="https://unpkg.com/html5-qrcode" type="text/javascript"></script>
 
-<script src="https://unpkg.com/html5-qrcode"></script>
+  <style>
+    :root{
+      --bg: #0b0b0f;
+      --card: rgba(255,255,255,0.08);
+      --card-strong: rgba(255,255,255,0.12);
+      --border: rgba(255,255,255,0.12);
+      --text: #ffffff;
+      --muted: rgba(255,255,255,0.68);
+      --blue: #0a84ff;
+      --green: #30d158;
+      --orange: #ff9f0a;
+      --red: #ff453a;
+      --shadow: 0 20px 40px rgba(0,0,0,0.35);
+      --radius-xl: 28px;
+      --radius-lg: 22px;
+      --radius-md: 16px;
+    }
 
-<style>
-body {
-    margin: 0;
-    font-family: -apple-system, BlinkMacSystemFont, sans-serif;
-    background: #0b0b0b;
-    color: white;
-}
+    * { box-sizing: border-box; }
 
-.container {
-    padding: 20px;
-}
+    body {
+      margin: 0;
+      font-family: -apple-system, BlinkMacSystemFont, "SF Pro Display", "Segoe UI", sans-serif;
+      background:
+        radial-gradient(circle at top left, rgba(10,132,255,0.18), transparent 30%),
+        radial-gradient(circle at top right, rgba(48,209,88,0.12), transparent 25%),
+        linear-gradient(180deg, #0a0a0d 0%, #111118 100%);
+      color: var(--text);
+      min-height: 100vh;
+    }
 
-.card {
-    background: rgba(255,255,255,0.05);
-    border-radius: 20px;
-    padding: 15px;
-    margin-bottom: 15px;
-}
+    .wrap {
+      max-width: 1200px;
+      margin: 0 auto;
+      padding: 20px 16px 40px;
+    }
 
-input {
-    width: 100%;
-    padding: 12px;
-    border-radius: 12px;
-    border: none;
-    margin-top: 10px;
-    font-size: 16px;
-}
+    .hero {
+      padding: 18px;
+      margin-bottom: 18px;
+      border: 1px solid var(--border);
+      border-radius: var(--radius-xl);
+      background: linear-gradient(180deg, rgba(255,255,255,0.10), rgba(255,255,255,0.05));
+      backdrop-filter: blur(18px);
+      box-shadow: var(--shadow);
+    }
 
-button {
-    width: 100%;
-    padding: 14px;
-    margin-top: 10px;
-    border-radius: 12px;
-    border: none;
-    background: #007aff;
-    color: white;
-    font-size: 16px;
-}
+    .hero-top {
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      gap: 12px;
+      flex-wrap: wrap;
+    }
 
-#reader {
-    width: 100%;
-    margin-top: 10px;
-}
+    .title {
+      font-size: 30px;
+      font-weight: 700;
+      letter-spacing: -0.03em;
+      margin: 0;
+    }
 
-h2 {
-    margin: 0;
-}
-</style>
+    .subtitle {
+      color: var(--muted);
+      margin-top: 6px;
+      font-size: 14px;
+    }
+
+    .status-badge {
+      display: inline-flex;
+      align-items: center;
+      gap: 8px;
+      background: rgba(48,209,88,0.15);
+      color: #b7ffca;
+      border: 1px solid rgba(48,209,88,0.28);
+      padding: 10px 14px;
+      border-radius: 999px;
+      font-size: 13px;
+      white-space: nowrap;
+    }
+
+    .grid-kpi {
+      display: grid;
+      grid-template-columns: repeat(4, 1fr);
+      gap: 14px;
+      margin-top: 18px;
+    }
+
+    .kpi {
+      background: var(--card);
+      border: 1px solid var(--border);
+      border-radius: 24px;
+      padding: 18px;
+      backdrop-filter: blur(10px);
+      min-height: 120px;
+    }
+
+    .kpi-label {
+      color: var(--muted);
+      font-size: 13px;
+      margin-bottom: 12px;
+    }
+
+    .kpi-value {
+      font-size: 28px;
+      font-weight: 700;
+      letter-spacing: -0.03em;
+    }
+
+    .kpi-note {
+      margin-top: 10px;
+      font-size: 12px;
+      color: var(--muted);
+    }
+
+    .main-grid {
+      display: grid;
+      grid-template-columns: 1.1fr 0.9fr;
+      gap: 18px;
+      margin-top: 18px;
+    }
+
+    .card {
+      background: var(--card);
+      border: 1px solid var(--border);
+      border-radius: var(--radius-xl);
+      padding: 18px;
+      box-shadow: var(--shadow);
+      backdrop-filter: blur(16px);
+    }
+
+    .card-title {
+      font-size: 20px;
+      font-weight: 700;
+      margin: 0 0 6px;
+      letter-spacing: -0.02em;
+    }
+
+    .card-subtitle {
+      color: var(--muted);
+      font-size: 14px;
+      margin-bottom: 18px;
+    }
+
+    .inputs-grid {
+      display: grid;
+      grid-template-columns: 1fr 1fr;
+      gap: 12px;
+      margin-bottom: 12px;
+    }
+
+    .field {
+      display: flex;
+      flex-direction: column;
+      gap: 8px;
+    }
+
+    .field label {
+      font-size: 13px;
+      color: var(--muted);
+    }
+
+    input {
+      width: 100%;
+      border: 1px solid rgba(255,255,255,0.10);
+      background: rgba(255,255,255,0.08);
+      color: white;
+      border-radius: 16px;
+      padding: 14px 15px;
+      font-size: 16px;
+      outline: none;
+    }
+
+    input::placeholder {
+      color: rgba(255,255,255,0.38);
+    }
+
+    input:focus {
+      border-color: rgba(10,132,255,0.5);
+      box-shadow: 0 0 0 4px rgba(10,132,255,0.12);
+    }
+
+    .actions {
+      display: flex;
+      gap: 10px;
+      flex-wrap: wrap;
+      margin-top: 14px;
+    }
+
+    button {
+      appearance: none;
+      border: none;
+      border-radius: 16px;
+      padding: 14px 18px;
+      font-size: 15px;
+      font-weight: 600;
+      cursor: pointer;
+      transition: 0.2s ease;
+    }
+
+    .btn-primary {
+      background: linear-gradient(180deg, #2391ff 0%, #0a84ff 100%);
+      color: white;
+      flex: 1;
+      min-width: 170px;
+    }
+
+    .btn-secondary {
+      background: rgba(255,255,255,0.08);
+      color: white;
+      border: 1px solid rgba(255,255,255,0.10);
+      flex: 1;
+      min-width: 170px;
+    }
+
+    .btn-primary:hover,
+    .btn-secondary:hover {
+      transform: translateY(-1px);
+      opacity: 0.96;
+    }
+
+    #reader-wrapper {
+      margin-top: 16px;
+      display: none;
+    }
+
+    #reader {
+      width: 100%;
+      overflow: hidden;
+      border-radius: 20px;
+      border: 1px solid rgba(255,255,255,0.1);
+      background: rgba(0,0,0,0.45);
+      min-height: 280px;
+    }
+
+    .reader-note {
+      margin-top: 10px;
+      font-size: 13px;
+      color: var(--muted);
+    }
+
+    .product-card {
+      background: linear-gradient(180deg, rgba(255,255,255,0.09), rgba(255,255,255,0.06));
+      border: 1px solid var(--border);
+      border-radius: 24px;
+      padding: 18px;
+    }
+
+    .product-header {
+      display: flex;
+      justify-content: space-between;
+      align-items: flex-start;
+      gap: 12px;
+      margin-bottom: 14px;
+    }
+
+    .product-name {
+      font-size: 25px;
+      font-weight: 700;
+      letter-spacing: -0.03em;
+      margin: 0 0 6px;
+    }
+
+    .product-code {
+      color: var(--muted);
+      font-size: 13px;
+    }
+
+    .stock-badge {
+      padding: 10px 14px;
+      border-radius: 999px;
+      font-size: 13px;
+      font-weight: 600;
+      white-space: nowrap;
+    }
+
+    .stock-ok {
+      background: rgba(48,209,88,0.16);
+      color: #baffcf;
+      border: 1px solid rgba(48,209,88,0.28);
+    }
+
+    .stock-low {
+      background: rgba(255,159,10,0.14);
+      color: #ffd399;
+      border: 1px solid rgba(255,159,10,0.24);
+    }
+
+    .stock-out {
+      background: rgba(255,69,58,0.14);
+      color: #ffb6b1;
+      border: 1px solid rgba(255,69,58,0.24);
+    }
+
+    .detail-grid {
+      display: grid;
+      grid-template-columns: 1fr 1fr;
+      gap: 12px;
+      margin-top: 12px;
+    }
+
+    .detail-box {
+      background: rgba(255,255,255,0.06);
+      border: 1px solid rgba(255,255,255,0.08);
+      border-radius: 18px;
+      padding: 16px;
+    }
+
+    .detail-label {
+      color: var(--muted);
+      font-size: 13px;
+      margin-bottom: 8px;
+    }
+
+    .detail-value {
+      font-size: 24px;
+      font-weight: 700;
+      letter-spacing: -0.03em;
+    }
+
+    .detail-value.small {
+      font-size: 20px;
+    }
+
+    .movements {
+      margin-top: 18px;
+      display: flex;
+      flex-direction: column;
+      gap: 10px;
+    }
+
+    .movement {
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      gap: 14px;
+      padding: 14px 16px;
+      border-radius: 18px;
+      background: rgba(255,255,255,0.05);
+      border: 1px solid rgba(255,255,255,0.08);
+    }
+
+    .movement-left {
+      display: flex;
+      flex-direction: column;
+      gap: 4px;
+    }
+
+    .movement-title {
+      font-size: 15px;
+      font-weight: 600;
+    }
+
+    .movement-sub {
+      font-size: 13px;
+      color: var(--muted);
+    }
+
+    .movement-right {
+      font-size: 15px;
+      font-weight: 700;
+    }
+
+    .positive { color: #baffcf; }
+    .negative { color: #ffb6b1; }
+    .neutral { color: #cfe3ff; }
+
+    .hint {
+      margin-top: 14px;
+      font-size: 13px;
+      color: var(--muted);
+      line-height: 1.5;
+    }
+
+    @media (max-width: 980px) {
+      .grid-kpi {
+        grid-template-columns: repeat(2, 1fr);
+      }
+
+      .main-grid {
+        grid-template-columns: 1fr;
+      }
+    }
+
+    @media (max-width: 640px) {
+      .wrap {
+        padding: 14px 12px 28px;
+      }
+
+      .title {
+        font-size: 26px;
+      }
+
+      .grid-kpi,
+      .inputs-grid,
+      .detail-grid {
+        grid-template-columns: 1fr;
+      }
+
+      .product-name {
+        font-size: 22px;
+      }
+
+      .product-header {
+        flex-direction: column;
+        align-items: flex-start;
+      }
+
+      button {
+        width: 100%;
+      }
+
+      .actions {
+        flex-direction: column;
+      }
+    }
+  </style>
 </head>
-
 <body>
+  <div class="wrap">
+    <section class="hero">
+      <div class="hero-top">
+        <div>
+          <h1 class="title">Inventario Magazzino</h1>
+          <div class="subtitle">Controllo giacenze, macchinetta, valore merce e ricerca barcode</div>
+        </div>
+        <div class="status-badge">● Sistema demo attivo</div>
+      </div>
 
-<div class="container">
+      <div class="grid-kpi">
+        <div class="kpi">
+          <div class="kpi-label">Valore merce totale</div>
+          <div class="kpi-value" id="kpiValoreTotale">€ 0,00</div>
+          <div class="kpi-note">Calcolato sul costo di acquisto</div>
+        </div>
 
-    <div class="card">
-        <h2>🔎 Ricerca Prodotto</h2>
-        <input type="text" id="search" placeholder="Nome prodotto...">
-        <input type="text" id="barcode" placeholder="Codice a barre...">
-        <button onclick="startScanner()">📷 Scansiona Barcode</button>
-        <div id="reader"></div>
-    </div>
+        <div class="kpi">
+          <div class="kpi-label">Pezzi in magazzino</div>
+          <div class="kpi-value" id="kpiMagazzino">0</div>
+          <div class="kpi-note">Totale quantità disponibili</div>
+        </div>
 
-    <div class="card">
-        <h2>📦 Dettaglio Prodotto</h2>
-        <p><strong>Nome:</strong> <span id="nome">-</span></p>
-        <p><strong>Magazzino:</strong> <span id="magazzino">0</span></p>
-        <p><strong>Macchinetta:</strong> <span id="macchinetta">0</span></p>
-        <p><strong>Prezzo acquisto:</strong> € <span id="acquisto">0</span></p>
-        <p><strong>Prezzo vendita:</strong> € <span id="vendita">0</span></p>
-        <p><strong>Valore stock:</strong> € <span id="valore">0</span></p>
-        <p><strong>Stato:</strong> <span id="stato">-</span></p>
-    </div>
+        <div class="kpi">
+          <div class="kpi-label">Pezzi in macchinetta</div>
+          <div class="kpi-value" id="kpiMacchinetta">0</div>
+          <div class="kpi-note">Prodotti già caricati</div>
+        </div>
 
-</div>
+        <div class="kpi">
+          <div class="kpi-label">Articoli censiti</div>
+          <div class="kpi-value" id="kpiArticoli">0</div>
+          <div class="kpi-note">Anagrafica prodotti demo</div>
+        </div>
+      </div>
+    </section>
 
-<script>
-// DATABASE DEMO
-const prodotti = [
-    {
-        nome: "Shampoo Auto",
-        barcode: "123456789",
-        magazzino: 50,
-        macchinetta: 10,
-        acquisto: 5,
-        vendita: 10
-    },
-    {
-        nome: "Cera Rapida",
-        barcode: "987654321",
-        magazzino: 20,
-        macchinetta: 5,
-        acquisto: 7,
-        vendita: 15
+    <section class="main-grid">
+      <div class="card">
+        <h2 class="card-title">Ricerca prodotto</h2>
+        <div class="card-subtitle">Puoi cercare per nome, scrivere il barcode oppure usare la fotocamera</div>
+
+        <div class="inputs-grid">
+          <div class="field">
+            <label for="searchName">Nome prodotto</label>
+            <input type="text" id="searchName" placeholder="Es. Coca Cola 33cl">
+          </div>
+
+          <div class="field">
+            <label for="searchBarcode">Codice a barre</label>
+            <input type="text" id="searchBarcode" placeholder="Es. 8001234567890">
+          </div>
+        </div>
+
+        <div class="actions">
+          <button class="btn-primary" onclick="findProduct()">Cerca prodotto</button>
+          <button class="btn-secondary" onclick="startScanner()">Apri scanner barcode</button>
+          <button class="btn-secondary" onclick="stopScanner()">Chiudi scanner</button>
+        </div>
+
+        <div id="reader-wrapper">
+          <div id="reader"></div>
+          <div class="reader-note">
+            Punta il codice a barre con la <strong>fotocamera posteriore</strong>. Su iPhone funziona meglio in HTTPS o da server locale con permessi fotocamera attivi.
+          </div>
+        </div>
+
+        <div class="hint">
+          Questo è un mockup demo. Nel passaggio successivo possiamo collegarlo ai tuoi dati reali, aggiungere carico/scarico, movimenti, filtri e sincronizzazione con database.
+        </div>
+      </div>
+
+      <div class="card">
+        <h2 class="card-title">Scheda prodotto</h2>
+        <div class="card-subtitle">Dettaglio articolo selezionato</div>
+
+        <div class="product-card">
+          <div class="product-header">
+            <div>
+              <h3 class="product-name" id="prodNome">Nessun prodotto selezionato</h3>
+              <div class="product-code">Barcode: <span id="prodBarcode">-</span></div>
+            </div>
+            <div class="stock-badge stock-ok" id="prodStato">In attesa</div>
+          </div>
+
+          <div class="detail-grid">
+            <div class="detail-box">
+              <div class="detail-label">Quantità in magazzino</div>
+              <div class="detail-value" id="prodMagazzino">0</div>
+            </div>
+
+            <div class="detail-box">
+              <div class="detail-label">Quantità in macchinetta</div>
+              <div class="detail-value" id="prodMacchinetta">0</div>
+            </div>
+
+            <div class="detail-box">
+              <div class="detail-label">Prezzo di acquisto</div>
+              <div class="detail-value small" id="prodAcquisto">€ 0,00</div>
+            </div>
+
+            <div class="detail-box">
+              <div class="detail-label">Prezzo di vendita</div>
+              <div class="detail-value small" id="prodVendita">€ 0,00</div>
+            </div>
+
+            <div class="detail-box">
+              <div class="detail-label">Valore stock totale</div>
+              <div class="detail-value small" id="prodValoreStock">€ 0,00</div>
+            </div>
+
+            <div class="detail-box">
+              <div class="detail-label">Margine unitario</div>
+              <div class="detail-value small" id="prodMargine">€ 0,00</div>
+            </div>
+          </div>
+        </div>
+
+        <div class="movements" id="movementsList">
+          <div class="movement">
+            <div class="movement-left">
+              <div class="movement-title">Nessun movimento da mostrare</div>
+              <div class="movement-sub">Seleziona un prodotto</div>
+            </div>
+            <div class="movement-right neutral">--</div>
+          </div>
+        </div>
+      </div>
+    </section>
+  </div>
+
+  <script>
+    const products = [
+      {
+        nome: "Coca Cola 33cl",
+        barcode: "8001111111111",
+        magazzino: 48,
+        macchinetta: 12,
+        acquisto: 0.55,
+        vendita: 1.20,
+        movimenti: [
+          { tipo: "Carico magazzino", dettaglio: "Ultimo rifornimento", valore: "+24", classe: "positive" },
+          { tipo: "Spostamento in macchinetta", dettaglio: "Prelevati per distributore", valore: "-12", classe: "negative" },
+          { tipo: "Vendite stimate", dettaglio: "Ultime 24 ore", valore: "-8", classe: "neutral" }
+        ]
+      },
+      {
+        nome: "Acqua Naturale 50cl",
+        barcode: "8002222222222",
+        magazzino: 120,
+        macchinetta: 30,
+        acquisto: 0.18,
+        vendita: 0.60,
+        movimenti: [
+          { tipo: "Carico magazzino", dettaglio: "Nuovo bancale", valore: "+60", classe: "positive" },
+          { tipo: "Spostamento in macchinetta", dettaglio: "Carico distributore", valore: "-24", classe: "negative" },
+          { tipo: "Vendite stimate", dettaglio: "Ultime 24 ore", valore: "-11", classe: "neutral" }
+        ]
+      },
+      {
+        nome: "Patatine Classiche",
+        barcode: "8003333333333",
+        magazzino: 9,
+        macchinetta: 6,
+        acquisto: 0.42,
+        vendita: 1.00,
+        movimenti: [
+          { tipo: "Scorta bassa", dettaglio: "Ordine consigliato", valore: "!", classe: "negative" },
+          { tipo: "Spostamento in macchinetta", dettaglio: "Ultimo carico", valore: "-6", classe: "negative" },
+          { tipo: "Vendite stimate", dettaglio: "Ultime 24 ore", valore: "-4", classe: "neutral" }
+        ]
+      },
+      {
+        nome: "Snack Cioccolato",
+        barcode: "8004444444444",
+        magazzino: 2,
+        macchinetta: 1,
+        acquisto: 0.65,
+        vendita: 1.50,
+        movimenti: [
+          { tipo: "Scorta critica", dettaglio: "Riordino urgente", valore: "!!", classe: "negative" },
+          { tipo: "Vendite stimate", dettaglio: "Ultime 24 ore", valore: "-3", classe: "neutral" }
+        ]
+      }
+    ];
+
+    let html5QrCode = null;
+    let scannerRunning = false;
+
+    function formatCurrency(value) {
+      return new Intl.NumberFormat("it-IT", {
+        style: "currency",
+        currency: "EUR"
+      }).format(value);
     }
-];
 
-// CERCA PRODOTTO
-document.getElementById("barcode").addEventListener("input", function() {
-    cercaProdotto(this.value);
-});
+    function updateDashboard() {
+      const totalWarehouse = products.reduce((sum, p) => sum + p.magazzino, 0);
+      const totalMachine = products.reduce((sum, p) => sum + p.macchinetta, 0);
+      const totalValue = products.reduce((sum, p) => sum + ((p.magazzino + p.macchinetta) * p.acquisto), 0);
 
-function cercaProdotto(codice) {
-    const prodotto = prodotti.find(p => p.barcode === codice);
-    if (prodotto) {
-        mostraProdotto(prodotto);
+      document.getElementById("kpiMagazzino").textContent = totalWarehouse;
+      document.getElementById("kpiMacchinetta").textContent = totalMachine;
+      document.getElementById("kpiValoreTotale").textContent = formatCurrency(totalValue);
+      document.getElementById("kpiArticoli").textContent = products.length;
     }
-}
 
-// MOSTRA DATI
-function mostraProdotto(p) {
-    document.getElementById("nome").innerText = p.nome;
-    document.getElementById("magazzino").innerText = p.magazzino;
-    document.getElementById("macchinetta").innerText = p.macchinetta;
-    document.getElementById("acquisto").innerText = p.acquisto;
-    document.getElementById("vendita").innerText = p.vendita;
+    function getStockStatus(product) {
+      const total = product.magazzino + product.macchinetta;
 
-    const valore = (p.magazzino + p.macchinetta) * p.acquisto;
-    document.getElementById("valore").innerText = valore.toFixed(2);
+      if (total <= 3) {
+        return {
+          text: "Scorta critica",
+          className: "stock-badge stock-out"
+        };
+      }
 
-    if (p.magazzino < 5) {
-        document.getElementById("stato").innerText = "⚠️ Scorta bassa";
-    } else {
-        document.getElementById("stato").innerText = "✅ Disponibile";
+      if (total <= 15) {
+        return {
+          text: "Scorta bassa",
+          className: "stock-badge stock-low"
+        };
+      }
+
+      return {
+        text: "Disponibile",
+        className: "stock-badge stock-ok"
+      };
     }
-}
 
-// SCANNER
-function startScanner() {
-    const html5QrCode = new Html5Qrcode("reader");
+    function showProduct(product) {
+      const totalStock = product.magazzino + product.macchinetta;
+      const stockValue = totalStock * product.acquisto;
+      const margin = product.vendita - product.acquisto;
+      const status = getStockStatus(product);
 
-    Html5Qrcode.getCameras().then(devices => {
-        if (devices && devices.length) {
-            const cameraId = devices[0].id;
+      document.getElementById("prodNome").textContent = product.nome;
+      document.getElementById("prodBarcode").textContent = product.barcode;
+      document.getElementById("prodMagazzino").textContent = product.magazzino;
+      document.getElementById("prodMacchinetta").textContent = product.macchinetta;
+      document.getElementById("prodAcquisto").textContent = formatCurrency(product.acquisto);
+      document.getElementById("prodVendita").textContent = formatCurrency(product.vendita);
+      document.getElementById("prodValoreStock").textContent = formatCurrency(stockValue);
+      document.getElementById("prodMargine").textContent = formatCurrency(margin);
 
-            html5QrCode.start(
-                cameraId,
-                {
-                    fps: 10,
-                    qrbox: 250
-                },
-                (decodedText) => {
-                    document.getElementById("barcode").value = decodedText;
-                    cercaProdotto(decodedText);
-                    html5QrCode.stop();
-                }
-            );
-        }
-    }).catch(err => {
-        alert("Errore accesso fotocamera");
+      const statusEl = document.getElementById("prodStato");
+      statusEl.textContent = status.text;
+      statusEl.className = status.className;
+
+      renderMovements(product.movimenti || []);
+    }
+
+    function renderMovements(movements) {
+      const box = document.getElementById("movementsList");
+
+      if (!movements.length) {
+        box.innerHTML = `
+          <div class="movement">
+            <div class="movement-left">
+              <div class="movement-title">Nessun movimento disponibile</div>
+              <div class="movement-sub">Per questo articolo</div>
+            </div>
+            <div class="movement-right neutral">--</div>
+          </div>
+        `;
+        return;
+      }
+
+      box.innerHTML = movements.map(m => `
+        <div class="movement">
+          <div class="movement-left">
+            <div class="movement-title">${m.tipo}</div>
+            <div class="movement-sub">${m.dettaglio}</div>
+          </div>
+          <div class="movement-right ${m.classe}">${m.valore}</div>
+        </div>
+      `).join("");
+    }
+
+    function findProduct() {
+      const nameValue = document.getElementById("searchName").value.trim().toLowerCase();
+      const barcodeValue = document.getElementById("searchBarcode").value.trim();
+
+      let product = null;
+
+      if (barcodeValue) {
+        product = products.find(p => p.barcode === barcodeValue);
+      }
+
+      if (!product && nameValue) {
+        product = products.find(p => p.nome.toLowerCase().includes(nameValue));
+      }
+
+      if (product) {
+        showProduct(product);
+      } else {
+        alert("Prodotto non trovato nella demo");
+      }
+    }
+
+    document.getElementById("searchBarcode").addEventListener("input", function () {
+      const value = this.value.trim();
+      if (!value) return;
+
+      const product = products.find(p => p.barcode === value);
+      if (product) showProduct(product);
     });
-}
-</script>
 
+    document.getElementById("searchName").addEventListener("input", function () {
+      const value = this.value.trim().toLowerCase();
+      if (value.length < 2) return;
+
+      const product = products.find(p => p.nome.toLowerCase().includes(value));
+      if (product) showProduct(product);
+    });
+
+    async function startScanner() {
+      const wrapper = document.getElementById("reader-wrapper");
+      wrapper.style.display = "block";
+
+      if (!html5QrCode) {
+        html5QrCode = new Html5Qrcode("reader");
+      }
+
+      if (scannerRunning) return;
+
+      try {
+        scannerRunning = true;
+
+        await html5QrCode.start(
+          { facingMode: { exact: "environment" } },
+          {
+            fps: 10,
+            qrbox: { width: 280, height: 140 },
+            aspectRatio: 1.7778,
+            disableFlip: true
+          },
+          onScanSuccess,
+          onScanFailure
+        );
+      } catch (err1) {
+        try {
+          await html5QrCode.start(
+            { facingMode: "environment" },
+            {
+              fps: 10,
+              qrbox: { width: 280, height: 140 },
+              aspectRatio: 1.7778,
+              disableFlip: true
+            },
+            onScanSuccess,
+            onScanFailure
+          );
+        } catch (err2) {
+          try {
+            const cameras = await Html5Qrcode.getCameras();
+
+            if (!cameras || !cameras.length) {
+              scannerRunning = false;
+              alert("Nessuna fotocamera trovata");
+              return;
+            }
+
+            const backCamera =
+              cameras.find(c => /back|rear|posteriore|environment/i.test(c.label)) ||
+              cameras[cameras.length - 1];
+
+            await html5QrCode.start(
+              backCamera.id,
+              {
+                fps: 10,
+                qrbox: { width: 280, height: 140 },
+                aspectRatio: 1.7778,
+                disableFlip: true
+              },
+              onScanSuccess,
+              onScanFailure
+            );
+          } catch (err3) {
+            scannerRunning = false;
+            alert("Impossibile aprire la fotocamera. Prova da Safari/Chrome con permesso fotocamera attivo.");
+          }
+        }
+      }
+    }
+
+    function onScanSuccess(decodedText) {
+      document.getElementById("searchBarcode").value = decodedText;
+      const product = products.find(p => p.barcode === decodedText);
+
+      if (product) {
+        showProduct(product);
+      } else {
+        alert("Barcode letto: " + decodedText + "\\nProdotto non presente nella demo.");
+      }
+
+      stopScanner();
+    }
+
+    function onScanFailure(error) {
+      // lasciato vuoto apposta per evitare messaggi continui
+    }
+
+    async function stopScanner() {
+      const wrapper = document.getElementById("reader-wrapper");
+
+      if (html5QrCode && scannerRunning) {
+        try {
+          await html5QrCode.stop();
+          await html5QrCode.clear();
+        } catch (e) {
+          // ignora
+        }
+      }
+
+      scannerRunning = false;
+      wrapper.style.display = "none";
+      document.getElementById("reader").innerHTML = "";
+      html5QrCode = null;
+    }
+
+    updateDashboard();
+    showProduct(products[0]);
+  </script>
 </body>
 </html>
