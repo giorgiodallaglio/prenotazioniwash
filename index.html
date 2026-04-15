@@ -1,1323 +1,1144 @@
-<!DOCTYPE html>
+<!doctype html>
 <html lang="it">
 <head>
-  <meta charset="UTF-8" />
-  <meta name="viewport" content="width=device-width, initial-scale=1.0, viewport-fit=cover" />
-  <title>Inventario Magazzino</title>
-  <script src="https://unpkg.com/html5-qrcode" type="text/javascript"></script>
-
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Magazzino Macchinette Pro</title>
   <style>
-    :root{
-      --bg:#08090c;
-      --bg-2:#10131a;
-      --card:rgba(255,255,255,0.08);
-      --card-2:rgba(255,255,255,0.05);
-      --border:rgba(255,255,255,0.10);
-      --text:#fff;
-      --muted:rgba(255,255,255,0.64);
-      --blue:#0a84ff;
-      --green:#30d158;
-      --orange:#ff9f0a;
-      --red:#ff453a;
-      --shadow:0 20px 40px rgba(0,0,0,0.35);
-      --radius-xl:28px;
-      --radius-lg:22px;
-      --radius-md:18px;
-      --radius-sm:14px;
-      --bottom-space:110px;
+    :root {
+      --bg-1: #97c6ff;
+      --bg-2: #cbb8ff;
+      --bg-3: #f8f3ff;
+      --glass-bg: rgba(255, 255, 255, 0.25);
+      --glass-strong: rgba(255, 255, 255, 0.4);
+      --glass-border: rgba(255, 255, 255, 0.55);
+      --text: #0f172a;
+      --muted: #334155;
+      --accent: #0ea5e9;
+      --ok: #10b981;
+      --warn: #f59e0b;
+      --danger: #ef4444;
+      --shadow: 0 12px 40px rgba(15, 23, 42, 0.15);
+      --radius: 18px;
     }
 
-    *{box-sizing:border-box}
-    html,body{margin:0;padding:0}
-    body{
-      font-family:-apple-system,BlinkMacSystemFont,"SF Pro Display","Segoe UI",sans-serif;
-      color:var(--text);
-      min-height:100vh;
+    * {
+      box-sizing: border-box;
+      margin: 0;
+      padding: 0;
+      font-family: "SF Pro Text", "Inter", "Segoe UI", Arial, sans-serif;
+    }
+
+    body {
+      min-height: 100vh;
+      padding: 24px;
+      color: var(--text);
       background:
-        radial-gradient(circle at top left, rgba(10,132,255,0.17), transparent 28%),
-        radial-gradient(circle at top right, rgba(48,209,88,0.10), transparent 24%),
-        linear-gradient(180deg, #090a0d 0%, #11141b 100%);
+        radial-gradient(circle at 10% 20%, var(--bg-1), transparent 32%),
+        radial-gradient(circle at 90% 25%, var(--bg-2), transparent 35%),
+        radial-gradient(circle at 50% 90%, #ffd8e9, transparent 32%),
+        linear-gradient(160deg, #e8f0ff, var(--bg-3));
+      background-attachment: fixed;
     }
 
-    .app{
-      max-width:1100px;
-      margin:0 auto;
-      padding:18px 14px calc(var(--bottom-space) + env(safe-area-inset-bottom));
+    .liquid {
+      background: var(--glass-bg);
+      border: 1px solid var(--glass-border);
+      border-radius: var(--radius);
+      backdrop-filter: blur(18px) saturate(1.3);
+      -webkit-backdrop-filter: blur(18px) saturate(1.3);
+      box-shadow: var(--shadow);
     }
 
-    .screen{display:none}
-    .screen.active{display:block}
-
-    .glass{
-      background:linear-gradient(180deg, rgba(255,255,255,0.10), rgba(255,255,255,0.05));
-      backdrop-filter:blur(18px);
-      border:1px solid var(--border);
-      box-shadow:var(--shadow);
-    }
-
-    .hero{
-      border-radius:var(--radius-xl);
-      padding:18px;
-      margin-bottom:18px;
-    }
-
-    .hero-top{
-      display:flex;
-      justify-content:space-between;
-      align-items:flex-start;
-      gap:12px;
-      flex-wrap:wrap;
-    }
-
-    .title{
-      margin:0;
-      font-size:30px;
-      line-height:1;
-      letter-spacing:-0.03em;
-      font-weight:700;
-    }
-
-    .subtitle{
-      margin-top:8px;
-      color:var(--muted);
-      font-size:14px;
-    }
-
-    .live-badge{
-      display:inline-flex;
-      align-items:center;
-      gap:8px;
-      white-space:nowrap;
-      border-radius:999px;
-      padding:10px 14px;
-      font-size:13px;
-      border:1px solid rgba(48,209,88,0.28);
-      background:rgba(48,209,88,0.13);
-      color:#c0ffd0;
-    }
-
-    .grid-kpi{
-      display:grid;
-      grid-template-columns:repeat(4,1fr);
-      gap:14px;
-      margin-top:18px;
-    }
-
-    .kpi{
-      border-radius:24px;
-      padding:18px;
-      background:rgba(255,255,255,0.06);
-      border:1px solid var(--border);
-      min-height:118px;
-    }
-
-    .kpi-label{
-      color:var(--muted);
-      font-size:13px;
-      margin-bottom:12px;
-    }
-
-    .kpi-value{
-      font-size:28px;
-      font-weight:700;
-      letter-spacing:-0.03em;
-    }
-
-    .kpi-note{
-      margin-top:10px;
-      color:var(--muted);
-      font-size:12px;
-    }
-
-    .section-card{
-      border-radius:var(--radius-xl);
-      padding:18px;
-      margin-bottom:18px;
-    }
-
-    .section-title{
-      font-size:20px;
-      font-weight:700;
-      margin:0 0 6px;
-      letter-spacing:-0.02em;
-    }
-
-    .section-subtitle{
-      font-size:14px;
-      color:var(--muted);
-      margin-bottom:16px;
-    }
-
-    .overview-grid{
-      display:grid;
-      grid-template-columns:1.1fr 0.9fr;
-      gap:18px;
-    }
-
-    .mini-card{
-      background:rgba(255,255,255,0.05);
-      border:1px solid rgba(255,255,255,0.08);
-      border-radius:20px;
-      padding:16px;
-    }
-
-    .mini-card-title{
-      font-size:14px;
-      color:var(--muted);
-      margin-bottom:10px;
-    }
-
-    .mini-card-big{
-      font-size:24px;
-      font-weight:700;
-      letter-spacing:-0.03em;
-    }
-
-    .list{
-      display:flex;
-      flex-direction:column;
-      gap:10px;
-    }
-
-    .row-item{
-      display:flex;
-      justify-content:space-between;
-      align-items:center;
-      gap:12px;
-      padding:14px 16px;
-      background:rgba(255,255,255,0.05);
-      border:1px solid rgba(255,255,255,0.08);
-      border-radius:18px;
-    }
-
-    .row-left{
-      min-width:0;
-      display:flex;
-      flex-direction:column;
-      gap:4px;
-    }
-
-    .row-title{
-      font-size:15px;
-      font-weight:600;
-      white-space:nowrap;
-      overflow:hidden;
-      text-overflow:ellipsis;
-    }
-
-    .row-sub{
-      font-size:13px;
-      color:var(--muted);
-    }
-
-    .row-right{
-      font-size:14px;
-      font-weight:700;
-      text-align:right;
-      white-space:nowrap;
-    }
-
-    .positive{color:#c6ffd5}
-    .negative{color:#ffb7b2}
-    .neutral{color:#d7e8ff}
-
-    .chip{
-      display:inline-flex;
-      align-items:center;
-      border-radius:999px;
-      padding:8px 12px;
-      font-size:12px;
-      font-weight:600;
-      border:1px solid transparent;
-    }
-
-    .chip.ok{
-      color:#c6ffd5;
-      background:rgba(48,209,88,0.12);
-      border-color:rgba(48,209,88,0.22);
-    }
-
-    .chip.low{
-      color:#ffd69d;
-      background:rgba(255,159,10,0.12);
-      border-color:rgba(255,159,10,0.22);
-    }
-
-    .chip.crit{
-      color:#ffb7b2;
-      background:rgba(255,69,58,0.12);
-      border-color:rgba(255,69,58,0.22);
-    }
-
-    .bottom-nav{
-      position:fixed;
-      left:50%;
-      transform:translateX(-50%);
-      bottom:12px;
-      width:min(760px, calc(100% - 20px));
-      border-radius:28px;
-      padding:12px;
-      display:grid;
-      grid-template-columns:repeat(4,1fr);
-      gap:10px;
-      z-index:50;
-    }
-
-    .nav-btn{
-      border:none;
-      background:rgba(255,255,255,0.06);
-      color:#fff;
-      border-radius:20px;
-      padding:14px 10px;
-      font-size:13px;
-      font-weight:600;
-      cursor:pointer;
-      border:1px solid rgba(255,255,255,0.08);
-    }
-
-    .nav-btn.active{
-      background:linear-gradient(180deg, #2391ff 0%, #0a84ff 100%);
-      border-color:transparent;
-    }
-
-    .nav-btn.primary{
-      background:linear-gradient(180deg, #2391ff 0%, #0a84ff 100%);
-    }
-
-    .top-bar{
-      display:flex;
-      justify-content:space-between;
-      align-items:center;
-      gap:12px;
-      margin-bottom:16px;
-      flex-wrap:wrap;
+    .container {
+      max-width: 1280px;
+      margin: 0 auto;
+      display: grid;
+      gap: 14px;
     }
 
-    .back-btn, .ghost-btn, .solid-btn, .green-btn, .orange-btn, .red-btn{
-      appearance:none;
-      border:none;
-      border-radius:16px;
-      padding:13px 16px;
-      font-size:15px;
-      font-weight:600;
-      cursor:pointer;
+    .hidden {
+      display: none !important;
     }
 
-    .back-btn, .ghost-btn{
-      color:white;
-      background:rgba(255,255,255,0.07);
-      border:1px solid rgba(255,255,255,0.08);
+    .login-wrap {
+      min-height: calc(100vh - 48px);
+      display: grid;
+      place-items: center;
     }
 
-    .solid-btn{
-      background:linear-gradient(180deg, #2391ff 0%, #0a84ff 100%);
-      color:white;
+    .login-card {
+      width: min(460px, 96vw);
+      padding: 20px;
+      display: grid;
+      gap: 12px;
     }
 
-    .green-btn{
-      background:linear-gradient(180deg, #3bdd6b 0%, #30d158 100%);
-      color:#07150c;
+    .header {
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      gap: 10px;
+      flex-wrap: wrap;
+      padding: 16px;
     }
 
-    .orange-btn{
-      background:linear-gradient(180deg, #ffb340 0%, #ff9f0a 100%);
-      color:#1f1400;
+    .header h1 {
+      font-size: 1.4rem;
+      margin-bottom: 4px;
     }
 
-    .red-btn{
-      background:linear-gradient(180deg, #ff6a61 0%, #ff453a 100%);
-      color:#fff;
+    .small {
+      font-size: 0.9rem;
+      color: var(--muted);
     }
 
-    .product-layout{
-      display:grid;
-      grid-template-columns:1fr;
-      gap:18px;
+    .toolbar {
+      display: flex;
+      gap: 8px;
+      flex-wrap: wrap;
     }
 
-    .product-head{
-      border-radius:var(--radius-xl);
-      padding:18px;
+    .top-nav {
+      display: flex;
+      gap: 8px;
+      flex-wrap: wrap;
+      padding: 10px;
     }
 
-    .product-header-row{
-      display:flex;
-      justify-content:space-between;
-      align-items:flex-start;
-      gap:14px;
-      flex-wrap:wrap;
+    .top-nav button.active {
+      box-shadow: inset 0 0 0 2px rgba(255, 255, 255, 0.7);
     }
 
-    .product-name{
-      margin:0 0 6px;
-      font-size:28px;
-      font-weight:700;
-      letter-spacing:-0.03em;
+    .grid {
+      display: grid;
+      grid-template-columns: repeat(12, 1fr);
+      gap: 12px;
     }
 
-    .product-code{
-      color:var(--muted);
-      font-size:13px;
+    .card {
+      padding: 14px;
     }
 
-    .detail-grid{
-      display:grid;
-      grid-template-columns:repeat(3,1fr);
-      gap:12px;
-      margin-top:18px;
+    .stats {
+      display: grid;
+      grid-template-columns: repeat(6, minmax(120px, 1fr));
+      gap: 10px;
+      padding: 12px;
     }
 
-    .detail-box{
-      background:rgba(255,255,255,0.05);
-      border:1px solid rgba(255,255,255,0.08);
-      border-radius:18px;
-      padding:16px;
+    .stat {
+      background: var(--glass-strong);
+      border: 1px solid var(--glass-border);
+      border-radius: 14px;
+      padding: 9px;
     }
 
-    .detail-label{
-      font-size:13px;
-      color:var(--muted);
-      margin-bottom:8px;
+    .stat .label {
+      font-size: 0.78rem;
+      color: var(--muted);
     }
 
-    .detail-value{
-      font-size:24px;
-      font-weight:700;
-      letter-spacing:-0.03em;
+    .stat .value {
+      font-size: 1.1rem;
+      font-weight: 700;
+      margin-top: 4px;
     }
 
-    .detail-value.small{
-      font-size:19px;
-    }
-
-    .op-grid{
-      display:grid;
-      grid-template-columns:repeat(3,1fr);
-      gap:12px;
-    }
-
-    .op-card{
-      border-radius:22px;
-      padding:16px;
-      background:rgba(255,255,255,0.05);
-      border:1px solid rgba(255,255,255,0.08);
-    }
-
-    .op-title{
-      margin:0 0 8px;
-      font-size:16px;
-      font-weight:700;
-    }
-
-    .op-text{
-      font-size:13px;
-      color:var(--muted);
-      margin-bottom:12px;
-      line-height:1.45;
-    }
-
-    .input, .select{
-      width:100%;
-      border-radius:16px;
-      padding:14px 15px;
-      font-size:16px;
-      outline:none;
-      color:#fff;
-      background:rgba(255,255,255,0.08);
-      border:1px solid rgba(255,255,255,0.10);
-    }
+    .span-12 { grid-column: span 12; }
+    .span-8 { grid-column: span 8; }
+    .span-6 { grid-column: span 6; }
+    .span-4 { grid-column: span 4; }
 
-    .input::placeholder{color:rgba(255,255,255,0.36)}
-
-    .input:focus, .select:focus{
-      border-color:rgba(10,132,255,0.45);
-      box-shadow:0 0 0 4px rgba(10,132,255,0.10);
-    }
-
-    .op-actions{
-      margin-top:12px;
-      display:flex;
-      gap:10px;
-      flex-wrap:wrap;
-    }
-
-    .movements{
-      display:flex;
-      flex-direction:column;
-      gap:10px;
-      max-height:460px;
-      overflow:auto;
+    h2 {
+      font-size: 1rem;
+      margin-bottom: 9px;
     }
 
-    .modal{
-      position:fixed;
-      inset:0;
-      background:rgba(0,0,0,0.52);
-      display:none;
-      justify-content:center;
-      align-items:flex-end;
-      z-index:90;
-      padding:16px;
+    form {
+      display: grid;
+      gap: 8px;
     }
 
-    .modal.show{display:flex}
-
-    .modal-card{
-      width:min(900px,100%);
-      max-height:92vh;
-      overflow:auto;
-      border-radius:28px;
-      padding:18px;
-      background:linear-gradient(180deg, rgba(18,20,26,0.96), rgba(14,17,23,0.98));
-      backdrop-filter:blur(24px);
-      border:1px solid rgba(255,255,255,0.10);
-      box-shadow:0 20px 60px rgba(0,0,0,0.55);
-    }
-
-    .modal-top{
-      display:flex;
-      justify-content:space-between;
-      align-items:center;
-      gap:10px;
-      margin-bottom:16px;
+    .form-row {
+      display: grid;
+      gap: 8px;
+      grid-template-columns: repeat(3, minmax(0, 1fr));
     }
 
-    .modal-title{
-      margin:0;
-      font-size:24px;
-      font-weight:700;
-      letter-spacing:-0.03em;
+    .form-row-2 {
+      display: grid;
+      gap: 8px;
+      grid-template-columns: repeat(2, minmax(0, 1fr));
     }
 
-    .modal-sub{
-      color:var(--muted);
-      font-size:14px;
-      margin-top:6px;
+    input, select, button {
+      width: 100%;
+      border: 1px solid rgba(148, 163, 184, 0.4);
+      background: rgba(255, 255, 255, 0.6);
+      color: #0f172a;
+      border-radius: 12px;
+      padding: 9px 10px;
+      font-size: 0.92rem;
+      outline: none;
     }
 
-    .close-btn{
-      width:42px;
-      height:42px;
-      border-radius:50%;
-      border:none;
-      background:rgba(255,255,255,0.08);
-      color:#fff;
-      cursor:pointer;
-      font-size:18px;
+    input:focus, select:focus {
+      border-color: rgba(14, 165, 233, 0.7);
+      box-shadow: 0 0 0 3px rgba(14, 165, 233, 0.2);
     }
 
-    .search-grid{
-      display:grid;
-      grid-template-columns:1fr 1fr;
-      gap:12px;
-      margin-bottom:14px;
+    button {
+      cursor: pointer;
+      border: none;
+      font-weight: 600;
+      transition: transform 0.12s ease, opacity 0.12s ease;
     }
 
-    .scanner-wrap{
-      display:none;
-      margin-top:14px;
+    button:hover {
+      transform: translateY(-1px);
     }
 
-    #reader{
-      width:100%;
-      min-height:280px;
-      overflow:hidden;
-      border-radius:22px;
-      border:1px solid rgba(255,255,255,0.08);
-      background:rgba(0,0,0,0.45);
-    }
-
-    .modal-actions{
-      display:flex;
-      gap:10px;
-      flex-wrap:wrap;
-      margin-top:12px;
-    }
+    button.primary { background: rgba(14, 165, 233, 0.82); color: white; }
+    button.secondary { background: rgba(51, 65, 85, 0.82); color: white; }
+    button.ok { background: rgba(16, 185, 129, 0.82); color: white; }
+    button.warn { background: rgba(245, 158, 11, 0.84); color: #111827; }
+    button.danger { background: rgba(239, 68, 68, 0.85); color: white; }
 
-    .search-results{
-      margin-top:16px;
-      display:flex;
-      flex-direction:column;
-      gap:10px;
+    .row-inline {
+      display: flex;
+      gap: 8px;
+      flex-wrap: wrap;
+      align-items: center;
     }
 
-    .result-item{
-      display:flex;
-      justify-content:space-between;
-      align-items:center;
-      gap:12px;
-      padding:14px 16px;
-      border-radius:18px;
-      background:rgba(255,255,255,0.05);
-      border:1px solid rgba(255,255,255,0.08);
-      cursor:pointer;
+    table {
+      width: 100%;
+      border-collapse: collapse;
+      font-size: 0.9rem;
     }
 
-    .result-item:hover{
-      background:rgba(255,255,255,0.08);
+    th, td {
+      text-align: left;
+      padding: 7px;
+      border-bottom: 1px solid rgba(148, 163, 184, 0.3);
+      vertical-align: top;
     }
 
-    .divider{
-      height:1px;
-      background:rgba(255,255,255,0.08);
-      margin:18px 0;
+    th {
+      color: var(--muted);
+      font-weight: 700;
     }
 
-    .create-grid{
-      display:grid;
-      grid-template-columns:1fr 1fr;
-      gap:12px;
+    .badge {
+      display: inline-block;
+      padding: 2px 8px;
+      border-radius: 12px;
+      border: 1px solid rgba(148, 163, 184, 0.45);
+      background: rgba(255, 255, 255, 0.6);
+      font-size: 0.82rem;
     }
 
-    .full{
-      grid-column:1 / -1;
+    .low-stock {
+      color: #b91c1c;
+      font-weight: 700;
     }
 
-    .empty-box{
-      padding:18px;
-      border-radius:18px;
-      background:rgba(255,255,255,0.05);
-      border:1px solid rgba(255,255,255,0.08);
-      color:var(--muted);
-      text-align:center;
-      font-size:14px;
+    .msg {
+      font-size: 0.86rem;
+      color: #7f1d1d;
+      min-height: 16px;
     }
 
-    @media (max-width: 980px){
-      .grid-kpi{grid-template-columns:repeat(2,1fr)}
-      .overview-grid{grid-template-columns:1fr}
-      .detail-grid{grid-template-columns:repeat(2,1fr)}
-      .op-grid{grid-template-columns:1fr}
+    .view-hidden {
+      display: none !important;
     }
 
-    @media (max-width: 680px){
-      .app{padding:14px 12px calc(var(--bottom-space) + env(safe-area-inset-bottom))}
-      .title{font-size:26px}
-      .modal-card{padding:16px;border-radius:24px}
-      .search-grid,.create-grid,.detail-grid{grid-template-columns:1fr}
-      .product-name{font-size:24px}
-      .grid-kpi{grid-template-columns:1fr}
-      .bottom-nav{grid-template-columns:repeat(4,1fr)}
-      .nav-btn{font-size:12px;padding:13px 8px}
+    @media (max-width: 1000px) {
+      .span-8, .span-6, .span-4 {
+        grid-column: span 12;
+      }
+      .stats {
+        grid-template-columns: repeat(2, minmax(120px, 1fr));
+      }
+      .form-row, .form-row-2 {
+        grid-template-columns: 1fr;
+      }
     }
   </style>
 </head>
 <body>
-  <div class="app">
-
-    <!-- DASHBOARD -->
-    <section id="screen-dashboard" class="screen active">
-      <div class="hero glass">
-        <div class="hero-top">
-          <div>
-            <h1 class="title">Inventario Magazzino</h1>
-            <div class="subtitle">Overview generale, ricerca rapida e gestione prodotti</div>
-          </div>
-          <div class="live-badge">● Demo attiva</div>
-        </div>
-
-        <div class="grid-kpi">
-          <div class="kpi">
-            <div class="kpi-label">Valore merce totale</div>
-            <div class="kpi-value" id="kpiValoreCosto">€ 0,00</div>
-            <div class="kpi-note">Calcolato al costo acquisto</div>
-          </div>
-
-          <div class="kpi">
-            <div class="kpi-label">Valore al pubblico</div>
-            <div class="kpi-value" id="kpiValoreVendita">€ 0,00</div>
-            <div class="kpi-note">Valore teorico di vendita</div>
-          </div>
-
-          <div class="kpi">
-            <div class="kpi-label">Pezzi in magazzino</div>
-            <div class="kpi-value" id="kpiMagazzino">0</div>
-            <div class="kpi-note">Prodotti fisicamente a scaffale</div>
-          </div>
-
-          <div class="kpi">
-            <div class="kpi-label">Pezzi in macchinetta</div>
-            <div class="kpi-value" id="kpiMacchinetta">0</div>
-            <div class="kpi-note">Disponibili alla vendita</div>
-          </div>
-        </div>
-      </div>
-
-      <div class="overview-grid">
-        <div class="section-card glass">
-          <div class="section-title">Ultimi movimenti</div>
-          <div class="section-subtitle">Panoramica generale delle ultime operazioni registrate</div>
-          <div id="globalMovements" class="list"></div>
-        </div>
-
-        <div class="section-card glass">
-          <div class="section-title">Riepilogo rapido</div>
-          <div class="section-subtitle">Valori principali dell’inventario</div>
-
-          <div class="list">
-            <div class="mini-card">
-              <div class="mini-card-title">Vendite registrate</div>
-              <div class="mini-card-big" id="kpiIncasso">€ 0,00</div>
-            </div>
-
-            <div class="mini-card">
-              <div class="mini-card-title">Articoli censiti</div>
-              <div class="mini-card-big" id="kpiArticoli">0</div>
-            </div>
-
-            <div class="mini-card">
-              <div class="mini-card-title">Scorte basse / critiche</div>
-              <div class="mini-card-big" id="kpiScorteCritiche">0</div>
-            </div>
-          </div>
-        </div>
-      </div>
-    </section>
-
-    <!-- PRODUCT PAGE -->
-    <section id="screen-product" class="screen">
-      <div class="top-bar">
-        <button class="back-btn" onclick="goDashboard()">← Dashboard</button>
-        <button class="solid-btn" onclick="openSearchModal()">Cerca / Scansiona / Nuovo</button>
-      </div>
-
-      <div class="product-layout">
-        <div class="product-head glass">
-          <div class="product-header-row">
-            <div>
-              <h2 class="product-name" id="prodNome">Nessun prodotto selezionato</h2>
-              <div class="product-code">Barcode: <span id="prodBarcode">-</span></div>
-            </div>
-            <div id="prodStatus" class="chip ok">In attesa</div>
-          </div>
-
-          <div class="detail-grid">
-            <div class="detail-box">
-              <div class="detail-label">Magazzino</div>
-              <div class="detail-value" id="prodMagazzino">0</div>
-            </div>
-
-            <div class="detail-box">
-              <div class="detail-label">Macchinetta</div>
-              <div class="detail-value" id="prodMacchinetta">0</div>
-            </div>
-
-            <div class="detail-box">
-              <div class="detail-label">Pezzi venduti</div>
-              <div class="detail-value" id="prodVenduti">0</div>
-            </div>
-
-            <div class="detail-box">
-              <div class="detail-label">Prezzo acquisto</div>
-              <div class="detail-value small" id="prodAcquisto">€ 0,00</div>
-            </div>
-
-            <div class="detail-box">
-              <div class="detail-label">Prezzo vendita</div>
-              <div class="detail-value small" id="prodVendita">€ 0,00</div>
-            </div>
-
-            <div class="detail-box">
-              <div class="detail-label">Incasso vendite</div>
-              <div class="detail-value small" id="prodIncasso">€ 0,00</div>
-            </div>
-
-            <div class="detail-box">
-              <div class="detail-label">Valore stock costo</div>
-              <div class="detail-value small" id="prodValoreCosto">€ 0,00</div>
-            </div>
-
-            <div class="detail-box">
-              <div class="detail-label">Valore stock vendita</div>
-              <div class="detail-value small" id="prodValoreVendita">€ 0,00</div>
-            </div>
-
-            <div class="detail-box">
-              <div class="detail-label">Margine unitario</div>
-              <div class="detail-value small" id="prodMargine">€ 0,00</div>
-            </div>
-          </div>
-        </div>
-
-        <div class="section-card glass">
-          <div class="section-title">Operazioni prodotto</div>
-          <div class="section-subtitle">Aumenta, sposta o scala automaticamente le quantità</div>
-
-          <div class="op-grid">
-            <div class="op-card">
-              <div class="op-title">Carico magazzino</div>
-              <div class="op-text">Aggiunge pezzi alla giacenza in magazzino.</div>
-              <input id="inputCarico" class="input" type="number" min="1" placeholder="Quantità da caricare">
-              <div class="op-actions">
-                <button class="green-btn" onclick="registerLoad()">Registra carico</button>
-              </div>
-            </div>
-
-            <div class="op-card">
-              <div class="op-title">Spostamento in macchinetta</div>
-              <div class="op-text">Toglie dal magazzino e aggiunge alla macchinetta.</div>
-              <input id="inputSpostamento" class="input" type="number" min="1" placeholder="Quantità da spostare">
-              <div class="op-actions">
-                <button class="orange-btn" onclick="moveToMachine()">Sposta prodotto</button>
-              </div>
-            </div>
-
-            <div class="op-card">
-              <div class="op-title">Registra vendita</div>
-              <div class="op-text">Scala dalla macchinetta e aggiorna pezzi venduti e incasso.</div>
-              <input id="inputVendita" class="input" type="number" min="1" placeholder="Quantità venduta">
-              <div class="op-actions">
-                <button class="red-btn" onclick="registerSale()">Registra vendita</button>
-              </div>
-            </div>
-          </div>
-        </div>
-
-        <div class="section-card glass">
-          <div class="section-title">Movimenti prodotto</div>
-          <div class="section-subtitle">Storico operazioni dell’articolo selezionato</div>
-          <div id="productMovements" class="movements"></div>
-        </div>
-      </div>
-    </section>
+  <div class="login-wrap" id="login-screen">
+    <div class="login-card liquid">
+      <h2>Accesso app magazzino</h2>
+      <p class="small">Utenti demo: <b>admin</b>/<b>admin123</b> oppure <b>operatore</b>/<b>1234</b></p>
+      <form id="login-form">
+        <input id="login-user" placeholder="Username" required>
+        <input id="login-pass" placeholder="Password" type="password" required>
+        <button type="submit" class="primary">Entra</button>
+      </form>
+      <div class="msg" id="login-msg"></div>
+    </div>
   </div>
 
-  <!-- BOTTOM NAV -->
-  <div class="bottom-nav glass">
-    <button class="nav-btn primary" onclick="openSearchModal()">Cerca</button>
-    <button id="navDashboard" class="nav-btn active" onclick="goDashboard()">Dashboard</button>
-    <button id="navProduct" class="nav-btn" onclick="goProduct()">Prodotto</button>
-    <button class="nav-btn" onclick="openCreateInModal()">Nuovo</button>
-  </div>
+  <div class="container hidden" id="app-screen">
+    <header class="header liquid">
+      <div>
+        <h1>Gestione Magazzino Macchinette</h1>
+        <p class="small">Versione Pro locale (no DB)</p>
+      </div>
+      <div class="toolbar">
+        <span class="badge" id="session-user"></span>
+        <button id="btn-export-sales" class="ok">Export vendite CSV</button>
+        <button id="btn-export-movements" class="ok">Export movimenti CSV</button>
+        <button id="btn-reset" class="secondary">Reset dati</button>
+        <button id="btn-logout" class="danger">Logout</button>
+      </div>
+    </header>
 
-  <!-- SEARCH / CREATE MODAL -->
-  <div id="searchModal" class="modal" onclick="closeModalByBackdrop(event)">
-    <div class="modal-card" onclick="event.stopPropagation()">
-      <div class="modal-top">
-        <div>
-          <h3 class="modal-title">Cerca o crea prodotto</h3>
-          <div class="modal-sub">Ricerca per nome, barcode, fotocamera oppure creazione nuovo articolo</div>
+    <section class="stats liquid" id="stats"></section>
+
+    <section class="top-nav liquid">
+      <button id="nav-operations" class="primary active" type="button">Operazioni</button>
+      <button id="nav-history" class="secondary" type="button">Storico e filtri</button>
+    </section>
+
+    <section class="card liquid view-history view-hidden">
+      <h2>Filtri storico</h2>
+      <div class="form-row">
+        <select id="filter-machine"></select>
+        <input id="filter-date-from" type="date">
+        <input id="filter-date-to" type="date">
+      </div>
+        <div class="form-row" style="margin-top:8px;">
+          <input id="search-code" placeholder="Ricerca per barcode / SKU / nome prodotto">
+          <button id="btn-search-code" type="button" class="primary">Cerca codice</button>
+          <button id="btn-clear-search" type="button" class="secondary">Pulisci ricerca</button>
         </div>
-        <button class="close-btn" onclick="closeSearchModal()">✕</button>
-      </div>
+    </section>
 
-      <div class="search-grid">
-        <input id="modalSearchName" class="input" type="text" placeholder="Cerca per nome prodotto">
-        <input id="modalSearchBarcode" class="input" type="text" placeholder="Cerca per codice a barre">
-      </div>
+    <div class="grid">
+      <section class="card liquid span-4 view-operations">
+        <h2>Nuova macchinetta</h2>
+        <form id="machine-form">
+          <input id="machine-name" placeholder="Nome (es. Ufficio Centro)" required>
+          <input id="machine-location" placeholder="Posizione (es. Piano 1)" required>
+          <button type="submit" class="primary">Aggiungi macchinetta</button>
+        </form>
+      </section>
 
-      <div class="modal-actions">
-        <button class="solid-btn" onclick="runSearch()">Cerca prodotto</button>
-        <button class="ghost-btn" onclick="startScanner()">Apri scanner</button>
-        <button class="ghost-btn" onclick="stopScanner()">Chiudi scanner</button>
-        <button class="ghost-btn" onclick="toggleCreateSection()">Crea nuovo prodotto</button>
-      </div>
-
-      <div id="scannerWrap" class="scanner-wrap">
-        <div id="reader"></div>
-        <div class="modal-sub" style="margin-top:10px;">
-          Lo scanner prova ad aprire la fotocamera posteriore.
+      <section class="card liquid span-8 view-operations">
+        <h2>Macchinette registrate</h2>
+        <div style="overflow:auto; max-height:190px;">
+          <table>
+            <thead>
+              <tr>
+                <th>Nome</th>
+                <th>Posizione</th>
+                <th>Azioni</th>
+              </tr>
+            </thead>
+            <tbody id="machines-table"></tbody>
+          </table>
         </div>
-      </div>
+      </section>
 
-      <div id="searchResults" class="search-results"></div>
+      <section class="card liquid span-6 view-operations">
+        <h2 id="product-form-title">Nuovo prodotto</h2>
+        <form id="product-form">
+          <input type="hidden" id="product-edit-id">
+          <div class="form-row">
+            <input id="name" placeholder="Nome prodotto" required>
+            <input id="sku" placeholder="Codice SKU" required>
+            <input id="barcode" placeholder="Codice a barre (EAN/UPC)" required>
+          </div>
+          <div class="form-row">
+            <input id="purchasePrice" type="number" min="0" step="0.01" placeholder="Prezzo acquisto (€)" required>
+            <input id="salePrice" type="number" min="0" step="0.01" placeholder="Prezzo vendita (€)" required>
+            <button type="button" id="btn-scan-barcode" class="secondary">Scansiona barcode</button>
+          </div>
+          <div class="form-row">
+            <input id="stock" type="number" min="0" step="1" placeholder="Giacenza iniziale" required>
+            <input id="minStock" type="number" min="0" step="1" placeholder="Scorta minima" required>
+            <button type="submit" class="primary" id="btn-product-submit">Aggiungi prodotto</button>
+          </div>
+          <button type="button" id="btn-cancel-edit-product" class="secondary view-hidden">Annulla modifica</button>
+        </form>
+      </section>
 
-      <div class="divider"></div>
+      <section class="card liquid span-6 view-operations">
+        <h2>Movimento magazzino</h2>
+        <form id="movement-form">
+          <div class="form-row">
+            <select id="movement-machine" required></select>
+            <select id="movement-product" required></select>
+            <select id="movement-type" required>
+              <option value="carico">Carico (+)</option>
+              <option value="scarico">Scarico (-)</option>
+            </select>
+          </div>
+          <div class="form-row-2">
+            <input id="movement-qty" type="number" min="1" step="1" placeholder="Quantita" required>
+            <button type="submit" class="warn">Registra movimento</button>
+          </div>
+        </form>
+      </section>
 
-      <div id="createSection" style="display:none;">
-        <div class="section-title" style="font-size:18px;">Nuovo prodotto</div>
-        <div class="section-subtitle">Compila i dati principali per creare subito una nuova scheda</div>
+      <section class="card liquid span-6 view-operations">
+        <h2>Registra vendita</h2>
+        <form id="sale-form">
+          <div class="form-row">
+            <select id="sale-machine" required></select>
+            <select id="sale-product" required></select>
+            <input id="sale-qty" type="number" min="1" step="1" placeholder="Quantita venduta" required>
+          </div>
+          <button type="submit" class="ok">Registra vendita</button>
+        </form>
+      </section>
 
-        <div class="create-grid">
-          <input id="newNome" class="input full" type="text" placeholder="Nome prodotto">
-          <input id="newBarcode" class="input" type="text" placeholder="Barcode">
-          <input id="newMagazzino" class="input" type="number" min="0" placeholder="Quantità iniziale magazzino">
-          <input id="newMacchinetta" class="input" type="number" min="0" placeholder="Quantità iniziale macchinetta">
-          <input id="newAcquisto" class="input" type="number" min="0" step="0.01" placeholder="Prezzo acquisto">
-          <input id="newVendita" class="input" type="number" min="0" step="0.01" placeholder="Prezzo vendita">
+      <section class="card liquid span-6 view-operations">
+        <h2>Prodotti</h2>
+        <div style="overflow:auto; max-height:260px;">
+          <table>
+            <thead>
+              <tr>
+                <th>Nome</th>
+                <th>SKU</th>
+                <th>Barcode</th>
+                <th>Acquisto</th>
+                <th>Vendita</th>
+                <th>Giacenza</th>
+                <th>Min</th>
+                <th>Azioni</th>
+              </tr>
+            </thead>
+            <tbody id="products-table"></tbody>
+          </table>
         </div>
+      </section>
 
-        <div class="modal-actions">
-          <button class="solid-btn" onclick="createProduct()">Salva nuovo prodotto</button>
+      <section class="card liquid span-6 view-history view-hidden">
+        <h2>Storico vendite</h2>
+        <div style="overflow:auto; max-height:300px;">
+          <table>
+            <thead>
+              <tr>
+                <th>Data</th>
+                <th>Macchinetta</th>
+                <th>Prodotto</th>
+                <th>Qta</th>
+                <th>Margine</th>
+                <th>Tot</th>
+              </tr>
+            </thead>
+            <tbody id="sales-table"></tbody>
+          </table>
         </div>
-      </div>
+      </section>
+
+      <section class="card liquid span-6 view-history view-hidden">
+        <h2>Storico movimenti</h2>
+        <div style="overflow:auto; max-height:300px;">
+          <table>
+            <thead>
+              <tr>
+                <th>Data</th>
+                <th>Macchinetta</th>
+                <th>Prodotto</th>
+                <th>Tipo</th>
+                <th>Qta</th>
+              </tr>
+            </thead>
+            <tbody id="movements-table"></tbody>
+          </table>
+        </div>
+      </section>
     </div>
   </div>
 
   <script>
-    const products = [
-      {
-        id: 1,
-        nome: "Coca Cola 33cl",
-        barcode: "8001111111111",
-        magazzino: 48,
-        macchinetta: 12,
-        acquisto: 0.55,
-        vendita: 1.20,
-        pezziVenduti: 6,
-        incassoVendite: 7.20,
-        movimenti: [
-          { tipo: "Vendita registrata", dettaglio: "Venduti 3 pezzi dalla macchinetta", valore: "€ 3,60", classe: "positive" },
-          { tipo: "Spostamento in macchinetta", dettaglio: "10 pezzi spostati dal magazzino", valore: "10 pz", classe: "neutral" },
-          { tipo: "Carico magazzino", dettaglio: "Aggiunti 24 pezzi al magazzino", valore: "+24", classe: "positive" }
-        ]
-      },
-      {
-        id: 2,
-        nome: "Acqua Naturale 50cl",
-        barcode: "8002222222222",
-        magazzino: 120,
-        macchinetta: 30,
-        acquisto: 0.18,
-        vendita: 0.60,
-        pezziVenduti: 10,
-        incassoVendite: 6.00,
-        movimenti: [
-          { tipo: "Vendita registrata", dettaglio: "Venduti 5 pezzi dalla macchinetta", valore: "€ 3,00", classe: "positive" },
-          { tipo: "Spostamento in macchinetta", dettaglio: "24 pezzi spostati dal magazzino", valore: "24 pz", classe: "neutral" }
-        ]
-      },
-      {
-        id: 3,
-        nome: "Patatine Classiche",
-        barcode: "8003333333333",
-        magazzino: 9,
-        macchinetta: 6,
-        acquisto: 0.42,
-        vendita: 1.00,
-        pezziVenduti: 3,
-        incassoVendite: 3.00,
-        movimenti: [
-          { tipo: "Vendita registrata", dettaglio: "Venduti 3 pezzi dalla macchinetta", valore: "€ 3,00", classe: "positive" }
-        ]
-      }
+    const STORE_KEY = "magazzino_vending_pro_v2";
+    const SESSION_KEY = "magazzino_vending_session_v1";
+
+    const DEFAULT_USERS = [
+      { username: "admin", password: "admin123", role: "admin" },
+      { username: "operatore", password: "1234", role: "operator" }
     ];
 
-    let currentProductId = 1;
-    let html5QrCode = null;
-    let scannerRunning = false;
+    let state = loadState();
+    const refs = getRefs();
 
-    function formatCurrency(value){
-      return new Intl.NumberFormat("it-IT", {
-        style: "currency",
-        currency: "EUR"
-      }).format(Number(value || 0));
+    setupEvents();
+    ensureSeedData();
+    bootstrap();
+    setView("operations");
+
+    function getRefs() {
+      return {
+        loginScreen: document.getElementById("login-screen"),
+        appScreen: document.getElementById("app-screen"),
+        loginForm: document.getElementById("login-form"),
+        loginUser: document.getElementById("login-user"),
+        loginPass: document.getElementById("login-pass"),
+        loginMsg: document.getElementById("login-msg"),
+        stats: document.getElementById("stats"),
+        sessionUser: document.getElementById("session-user"),
+        machinesTable: document.getElementById("machines-table"),
+        productsTable: document.getElementById("products-table"),
+        salesTable: document.getElementById("sales-table"),
+        movementsTable: document.getElementById("movements-table"),
+        machineForm: document.getElementById("machine-form"),
+        productForm: document.getElementById("product-form"),
+        movementForm: document.getElementById("movement-form"),
+        saleForm: document.getElementById("sale-form"),
+        filterMachine: document.getElementById("filter-machine"),
+        filterDateFrom: document.getElementById("filter-date-from"),
+        filterDateTo: document.getElementById("filter-date-to"),
+        navOperations: document.getElementById("nav-operations"),
+        navHistory: document.getElementById("nav-history"),
+        searchCode: document.getElementById("search-code"),
+        searchCodeBtn: document.getElementById("btn-search-code"),
+        clearSearchBtn: document.getElementById("btn-clear-search"),
+        movementMachine: document.getElementById("movement-machine"),
+        movementProduct: document.getElementById("movement-product"),
+        saleMachine: document.getElementById("sale-machine"),
+        saleProduct: document.getElementById("sale-product"),
+        barcodeInput: document.getElementById("barcode"),
+        scanBarcodeBtn: document.getElementById("btn-scan-barcode"),
+        productEditId: document.getElementById("product-edit-id"),
+        productFormTitle: document.getElementById("product-form-title"),
+        productSubmitBtn: document.getElementById("btn-product-submit"),
+        cancelEditProductBtn: document.getElementById("btn-cancel-edit-product"),
+        resetBtn: document.getElementById("btn-reset"),
+        logoutBtn: document.getElementById("btn-logout"),
+        exportSalesBtn: document.getElementById("btn-export-sales"),
+        exportMovementsBtn: document.getElementById("btn-export-movements")
+      };
     }
 
-    function getCurrentProduct(){
-      return products.find(p => p.id === currentProductId) || null;
+    function loadState() {
+      try {
+        const raw = localStorage.getItem(STORE_KEY);
+        if (!raw) {
+          return { users: [], machines: [], products: [], sales: [], movements: [] };
+        }
+        const parsed = JSON.parse(raw);
+        return {
+          users: Array.isArray(parsed.users) ? parsed.users : [],
+          machines: Array.isArray(parsed.machines) ? parsed.machines : [],
+          products: Array.isArray(parsed.products) ? parsed.products : [],
+          sales: Array.isArray(parsed.sales) ? parsed.sales : [],
+          movements: Array.isArray(parsed.movements) ? parsed.movements : []
+        };
+      } catch (_err) {
+        return { users: [], machines: [], products: [], sales: [], movements: [] };
+      }
     }
 
-    function getStockStatus(product){
-      const total = product.magazzino + product.macchinetta;
-      if (total <= 3) return { text: "Scorta critica", className: "chip crit" };
-      if (total <= 15) return { text: "Scorta bassa", className: "chip low" };
-      return { text: "Disponibile", className: "chip ok" };
+    function saveState() {
+      localStorage.setItem(STORE_KEY, JSON.stringify(state));
     }
 
-    function updateDashboard(){
-      const totalMagazzino = products.reduce((s,p) => s + p.magazzino, 0);
-      const totalMacchinetta = products.reduce((s,p) => s + p.macchinetta, 0);
-      const totalCosto = products.reduce((s,p) => s + ((p.magazzino + p.macchinetta) * p.acquisto), 0);
-      const totalVendita = products.reduce((s,p) => s + ((p.magazzino + p.macchinetta) * p.vendita), 0);
-      const totalIncasso = products.reduce((s,p) => s + p.incassoVendite, 0);
-      const scorteCritiche = products.filter(p => (p.magazzino + p.macchinetta) <= 15).length;
-
-      document.getElementById("kpiMagazzino").textContent = totalMagazzino;
-      document.getElementById("kpiMacchinetta").textContent = totalMacchinetta;
-      document.getElementById("kpiValoreCosto").textContent = formatCurrency(totalCosto);
-      document.getElementById("kpiValoreVendita").textContent = formatCurrency(totalVendita);
-      document.getElementById("kpiIncasso").textContent = formatCurrency(totalIncasso);
-      document.getElementById("kpiArticoli").textContent = products.length;
-      document.getElementById("kpiScorteCritiche").textContent = scorteCritiche;
-
-      renderGlobalMovements();
+    function bootstrap() {
+      const sessionUser = localStorage.getItem(SESSION_KEY);
+      if (!sessionUser) return showLogin();
+      showApp(sessionUser);
+      renderAll();
     }
 
-    function renderGlobalMovements(){
-      const container = document.getElementById("globalMovements");
-      const movements = [];
+    function ensureSeedData() {
+      if (state.users.length === 0) {
+        state.users = DEFAULT_USERS;
+      }
+      if (state.machines.length === 0) {
+        state.machines = [
+          { id: uid(), name: "Ufficio Centro", location: "Piano 1" },
+          { id: uid(), name: "Magazzino Nord", location: "Ingresso" }
+        ];
+      }
+      if (state.products.length === 0) {
+        state.products = [
+          { id: uid(), name: "Acqua 50cl", sku: "ACQ-050", barcode: "8001110001112", purchasePrice: 0.45, salePrice: 1.0, stock: 45, minStock: 10 },
+          { id: uid(), name: "Snack Patatine", sku: "SNK-101", barcode: "8001110002225", purchasePrice: 0.8, salePrice: 1.6, stock: 25, minStock: 8 },
+          { id: uid(), name: "Bibita Cola", sku: "BIB-330", barcode: "8001110003338", purchasePrice: 1.05, salePrice: 2.0, stock: 30, minStock: 12 }
+        ];
+      }
+      normalizeProducts();
+      saveState();
+    }
 
-      products.forEach(p => {
-        (p.movimenti || []).forEach(m => {
-          movements.push({
-            product: p.nome,
-            tipo: m.tipo,
-            dettaglio: m.dettaglio,
-            valore: m.valore,
-            classe: m.classe
-          });
-        });
+    function normalizeProducts() {
+      state.products = state.products.map((p) => {
+        const salePrice = Number.isFinite(Number(p.salePrice)) ? Number(p.salePrice) : Number(p.price || 0);
+        const purchasePrice = Number.isFinite(Number(p.purchasePrice)) ? Number(p.purchasePrice) : 0;
+        return {
+          ...p,
+          barcode: p.barcode || "",
+          purchasePrice,
+          salePrice,
+          price: undefined
+        };
       });
+    }
 
-      const recent = movements.slice(0, 8);
+    function setupEvents() {
+      refs.loginForm.addEventListener("submit", onLogin);
+      refs.machineForm.addEventListener("submit", onAddMachine);
+      refs.productForm.addEventListener("submit", onSaveProduct);
+      refs.movementForm.addEventListener("submit", onMovement);
+      refs.saleForm.addEventListener("submit", onSale);
+      refs.navOperations.addEventListener("click", () => setView("operations"));
+      refs.navHistory.addEventListener("click", () => setView("history"));
+      refs.filterMachine.addEventListener("change", () => renderHistoryTables());
+      refs.filterDateFrom.addEventListener("change", () => renderHistoryTables());
+      refs.filterDateTo.addEventListener("change", () => renderHistoryTables());
+      refs.searchCodeBtn.addEventListener("click", onSearchByCode);
+      refs.clearSearchBtn.addEventListener("click", onClearCodeSearch);
+      refs.searchCode.addEventListener("keydown", (event) => {
+        if (event.key === "Enter") {
+          event.preventDefault();
+          onSearchByCode();
+        }
+      });
+      refs.scanBarcodeBtn.addEventListener("click", onScanBarcode);
+      refs.cancelEditProductBtn.addEventListener("click", cancelEditProduct);
+      refs.resetBtn.addEventListener("click", onResetAll);
+      refs.logoutBtn.addEventListener("click", onLogout);
+      refs.exportSalesBtn.addEventListener("click", exportSalesCsv);
+      refs.exportMovementsBtn.addEventListener("click", exportMovementsCsv);
+    }
 
-      if (!recent.length){
-        container.innerHTML = `<div class="empty-box">Nessun movimento disponibile</div>`;
+    function onLogin(event) {
+      event.preventDefault();
+      refs.loginMsg.textContent = "";
+      const username = refs.loginUser.value.trim();
+      const password = refs.loginPass.value;
+      const user = state.users.find((u) => u.username === username && u.password === password);
+      if (!user) {
+        refs.loginMsg.textContent = "Credenziali non valide.";
         return;
       }
+      localStorage.setItem(SESSION_KEY, user.username);
+      refs.loginForm.reset();
+      showApp(user.username);
+      renderAll();
+    }
 
-      container.innerHTML = recent.map(m => `
-        <div class="row-item">
-          <div class="row-left">
-            <div class="row-title">${m.tipo}</div>
-            <div class="row-sub">${m.product} · ${m.dettaglio}</div>
-          </div>
-          <div class="row-right ${m.classe}">${m.valore}</div>
-        </div>
+    function onLogout() {
+      localStorage.removeItem(SESSION_KEY);
+      showLogin();
+    }
+
+    function showLogin() {
+      refs.loginScreen.classList.remove("hidden");
+      refs.appScreen.classList.add("hidden");
+    }
+
+    function showApp(username) {
+      refs.sessionUser.textContent = "Utente: " + username;
+      refs.loginScreen.classList.add("hidden");
+      refs.appScreen.classList.remove("hidden");
+    }
+
+    function onResetAll() {
+      localStorage.removeItem(STORE_KEY);
+      localStorage.removeItem(SESSION_KEY);
+      state = { users: [], machines: [], products: [], sales: [], movements: [] };
+      ensureSeedData();
+      bootstrap();
+    }
+
+    function onAddMachine(event) {
+      event.preventDefault();
+      const name = document.getElementById("machine-name").value.trim();
+      const location = document.getElementById("machine-location").value.trim();
+      if (!name || !location) return alert("Compila nome e posizione macchinetta.");
+      state.machines.push({ id: uid(), name, location });
+      saveState();
+      refs.machineForm.reset();
+      renderAll();
+    }
+
+    function onSaveProduct(event) {
+      event.preventDefault();
+      const data = readProductForm();
+      const editId = refs.productEditId.value;
+
+      if (!data.name || !data.sku || !data.barcode || data.salePrice <= 0 || data.purchasePrice < 0 || data.stock < 0 || data.minStock < 0) {
+        return alert("Controlla i dati prodotto.");
+      }
+      const exists = state.products.some((p) => p.id !== editId && p.sku.toLowerCase() === data.sku.toLowerCase());
+      if (exists) return alert("SKU gia presente.");
+      const barcodeExists = state.products.some((p) => p.id !== editId && p.barcode === data.barcode);
+      if (barcodeExists) return alert("Barcode gia presente.");
+
+      if (editId) {
+        const product = state.products.find((p) => p.id === editId);
+        if (!product) return alert("Prodotto non trovato.");
+        Object.assign(product, data);
+      } else {
+        state.products.push({ id: uid(), ...data });
+      }
+      saveState();
+      refs.productForm.reset();
+      cancelEditProduct();
+      renderAll();
+    }
+
+    function readProductForm() {
+      return {
+        name: document.getElementById("name").value.trim(),
+        sku: document.getElementById("sku").value.trim(),
+        barcode: document.getElementById("barcode").value.trim(),
+        purchasePrice: toNumber(document.getElementById("purchasePrice").value),
+        salePrice: toNumber(document.getElementById("salePrice").value),
+        stock: toInt(document.getElementById("stock").value),
+        minStock: toInt(document.getElementById("minStock").value)
+      };
+    }
+
+    function onMovement(event) {
+      event.preventDefault();
+      const machineId = refs.movementMachine.value;
+      const productId = refs.movementProduct.value;
+      const type = document.getElementById("movement-type").value;
+      const qty = toInt(document.getElementById("movement-qty").value);
+      const product = state.products.find((p) => p.id === productId);
+      if (!product || !machineId || qty <= 0) return alert("Dati movimento non validi.");
+      if (type === "scarico" && product.stock < qty) return alert("Giacenza insufficiente.");
+
+      product.stock += type === "carico" ? qty : -qty;
+      state.movements.unshift({
+        id: uid(),
+        machineId,
+        productId,
+        type,
+        qty,
+        user: localStorage.getItem(SESSION_KEY) || "-",
+        date: new Date().toISOString()
+      });
+      saveState();
+      refs.movementForm.reset();
+      renderAll();
+    }
+
+    function onSale(event) {
+      event.preventDefault();
+      const machineId = refs.saleMachine.value;
+      const productId = refs.saleProduct.value;
+      const qty = toInt(document.getElementById("sale-qty").value);
+      const product = state.products.find((p) => p.id === productId);
+      if (!product || !machineId || qty <= 0) return alert("Dati vendita non validi.");
+      if (product.stock < qty) return alert("Giacenza insufficiente.");
+
+      product.stock -= qty;
+      state.sales.unshift({
+        id: uid(),
+        machineId,
+        productId,
+        qty,
+        unitSalePrice: product.salePrice,
+        unitPurchasePrice: product.purchasePrice,
+        marginUnit: round2(product.salePrice - product.purchasePrice),
+        marginTotal: round2((product.salePrice - product.purchasePrice) * qty),
+        total: round2(product.salePrice * qty),
+        user: localStorage.getItem(SESSION_KEY) || "-",
+        date: new Date().toISOString()
+      });
+      saveState();
+      refs.saleForm.reset();
+      renderAll();
+    }
+
+    function deleteMachine(machineId) {
+      const hasData = state.sales.some((s) => s.machineId === machineId)
+        || state.movements.some((m) => m.machineId === machineId);
+      if (hasData) return alert("Macchinetta usata nello storico, non eliminabile.");
+      state.machines = state.machines.filter((m) => m.id !== machineId);
+      saveState();
+      renderAll();
+    }
+
+    function deleteProduct(productId) {
+      const hasSales = state.sales.some((s) => s.productId === productId);
+      if (hasSales) return alert("Prodotto con vendite registrate.");
+      state.products = state.products.filter((p) => p.id !== productId);
+      state.movements = state.movements.filter((m) => m.productId !== productId);
+      saveState();
+      renderAll();
+    }
+
+    function renderAll() {
+      renderStats();
+      renderMachineTable();
+      renderProductTable();
+      renderSelects();
+      renderHistoryTables();
+    }
+
+    function renderStats() {
+      const totalProducts = state.products.length;
+      const totalMachines = state.machines.length;
+      const totalStock = state.products.reduce((a, p) => a + p.stock, 0);
+      const lowStock = state.products.filter((p) => p.stock <= p.minStock).length;
+      const revenue = state.sales.reduce((a, s) => a + s.total, 0);
+      const margin = state.sales.reduce((a, s) => a + (s.marginTotal || 0), 0);
+      const mol = revenue > 0 ? (margin / revenue) * 100 : 0;
+      const totalSalesQty = state.sales.reduce((a, s) => a + s.qty, 0);
+
+      refs.stats.innerHTML = [
+        statCard("Macchinette", totalMachines),
+        statCard("Prodotti", totalProducts),
+        statCard("Pezzi magazzino", totalStock),
+        statCard("Sotto scorta", lowStock),
+        statCard("Pezzi venduti", totalSalesQty),
+        statCard("Incasso", euro(revenue)),
+        statCard("Margine", euro(margin)),
+        statCard("MOL %", percent(mol))
+      ].join("");
+    }
+
+    function renderMachineTable() {
+      refs.machinesTable.innerHTML = state.machines.map((m) => `
+        <tr>
+          <td>${escapeHtml(m.name)}</td>
+          <td>${escapeHtml(m.location)}</td>
+          <td><button class="danger" onclick="deleteMachine('${m.id}')">Elimina</button></td>
+        </tr>
       `).join("");
     }
 
-    function showProduct(product){
-      currentProductId = product.id;
-
-      const totalStock = product.magazzino + product.macchinetta;
-      const valoreCosto = totalStock * product.acquisto;
-      const valoreVendita = totalStock * product.vendita;
-      const margine = product.vendita - product.acquisto;
-      const status = getStockStatus(product);
-
-      document.getElementById("prodNome").textContent = product.nome;
-      document.getElementById("prodBarcode").textContent = product.barcode || "-";
-      document.getElementById("prodMagazzino").textContent = product.magazzino;
-      document.getElementById("prodMacchinetta").textContent = product.macchinetta;
-      document.getElementById("prodVenduti").textContent = product.pezziVenduti;
-      document.getElementById("prodAcquisto").textContent = formatCurrency(product.acquisto);
-      document.getElementById("prodVendita").textContent = formatCurrency(product.vendita);
-      document.getElementById("prodIncasso").textContent = formatCurrency(product.incassoVendite);
-      document.getElementById("prodValoreCosto").textContent = formatCurrency(valoreCosto);
-      document.getElementById("prodValoreVendita").textContent = formatCurrency(valoreVendita);
-      document.getElementById("prodMargine").textContent = formatCurrency(margine);
-
-      const statusEl = document.getElementById("prodStatus");
-      statusEl.className = status.className;
-      statusEl.textContent = status.text;
-
-      renderProductMovements(product.movimenti || []);
-      updateDashboard();
-    }
-
-    function renderProductMovements(movements){
-      const container = document.getElementById("productMovements");
-      if (!movements.length){
-        container.innerHTML = `<div class="empty-box">Nessun movimento per questo prodotto</div>`;
-        return;
-      }
-
-      container.innerHTML = movements.map(m => `
-        <div class="row-item">
-          <div class="row-left">
-            <div class="row-title">${m.tipo}</div>
-            <div class="row-sub">${m.dettaglio}</div>
-          </div>
-          <div class="row-right ${m.classe}">${m.valore}</div>
-        </div>
-      `).join("");
-    }
-
-    function addMovement(product, tipo, dettaglio, valore, classe){
-      product.movimenti.unshift({ tipo, dettaglio, valore, classe });
-    }
-
-    function registerLoad(){
-      const product = getCurrentProduct();
-      if (!product) return alert("Seleziona prima un prodotto");
-
-      const qty = parseInt(document.getElementById("inputCarico").value, 10);
-      if (!qty || qty <= 0) return alert("Inserisci una quantità valida");
-
-      product.magazzino += qty;
-      addMovement(product, "Carico magazzino", `Aggiunti ${qty} pezzi al magazzino`, `+${qty}`, "positive");
-      document.getElementById("inputCarico").value = "";
-      showProduct(product);
-    }
-
-    function moveToMachine(){
-      const product = getCurrentProduct();
-      if (!product) return alert("Seleziona prima un prodotto");
-
-      const qty = parseInt(document.getElementById("inputSpostamento").value, 10);
-      if (!qty || qty <= 0) return alert("Inserisci una quantità valida");
-      if (qty > product.magazzino) return alert("Quantità insufficiente in magazzino");
-
-      product.magazzino -= qty;
-      product.macchinetta += qty;
-      addMovement(product, "Spostamento in macchinetta", `${qty} pezzi spostati dal magazzino alla macchinetta`, `${qty} pz`, "neutral");
-      document.getElementById("inputSpostamento").value = "";
-      showProduct(product);
-    }
-
-    function registerSale(){
-      const product = getCurrentProduct();
-      if (!product) return alert("Seleziona prima un prodotto");
-
-      const qty = parseInt(document.getElementById("inputVendita").value, 10);
-      if (!qty || qty <= 0) return alert("Inserisci una quantità valida");
-      if (qty > product.macchinetta) return alert("Quantità insufficiente nella macchinetta");
-
-      product.macchinetta -= qty;
-      product.pezziVenduti += qty;
-      product.incassoVendite += qty * product.vendita;
-
-      addMovement(product, "Vendita registrata", `Venduti ${qty} pezzi dalla macchinetta`, formatCurrency(qty * product.vendita), "positive");
-      document.getElementById("inputVendita").value = "";
-      showProduct(product);
-    }
-
-    function setActiveScreen(screen){
-      document.querySelectorAll(".screen").forEach(s => s.classList.remove("active"));
-      document.getElementById(`screen-${screen}`).classList.add("active");
-
-      document.getElementById("navDashboard").classList.toggle("active", screen === "dashboard");
-      document.getElementById("navProduct").classList.toggle("active", screen === "product");
-    }
-
-    function goDashboard(){
-      setActiveScreen("dashboard");
-    }
-
-    function goProduct(){
-      const current = getCurrentProduct();
-      if (!current){
-        alert("Seleziona prima un prodotto");
-        return;
-      }
-      setActiveScreen("product");
-      showProduct(current);
-    }
-
-    function openSearchModal(){
-      document.getElementById("searchModal").classList.add("show");
-      document.getElementById("searchResults").innerHTML = "";
-    }
-
-    function closeSearchModal(){
-      stopScanner();
-      document.getElementById("searchModal").classList.remove("show");
-    }
-
-    function closeModalByBackdrop(event){
-      if (event.target.id === "searchModal") closeSearchModal();
-    }
-
-    function toggleCreateSection(forceOpen = null){
-      const section = document.getElementById("createSection");
-      if (forceOpen === true){
-        section.style.display = "block";
-        return;
-      }
-      if (forceOpen === false){
-        section.style.display = "none";
-        return;
-      }
-      section.style.display = section.style.display === "none" || !section.style.display ? "block" : "none";
-    }
-
-    function openCreateInModal(){
-      openSearchModal();
-      toggleCreateSection(true);
-    }
-
-    function runSearch(){
-      const name = document.getElementById("modalSearchName").value.trim().toLowerCase();
-      const barcode = document.getElementById("modalSearchBarcode").value.trim();
-      const resultsBox = document.getElementById("searchResults");
-
-      let results = products;
-
-      if (barcode){
-        results = results.filter(p => (p.barcode || "") === barcode);
-      } else if (name){
-        results = results.filter(p => p.nome.toLowerCase().includes(name));
-      }
-
-      if (!name && !barcode){
-        results = products;
-      }
-
-      if (!results.length){
-        resultsBox.innerHTML = `<div class="empty-box">Nessun prodotto trovato</div>`;
-        return;
-      }
-
-      resultsBox.innerHTML = results.map(p => {
-        const status = getStockStatus(p);
+    function renderProductTable() {
+      refs.productsTable.innerHTML = state.products.map((p) => {
+        const low = p.stock <= p.minStock;
         return `
-          <div class="result-item" onclick="openProductFromSearch(${p.id})">
-            <div class="row-left">
-              <div class="row-title">${p.nome}</div>
-              <div class="row-sub">Barcode: ${p.barcode || "-"} · Magazzino ${p.magazzino} · Macchinetta ${p.macchinetta}</div>
-            </div>
-            <div class="${status.className}">${status.text}</div>
-          </div>
+          <tr>
+            <td>${escapeHtml(p.name)}</td>
+            <td><span class="badge">${escapeHtml(p.sku)}</span></td>
+            <td><span class="badge">${escapeHtml(p.barcode || "-")}</span></td>
+            <td>${euro(p.purchasePrice || 0)}</td>
+            <td>${euro(p.salePrice || 0)}</td>
+            <td class="${low ? "low-stock" : ""}">${p.stock}</td>
+            <td>${p.minStock}</td>
+            <td class="row-inline">
+              <button class="secondary" onclick="startEditProduct('${p.id}')">Modifica</button>
+              <button class="danger" onclick="deleteProduct('${p.id}')">Elimina</button>
+            </td>
+          </tr>
         `;
       }).join("");
     }
 
-    function openProductFromSearch(id){
-      const product = products.find(p => p.id === id);
-      if (!product) return;
-      showProduct(product);
-      closeSearchModal();
-      goProduct();
-    }
+    function renderSelects() {
+      const machineOptions = state.machines.map((m) =>
+        `<option value="${m.id}">${escapeHtml(m.name)} (${escapeHtml(m.location)})</option>`
+      ).join("");
+      const productOptions = state.products.map((p) =>
+        `<option value="${p.id}">${escapeHtml(p.name)} (${escapeHtml(p.sku)} | ${escapeHtml(p.barcode)})</option>`
+      ).join("");
 
-    function createProduct(){
-      const nome = document.getElementById("newNome").value.trim();
-      const barcode = document.getElementById("newBarcode").value.trim();
-      const magazzino = parseInt(document.getElementById("newMagazzino").value || "0", 10);
-      const macchinetta = parseInt(document.getElementById("newMacchinetta").value || "0", 10);
-      const acquisto = parseFloat(document.getElementById("newAcquisto").value || "0");
-      const vendita = parseFloat(document.getElementById("newVendita").value || "0");
+      refs.movementMachine.innerHTML = machineOptions;
+      refs.saleMachine.innerHTML = machineOptions;
+      refs.movementProduct.innerHTML = productOptions;
+      refs.saleProduct.innerHTML = productOptions;
 
-      if (!nome) return alert("Inserisci il nome prodotto");
-
-      const id = products.length ? Math.max(...products.map(p => p.id)) + 1 : 1;
-
-      const product = {
-        id,
-        nome,
-        barcode,
-        magazzino: isNaN(magazzino) ? 0 : magazzino,
-        macchinetta: isNaN(macchinetta) ? 0 : macchinetta,
-        acquisto: isNaN(acquisto) ? 0 : acquisto,
-        vendita: isNaN(vendita) ? 0 : vendita,
-        pezziVenduti: 0,
-        incassoVendite: 0,
-        movimenti: [
-          { tipo: "Creazione prodotto", dettaglio: "Nuova scheda articolo inserita", valore: "NEW", classe: "neutral" }
-        ]
-      };
-
-      products.unshift(product);
-
-      document.getElementById("newNome").value = "";
-      document.getElementById("newBarcode").value = "";
-      document.getElementById("newMagazzino").value = "";
-      document.getElementById("newMacchinetta").value = "";
-      document.getElementById("newAcquisto").value = "";
-      document.getElementById("newVendita").value = "";
-
-      showProduct(product);
-      closeSearchModal();
-      goProduct();
-    }
-
-    async function startScanner(){
-      const wrap = document.getElementById("scannerWrap");
-      wrap.style.display = "block";
-
-      if (!html5QrCode){
-        html5QrCode = new Html5Qrcode("reader");
-      }
-
-      if (scannerRunning) return;
-
-      try {
-        scannerRunning = true;
-
-        await html5QrCode.start(
-          { facingMode: { exact: "environment" } },
-          {
-            fps: 10,
-            qrbox: { width: 280, height: 140 },
-            aspectRatio: 1.7778,
-            disableFlip: true
-          },
-          onScanSuccess,
-          () => {}
-        );
-      } catch (err1){
-        try {
-          await html5QrCode.start(
-            { facingMode: "environment" },
-            {
-              fps: 10,
-              qrbox: { width: 280, height: 140 },
-              aspectRatio: 1.7778,
-              disableFlip: true
-            },
-            onScanSuccess,
-            () => {}
-          );
-        } catch (err2){
-          try {
-            const cameras = await Html5Qrcode.getCameras();
-            if (!cameras || !cameras.length){
-              scannerRunning = false;
-              alert("Nessuna fotocamera trovata");
-              return;
-            }
-
-            const backCamera =
-              cameras.find(c => /back|rear|posteriore|environment/i.test(c.label)) ||
-              cameras[cameras.length - 1];
-
-            await html5QrCode.start(
-              backCamera.id,
-              {
-                fps: 10,
-                qrbox: { width: 280, height: 140 },
-                aspectRatio: 1.7778,
-                disableFlip: true
-              },
-              onScanSuccess,
-              () => {}
-            );
-          } catch (err3){
-            scannerRunning = false;
-            alert("Impossibile aprire la fotocamera");
-          }
-        }
+      const currentFilter = refs.filterMachine.value;
+      refs.filterMachine.innerHTML = `<option value="">Tutte le macchinette</option>${machineOptions}`;
+      if (currentFilter && state.machines.some((m) => m.id === currentFilter)) {
+        refs.filterMachine.value = currentFilter;
       }
     }
 
-    function onScanSuccess(decodedText){
-      document.getElementById("modalSearchBarcode").value = decodedText;
-      const product = products.find(p => (p.barcode || "") === decodedText);
+    function renderHistoryTables() {
+      const filteredSales = applyFilters(state.sales);
+      const filteredMovements = applyFilters(state.movements);
 
-      if (product){
-        openProductFromSearch(product.id);
-      } else {
-        document.getElementById("searchResults").innerHTML = `
-          <div class="empty-box">
-            Barcode letto: <strong>${decodedText}</strong><br><br>
-            Nessun prodotto trovato. Puoi crearlo qui sotto.
-          </div>
+      refs.salesTable.innerHTML = filteredSales.slice(0, 60).map((s) => {
+        const p = state.products.find((x) => x.id === s.productId);
+        const m = state.machines.find((x) => x.id === s.machineId);
+        return `
+          <tr>
+            <td>${fmtDate(s.date)}</td>
+            <td>${escapeHtml(m ? m.name : "N/D")}</td>
+            <td>${escapeHtml(p ? p.name : "Prodotto rimosso")}</td>
+            <td>${s.qty}</td>
+            <td>${euro(s.marginTotal || 0)}</td>
+            <td>${euro(s.total)}</td>
+          </tr>
         `;
-        toggleCreateSection(true);
-        document.getElementById("newBarcode").value = decodedText;
-      }
+      }).join("");
 
-      stopScanner();
+      refs.movementsTable.innerHTML = filteredMovements.slice(0, 60).map((mv) => {
+        const p = state.products.find((x) => x.id === mv.productId);
+        const m = state.machines.find((x) => x.id === mv.machineId);
+        return `
+          <tr>
+            <td>${fmtDate(mv.date)}</td>
+            <td>${escapeHtml(m ? m.name : "N/D")}</td>
+            <td>${escapeHtml(p ? p.name : "Prodotto rimosso")}</td>
+            <td>${mv.type === "carico" ? "Carico" : "Scarico"}</td>
+            <td>${mv.qty}</td>
+          </tr>
+        `;
+      }).join("");
     }
 
-    async function stopScanner(){
-      const wrap = document.getElementById("scannerWrap");
+    function applyFilters(rows) {
+      const machineId = refs.filterMachine.value;
+      const from = refs.filterDateFrom.value ? new Date(refs.filterDateFrom.value + "T00:00:00") : null;
+      const to = refs.filterDateTo.value ? new Date(refs.filterDateTo.value + "T23:59:59") : null;
 
-      if (html5QrCode && scannerRunning){
-        try {
-          await html5QrCode.stop();
-          await html5QrCode.clear();
-        } catch(e){}
-      }
-
-      scannerRunning = false;
-      wrap.style.display = "none";
-      document.getElementById("reader").innerHTML = "";
-      html5QrCode = null;
+      return rows.filter((row) => {
+        const date = new Date(row.date);
+        if (machineId && row.machineId !== machineId) return false;
+        if (from && date < from) return false;
+        if (to && date > to) return false;
+        return true;
+      });
     }
 
-    document.getElementById("modalSearchName").addEventListener("input", () => {
-      if (document.getElementById("modalSearchName").value.trim().length >= 2) runSearch();
-    });
+    function exportSalesCsv() {
+      const rows = applyFilters(state.sales).map((s) => {
+        const p = state.products.find((x) => x.id === s.productId);
+        const m = state.machines.find((x) => x.id === s.machineId);
+        return {
+          data: fmtDate(s.date),
+          macchinetta: m ? m.name : "N/D",
+          prodotto: p ? p.name : "Prodotto rimosso",
+          qta: s.qty,
+          prezzo_vendita_unit: s.unitSalePrice,
+          prezzo_acquisto_unit: s.unitPurchasePrice || 0,
+          margine_unit: s.marginUnit || 0,
+          margine_totale: s.marginTotal || 0,
+          totale: s.total,
+          operatore: s.user
+        };
+      });
+      downloadCsv("vendite.csv", rows);
+    }
 
-    document.getElementById("modalSearchBarcode").addEventListener("input", () => {
-      if (document.getElementById("modalSearchBarcode").value.trim().length >= 3) runSearch();
-    });
+    function exportMovementsCsv() {
+      const rows = applyFilters(state.movements).map((mv) => {
+        const p = state.products.find((x) => x.id === mv.productId);
+        const m = state.machines.find((x) => x.id === mv.machineId);
+        return {
+          data: fmtDate(mv.date),
+          macchinetta: m ? m.name : "N/D",
+          prodotto: p ? p.name : "Prodotto rimosso",
+          tipo: mv.type,
+          qta: mv.qty,
+          operatore: mv.user
+        };
+      });
+      downloadCsv("movimenti.csv", rows);
+    }
 
-    updateDashboard();
-    showProduct(products[0]);
+    function downloadCsv(filename, rows) {
+      if (!rows.length) return alert("Nessun dato da esportare con i filtri attuali.");
+      const columns = Object.keys(rows[0]);
+      const lines = [
+        columns.join(";"),
+        ...rows.map((r) => columns.map((c) => csvSafe(r[c])).join(";"))
+      ];
+      const blob = new Blob([lines.join("\n")], { type: "text/csv;charset=utf-8;" });
+      const url = URL.createObjectURL(blob);
+      const a = document.createElement("a");
+      a.href = url;
+      a.download = filename;
+      a.click();
+      URL.revokeObjectURL(url);
+    }
+
+    function csvSafe(value) {
+      const text = String(value ?? "");
+      if (text.includes(";") || text.includes('"') || text.includes("\n")) {
+        return `"${text.replaceAll('"', '""')}"`;
+      }
+      return text;
+    }
+
+    function statCard(label, value) {
+      return `<div class="stat"><div class="label">${label}</div><div class="value">${value}</div></div>`;
+    }
+
+    function onSearchByCode() {
+      const query = refs.searchCode.value.trim().toLowerCase();
+      if (!query) return;
+      const product = state.products.find((p) => {
+        return p.sku.toLowerCase().includes(query)
+          || p.name.toLowerCase().includes(query)
+          || (p.barcode || "").toLowerCase().includes(query);
+      });
+      if (!product) return alert("Nessun prodotto trovato per il codice inserito.");
+      refs.saleProduct.value = product.id;
+      refs.movementProduct.value = product.id;
+      refs.searchCode.value = product.barcode || product.sku;
+      renderProductTableFiltered(product.id);
+    }
+
+    function onClearCodeSearch() {
+      refs.searchCode.value = "";
+      renderProductTable();
+    }
+
+    function startEditProduct(productId) {
+      const product = state.products.find((p) => p.id === productId);
+      if (!product) return;
+      setView("operations");
+      refs.productEditId.value = product.id;
+      document.getElementById("name").value = product.name;
+      document.getElementById("sku").value = product.sku;
+      document.getElementById("barcode").value = product.barcode || "";
+      document.getElementById("purchasePrice").value = product.purchasePrice;
+      document.getElementById("salePrice").value = product.salePrice;
+      document.getElementById("stock").value = product.stock;
+      document.getElementById("minStock").value = product.minStock;
+      refs.productFormTitle.textContent = "Modifica prodotto";
+      refs.productSubmitBtn.textContent = "Salva modifiche";
+      refs.cancelEditProductBtn.classList.remove("view-hidden");
+    }
+
+    function cancelEditProduct() {
+      refs.productEditId.value = "";
+      refs.productFormTitle.textContent = "Nuovo prodotto";
+      refs.productSubmitBtn.textContent = "Aggiungi prodotto";
+      refs.cancelEditProductBtn.classList.add("view-hidden");
+    }
+
+    function setView(view) {
+      const isHistory = view === "history";
+      document.querySelectorAll(".view-history").forEach((el) => {
+        el.classList.toggle("view-hidden", !isHistory);
+      });
+      document.querySelectorAll(".view-operations").forEach((el) => {
+        el.classList.toggle("view-hidden", isHistory);
+      });
+      refs.navOperations.classList.toggle("active", !isHistory);
+      refs.navOperations.classList.toggle("primary", !isHistory);
+      refs.navOperations.classList.toggle("secondary", isHistory);
+      refs.navHistory.classList.toggle("active", isHistory);
+      refs.navHistory.classList.toggle("primary", isHistory);
+      refs.navHistory.classList.toggle("secondary", !isHistory);
+    }
+
+    async function onScanBarcode() {
+      if (!("BarcodeDetector" in window)) {
+        alert("Scansione camera non supportata su questo browser. Inserisci il barcode manualmente.");
+        return;
+      }
+      try {
+        const detector = new BarcodeDetector({
+          formats: ["ean_13", "ean_8", "upc_a", "upc_e", "code_128"]
+        });
+        const stream = await navigator.mediaDevices.getUserMedia({
+          video: { facingMode: "environment" }
+        });
+        const video = document.createElement("video");
+        video.srcObject = stream;
+        video.setAttribute("playsinline", "true");
+        await video.play();
+
+        const canvas = document.createElement("canvas");
+        const ctx = canvas.getContext("2d");
+        let scannedValue = "";
+        const start = Date.now();
+
+        while (!scannedValue && Date.now() - start < 12000) {
+          canvas.width = video.videoWidth || 1280;
+          canvas.height = video.videoHeight || 720;
+          ctx.drawImage(video, 0, 0, canvas.width, canvas.height);
+          const barcodes = await detector.detect(canvas);
+          if (barcodes.length > 0) {
+            scannedValue = barcodes[0].rawValue || "";
+            break;
+          }
+          await sleep(220);
+        }
+
+        stream.getTracks().forEach((t) => t.stop());
+
+        if (!scannedValue) {
+          alert("Nessun barcode rilevato. Riprova o inseriscilo manualmente.");
+          return;
+        }
+        refs.barcodeInput.value = scannedValue;
+        refs.searchCode.value = scannedValue;
+      } catch (_err) {
+        alert("Permesso camera negato o scansione non disponibile.");
+      }
+    }
+
+    function sleep(ms) {
+      return new Promise((resolve) => setTimeout(resolve, ms));
+    }
+
+    function renderProductTableFiltered(productId) {
+      const product = state.products.find((p) => p.id === productId);
+      if (!product) return renderProductTable();
+      const low = product.stock <= product.minStock;
+      refs.productsTable.innerHTML = `
+        <tr>
+          <td>${escapeHtml(product.name)}</td>
+          <td><span class="badge">${escapeHtml(product.sku)}</span></td>
+          <td><span class="badge">${escapeHtml(product.barcode || "-")}</span></td>
+          <td>${euro(product.purchasePrice || 0)}</td>
+          <td>${euro(product.salePrice || 0)}</td>
+          <td class="${low ? "low-stock" : ""}">${product.stock}</td>
+          <td>${product.minStock}</td>
+          <td class="row-inline">
+            <button class="secondary" onclick="startEditProduct('${product.id}')">Modifica</button>
+            <button class="danger" onclick="deleteProduct('${product.id}')">Elimina</button>
+          </td>
+        </tr>
+      `;
+    }
+
+    function toNumber(value) {
+      return Number.parseFloat(value);
+    }
+
+    function toInt(value) {
+      return Number.parseInt(value, 10);
+    }
+
+    function round2(value) {
+      return Math.round((value + Number.EPSILON) * 100) / 100;
+    }
+
+    function euro(value) {
+      return new Intl.NumberFormat("it-IT", { style: "currency", currency: "EUR" }).format(value);
+    }
+
+    function percent(value) {
+      return new Intl.NumberFormat("it-IT", { maximumFractionDigits: 2 }).format(value) + "%";
+    }
+
+    function fmtDate(value) {
+      return new Intl.DateTimeFormat("it-IT", {
+        day: "2-digit",
+        month: "2-digit",
+        year: "numeric",
+        hour: "2-digit",
+        minute: "2-digit"
+      }).format(new Date(value));
+    }
+
+    function uid() {
+      return Math.random().toString(36).slice(2, 11);
+    }
+
+    function escapeHtml(raw) {
+      return String(raw)
+        .replaceAll("&", "&amp;")
+        .replaceAll("<", "&lt;")
+        .replaceAll(">", "&gt;")
+        .replaceAll('"', "&quot;")
+        .replaceAll("'", "&#039;");
+    }
+
+    window.deleteMachine = deleteMachine;
+    window.deleteProduct = deleteProduct;
+    window.startEditProduct = startEditProduct;
   </script>
 </body>
 </html>
